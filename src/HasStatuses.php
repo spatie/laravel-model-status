@@ -20,7 +20,7 @@ trait HasStatuses
         return $this->statuses->last();
     }
 
-
+    /** TODO: Adding ExceptionHadler to handle exeption */
     public function setStatus($status_name, $status_explanation): ?Status
     {
         if ($this->isValidStatus($status_name, $status_explanation)) {
