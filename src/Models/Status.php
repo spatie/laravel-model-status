@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Spatie\LaravelEloquentStatus\Models;
+namespace Spatie\LaravelStatus\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

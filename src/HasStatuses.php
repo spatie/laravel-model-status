@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Spatie\LaravelEloquentStatus;
+namespace Spatie\LaravelStatus;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use phpDocumentor\Reflection\Types\Mixed_;
 use PHPUnit\Exception;
-use Spatie\LaravelEloquentStatus\Models\Status;
+use Spatie\LaravelStatus\Models\Status;
 
 trait HasStatuses
 {
@@ -21,7 +21,7 @@ trait HasStatuses
     }
 
 
-    public function setStatus($status_name, $status_explanation): Status
+    public function setStatus($status_name, $status_explanation): ?Status
     {
         if ($this->isValidStatus($status_name, $status_explanation)) {
             $StatusSet = $this->statuses()->create(['name'=>$status_name,'explanation'=>$status_explanation]);

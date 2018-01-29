@@ -1,10 +1,10 @@
 # Very short description of the package
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-eloquent-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-eloquent-status)
-[![Build Status](https://img.shields.io/travis/spatie/laravel-eloquent-status/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-eloquent-status)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-status)
+[![Build Status](https://img.shields.io/travis/spatie/laravel-status/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-status)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/xxxxxxxxx.svg?style=flat-square)](https://insight.sensiolabs.com/projects/xxxxxxxxx)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-eloquent-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-eloquent-status)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-eloquent-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-eloquent-status)
+[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-status)
+[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-status)
 
 Assign statuses to Eloquent Models
 
@@ -13,17 +13,17 @@ Assign statuses to Eloquent Models
 You can install the package via composer:
 
 ```bash
-composer require spatie/laravel-eloquent-status
+composer require spatie/laravel-status
 ```
 Migrate the statuses table:
-```bash
+```php
 php artisan migrate
 ```
 
 ## Usage
 
 Add  ``` use HasStatuses``` to the model you like to use statuses on.
-``` php
+```php
 <?php
 
 namespace App;
@@ -36,22 +36,22 @@ class YourEloquentModel extends Model{
 ```
 ####Setting
 You can set a status like this:
-``` php
+```php
 $model->setStatus('status-name', 'explenation-of-the-status');
 ```
 ####Getting
 getting all the statuses:
-``` php
+```php
 $allStatuses = $model->statuses;
 ```
 
 You can get the last status like this:
-``` php
+```php
 $currentStatus = $model->getStatus();
 ```
 ####Validation
 You can set custom validation to the status:
-``` php
+```php
 
 public function isValidStatus($status_name, $status_explanation)
     {
@@ -66,7 +66,7 @@ public function isValidStatus($status_name, $status_explanation)
 This package contains integration tests that are powered by [orchestral/testbench](https://github.com/orchestral/testbench).
 
 You can run all tests with:
-``` bash
+```bash
 composer test
 ```
 

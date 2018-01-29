@@ -1,11 +1,11 @@
 {
-    "name": "spatie/laravel-eloquent-status",
+    "name": "spatie/laravel-status",
     "description": "A package to enable assigning statuses to Eloquent Models",
     "keywords": [
         "spatie",
-        "laravel-eloquent-status"
+        "laravel-status"
     ],
-    "homepage": "https://github.com/spatie/laravel-eloquent-status",
+    "homepage": "https://github.com/spatie/laravel-status",
     "license": "MIT",
     "authors": [
         {
