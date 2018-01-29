@@ -1,14 +1,17 @@
 <?php
 
 
-namespace Spatie\LaravelElequentStatus\Models;
+namespace Spatie\LaravelEloquentStatus\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Status extends Model
 {
-    public function status(){
-        return $this->morphToMany();
-    }
+    protected $fillable = ['name','explanation','status_id','status_type'];
+    protected $table = "statuses";
 
+    public function status()
+    {
+        return $this->morphTo();
+    }
 }

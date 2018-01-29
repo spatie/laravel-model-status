@@ -1,11 +1,11 @@
 {
-    "name": "spatie/laravel-eliquent-status",
-    "description": ":package_description",
+    "name": "spatie/laravel-eloquent-status",
+    "description": "A package to enable assigning statuses to Eloquent Models",
     "keywords": [
         "spatie",
-        "laravel-eliquent-status"
+        "laravel-eloquent-status"
     ],
-    "homepage": "https://github.com/spatie/laravel-eliquent-status",
+    "homepage": "https://github.com/spatie/laravel-eloquent-status",
     "license": "MIT",
     "authors": [
         {
@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\LaravelElequentStatus\\": "src"
+            "Spatie\\LaravelEloquentStatus\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\LaravelElequentStatus\\Tests\\": "tests"
+            "Spatie\\LaravelEloquentStatus\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -44,10 +44,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\LaravelElequentStatus\\SkeletonServiceProvider"
+                "Spatie\\LaravelEloquentStatus\\SkeletonServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "Spatie\\LaravelElequentStatus\\SkeletonFacade"
+                "Skeleton": "Spatie\\LaravelEloquentStatus\\SkeletonFacade"
             }
         }
     }

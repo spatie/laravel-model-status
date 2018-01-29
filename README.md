@@ -1,12 +1,10 @@
 # Very short description of the package
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-eliquent-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-eliquent-status)
-[![Build Status](https://img.shields.io/travis/spatie/laravel-eliquent-status/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-eliquent-status)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-eloquent-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-eloquent-status)
+[![Build Status](https://img.shields.io/travis/spatie/laravel-eloquent-status/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-eloquent-status)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/xxxxxxxxx.svg?style=flat-square)](https://insight.sensiolabs.com/projects/xxxxxxxxx)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-eliquent-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-eliquent-status)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-eliquent-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-eliquent-status)
-
-**Note:** Replace ```Thomas``` ```TVke``` ```tvke91@gmail.com``` ```laravel-eliquent-status``` ```:package_description``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line.
+[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-eloquent-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-eloquent-status)
+[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-eloquent-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-eloquent-status)
 
 This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
 
@@ -15,7 +13,11 @@ This is where your description should go. Try and limit it to a paragraph or two
 You can install the package via composer:
 
 ```bash
-composer require spatie/laravel-eliquent-status
+composer require spatie/laravel-eloquent-status
+```
+Migrate the statuses table:
+```bash
+php artisan migrate
 ```
 
 ## Usage

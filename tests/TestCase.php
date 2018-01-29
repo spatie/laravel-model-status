@@ -1,14 +1,10 @@
 <?php
 
 
-namespace Spatie\LaravelElequentStatus\Tests;
-
+namespace Spatie\LaravelEloquentStatus\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Application;
-use Spatie\LaravelElequentStatus\HasStatus;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-
 
 class TestCase extends BaseTestCase
 {
@@ -21,6 +17,7 @@ class TestCase extends BaseTestCase
             $table->string('name');
         });
 
-
+        include_once __DIR__.'/../database/migrations/create_statuses_table.php';
+        (new \CreateStatusesTable())->up();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Spatie\LaravelElequentStatus;
+namespace Spatie\LaravelEloquentStatus;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

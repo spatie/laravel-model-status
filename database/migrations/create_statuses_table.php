@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStatusTableMigration extends Migration
+class CreateStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,6 +17,9 @@ class CreateStatusTableMigration extends Migration
             $table->increments('id');
             $table->string('name');
             $table->longText('explanation');
+            $table->unsignedInteger('status_id');
+            $table->string('status_type');
+            $table->timestamps();
         });
     }
 

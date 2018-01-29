@@ -1,14 +1,15 @@
 <?php
 
-namespace Spatie\LaravelElequentStatus\Tests\Models;
+namespace Spatie\LaravelEloquentStatus\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\LaravelElequentStatus\HasStatus;
+use Spatie\LaravelEloquentStatus\HasStatus;
+use Spatie\LaravelEloquentStatus\Models\Status;
 
 class TestModel extends Model
 {
     use HasStatus;
+
     protected $guarded = [];
     public $timestamps = false;
-
 }
