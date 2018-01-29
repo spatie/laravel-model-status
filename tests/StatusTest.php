@@ -6,7 +6,7 @@ use Spatie\LaravelEloquentStatus\Models\Status;
 use Spatie\LaravelEloquentStatus\Tests\Models\TestModel;
 use Spatie\LaravelEloquentStatus\Tests\Models\ValidationTestModel;
 
-class ExampleTest extends TestCase
+class StatusTest extends TestCase
 {
     /** @test */
     public function it_creates_a_test_model()

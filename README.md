@@ -6,7 +6,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-eloquent-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-eloquent-status)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-eloquent-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-eloquent-status)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+Assign statuses to Eloquent Models
 
 ## Installation
 
@@ -22,13 +22,50 @@ php artisan migrate
 
 ## Usage
 
+Add  ``` use HasStatuses``` to the model you like to use statuses on.
 ``` php
-$skeleton = new Spatie\Skeleton();
-echo $skeleton->echoPhrase('Hello, Spatie!');
+<?php
+
+namespace App;
+
+use Spatie\LaravelEloquentStatus\HasStatuses;
+
+class YourEloquentModel extends Model{
+    use HasStatuses;
+}
+```
+####Setting
+You can set a status like this:
+``` php
+$model->setStatus('status-name', 'explenation-of-the-status');
+```
+####Getting
+getting all the statuses:
+``` php
+$allStatuses = $model->statuses;
+```
+
+You can get the last status like this:
+``` php
+$currentStatus = $model->getStatus();
+```
+####Validation
+You can set custom validation to the status:
+``` php
+
+public function isValidStatus($status_name, $status_explanation)
+    {
+        if (condition) {
+            return true;
+        }
+        return false;
+    }
 ```
 
 ### Testing
+This package contains integration tests that are powered by [orchestral/testbench](https://github.com/orchestral/testbench).
 
+You can run all tests with:
 ``` bash
 composer test
 ```
