@@ -4,6 +4,7 @@ namespace Spatie\LaravelEloquentStatus\Tests;
 
 use Spatie\LaravelEloquentStatus\Models\Status;
 use Spatie\LaravelEloquentStatus\Tests\Models\TestModel;
+use Spatie\LaravelEloquentStatus\Tests\Models\ValidationTestModel;
 
 class ExampleTest extends TestCase
 {
@@ -33,7 +34,18 @@ class ExampleTest extends TestCase
     }
 
     /** @test **/
-    public function it_returns_the_created_model(){
+    public function it_returns_the_created_model()
+    {
+        $testUser = TestModel::create(['name'=> 'Thomas']);
+        $returnedStatus = $testUser->setStatus('pending', 'waiting on validation of email address');
+        $this->assertEquals('pending', $returnedStatus->name);
+    }
 
+    /** @test **/
+    public function it_can_check_if_the_status_is_valid()
+    {
+        $testUser = ValidationTestModel::create(['name'=> 'Thomas']);
+        $returnedStatus = $testUser->setStatus('', '');
+        $this->assertNull($returnedStatus);
     }
 }

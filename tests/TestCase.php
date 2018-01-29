@@ -17,6 +17,11 @@ class TestCase extends BaseTestCase
             $table->string('name');
         });
 
+        $this->app['db']->connection()->getSchemaBuilder()->create('validation_test_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+        });
+
         include_once __DIR__.'/../database/migrations/create_statuses_table.php';
         (new \CreateStatusesTable())->up();
     }
