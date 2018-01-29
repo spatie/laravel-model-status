@@ -18,9 +18,9 @@ trait HasStatus
 
 
     public function setStatus($status){
-
         $this->status = $status;
     }
+
 
 
     /**
