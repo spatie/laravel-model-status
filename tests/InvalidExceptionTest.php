@@ -69,7 +69,7 @@ class InvalidExceptionTest extends TestCase
     {
         $user = TestModel::create(['name' => 'Thomas']);
 
-        $user->setCallbackOnAdd(
+        $user->setCallbackOnSetStatus(
 
             function ($name) {
                 $this->assertEquals('pending', $name);

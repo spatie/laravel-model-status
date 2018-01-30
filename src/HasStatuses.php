@@ -22,7 +22,7 @@ trait HasStatuses
         return $this->statuses->last();
     }
 
-    public function setCallbackOnAdd(Closure $callback)
+    public function setCallbackOnSetStatus(Closure $callback)
     {
         $this->callback = $callback;
     }

@@ -60,6 +60,12 @@ You can get the last status like this:
 $currentStatus = $model->getStatus();
 ```
 
+You can get the a status by name:
+
+```php
+$currentStatus = $model->getStatusByName("status_name");
+```
+
 #### Validation
 
 You can set custom validation to the status:
@@ -72,6 +78,19 @@ public function isValidStatus($status_name, $status_explanation)
         }
         return false;
     }
+```
+
+#### Callback when a new status is set
+
+You can execute a closure every time a new status is set. 
+
+```php
+$user->setCallbackOnSetStatus(
+    function ($latest_name, $latest_explenation) 
+    {
+        /* callback functionality */
+    }
+);
 ```
 
 ### Testing
