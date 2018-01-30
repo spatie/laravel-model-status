@@ -13,25 +13,25 @@ class InvalidExceptionTest extends TestCase
     /** @test */
     public function it_creates_a_test_model()
     {
-        TestModel::create(['name'=> 'Thomas']);
+        TestModel::create(['name' => 'Thomas']);
 
-        $this->assertDatabaseHas('test_models', ['name'=> 'Thomas']);
+        $this->assertDatabaseHas('test_models', ['name' => 'Thomas']);
     }
 
     /** @test */
     public function it_sets_a_status_to_a_model()
     {
-        TestModel::create(['name'=> 'Thomas']);
+        TestModel::create(['name' => 'Thomas']);
 
-        Status::create(['name'=> 'pending','explanation'=> 'waiting on validation of email address','status_id'=> 1,'status_type'=> 'TestModel']);
+        Status::create(['name' => 'pending','explanation' => 'waiting on validation of email address','status_id' => 1,'status_type' => 'TestModel']);
 
-        $this->assertDatabaseHas('statuses', ['name'=> 'pending','explanation'=> 'waiting on validation of email address','status_id'=> 1,'status_type'=> 'TestModel']);
+        $this->assertDatabaseHas('statuses', ['name' => 'pending','explanation' => 'waiting on validation of email address','status_id' => 1,'status_type' => 'TestModel']);
     }
 
     /** @test */
     public function it_adds_a_status_to_a_user_record()
     {
-        $testUser = TestModel::create(['name'=> 'Thomas']);
+        $testUser = TestModel::create(['name' => 'Thomas']);
 
         $testUser->setStatus('pending', 'waiting on validation of email address');
 
@@ -45,7 +45,7 @@ class InvalidExceptionTest extends TestCase
     /** @test */
     public function it_returns_the_created_model()
     {
-        $testUser = TestModel::create(['name'=> 'Thomas']);
+        $testUser = TestModel::create(['name' => 'Thomas']);
 
         $returnedStatus = $testUser->setStatus('pending', 'waiting on validation of email address');
 
@@ -57,9 +57,9 @@ class InvalidExceptionTest extends TestCase
     {
         $this->expectException(StatusError::class);
 
-        $this->expectExceptionMessage("The status is not valid, check the status or adjust the isValidStatus method. ");
+        $this->expectExceptionMessage('The status is not valid, check the status or adjust the isValidStatus method. ');
 
-        $testUser = ValidationTestModel::create(['name'=> 'Thomas']);
+        $testUser = ValidationTestModel::create(['name' => 'Thomas']);
 
         $testUser->setStatus('', '');
     }
@@ -67,7 +67,7 @@ class InvalidExceptionTest extends TestCase
     /** @test */
     public function it_can_add_a_callback_and_execute()
     {
-        $user = TestModel::create(['name'=> 'Thomas']);
+        $user = TestModel::create(['name' => 'Thomas']);
 
         $user->setCallbackOnAdd(
 
@@ -77,5 +77,19 @@ class InvalidExceptionTest extends TestCase
         );
 
         $user->setStatus('pending', 'waiting on validation of email address');
+    }
+
+    /** @test */
+    public function it_can_find_a_status_by_name()
+    {
+        $user = TestModel::create(['name' => 'Thomas']);
+
+        $user->setStatus('pending', 'waiting on validation of email address');
+
+        $user->setStatus('validated', 'email address validated');
+
+        $foundStatus = $user->findStatusByName('validated');
+        
+        $this->assertEquals('validated', $foundStatus->name);
     }
 }

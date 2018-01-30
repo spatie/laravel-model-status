@@ -27,7 +27,6 @@ trait HasStatuses
         $this->callback = $callback;
     }
 
-
     /**
      * @param $status_name
      * @param $status_explanation
@@ -52,5 +51,10 @@ trait HasStatuses
     public function isValidStatus($status_name, $status_explanation): bool
     {
         return true;
+    }
+
+    public function findStatusByName($status_name)
+    {
+        return $this->statuses()->where('name', $status_name)->first();
     }
 }
