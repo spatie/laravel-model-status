@@ -38,7 +38,7 @@ class YourEloquentModel extends Model{
 }
 ```
 
-####Setting
+#### Setting
 
 You can set a status like this:
 
@@ -46,7 +46,7 @@ You can set a status like this:
 $model->setStatus('status-name', 'explenation-of-the-status');
 ```
 
-####Getting
+#### Getting
 
 getting all the statuses:
 
@@ -60,7 +60,7 @@ You can get the last status like this:
 $currentStatus = $model->getStatus();
 ```
 
-####Validation
+#### Validation
 
 You can set custom validation to the status:
 
