@@ -23,6 +23,7 @@ class TestCase extends BaseTestCase
         });
 
         include_once __DIR__.'/../database/migrations/create_statuses_table.php';
+
         (new \CreateStatusesTable())->up();
     }
 }

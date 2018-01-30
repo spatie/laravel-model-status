@@ -3,6 +3,7 @@
 namespace Spatie\LaravelStatus\Tests;
 
 use Spatie\LaravelStatus\Exception\StatusError;
+use Spatie\LaravelStatus\HasStatuses;
 use Spatie\LaravelStatus\Models\Status;
 use Spatie\LaravelStatus\Tests\Models\TestModel;
 use Spatie\LaravelStatus\Tests\Models\ValidationTestModel;
@@ -41,7 +42,7 @@ class InvalidExceptionTest extends TestCase
         $this->assertEquals('pending', $testStatus);
     }
 
-    /** @test **/
+    /** @test */
     public function it_returns_the_created_model()
     {
         $testUser = TestModel::create(['name'=> 'Thomas']);
@@ -51,7 +52,7 @@ class InvalidExceptionTest extends TestCase
         $this->assertEquals('pending', $returnedStatus->name);
     }
 
-    /** @test **/
+    /** @test */
     public function it_can_check_if_the_status_is_valid()
     {
         $this->expectException(StatusError::class);
@@ -61,5 +62,19 @@ class InvalidExceptionTest extends TestCase
         $testUser = ValidationTestModel::create(['name'=> 'Thomas']);
 
         $testUser->setStatus('', '');
+    }
+
+    /** @test */
+    public function it_can_add_a_callback_and_execute()
+    {
+        $user = TestModel::create(['name'=> 'Thomas']);
+
+        $user->setCallbackOnAdd(
+            function ($name) {
+                $this->assertEquals('pending', $name);
+            }
+        );
+
+        $user->setStatus('pending', 'waiting on validation of email address');
     }
 }

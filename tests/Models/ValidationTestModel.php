@@ -18,6 +18,7 @@ class ValidationTestModel extends Model
         if (count($status_name)<=1 && count($status_explanation)<=1) {
             return false;
         }
+
         return true;
     }
 }

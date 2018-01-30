@@ -3,12 +3,15 @@
 
 namespace Spatie\LaravelStatus;
 
+use Closure;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\LaravelStatus\Exception\StatusError;
 use Spatie\LaravelStatus\Models\Status;
 
 trait HasStatuses
 {
+    protected $callback;
+
     public function statuses(): MorphMany
     {
         return $this->morphMany(Status::class, 'status');
@@ -18,6 +21,12 @@ trait HasStatuses
     {
         return $this->statuses->last();
     }
+
+    public function setCallbackOnAdd(Closure $callback)
+    {
+        $this->callback = $callback;
+    }
+
 
     /**
      * @param $status_name
@@ -29,8 +38,14 @@ trait HasStatuses
     {
         if ($this->isValidStatus($status_name, $status_explanation)) {
             $StatusSet = $this->statuses()->create(['name'=>$status_name,'explanation'=>$status_explanation]);
+
+            if ($this->callback) {
+                ($this->callback)($status_name, $status_explanation);
+            }
+
             return $StatusSet;
         }
+
         throw new StatusError("The status is not valid, check the status or adjust the isValidStatus method. ");
     }
 
