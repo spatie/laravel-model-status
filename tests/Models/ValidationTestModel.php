@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Spatie\LaravelEloquentStatus\Tests\Models;
+namespace Spatie\LaravelStatus\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\LaravelEloquentStatus\HasStatuses;
+use Spatie\LaravelStatus\HasStatuses;
 
 class ValidationTestModel extends Model
 {

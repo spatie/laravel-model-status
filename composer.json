@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\LaravelEloquentStatus\\": "src"
+            "Spatie\\LaravelStatus\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\LaravelEloquentStatus\\Tests\\": "tests"
+            "Spatie\\LaravelStatus\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -44,11 +44,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\LaravelEloquentStatus\\SkeletonServiceProvider"
-            ],
-            "aliases": {
-                "Skeleton": "Spatie\\LaravelEloquentStatus\\SkeletonFacade"
-            }
+                "Spatie\\LaravelStatus\\SkeletonServiceProvider"
+            ]
         }
     }
 }

@@ -28,7 +28,7 @@ Add  ``` use HasStatuses``` to the model you like to use statuses on.
 
 namespace App;
 
-use Spatie\LaravelEloquentStatus\HasStatuses;
+use Spatie\LaravelStatus\HasStatuses;
 
 class YourEloquentModel extends Model{
     use HasStatuses;

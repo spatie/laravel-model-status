@@ -1,10 +1,10 @@
 <?php
 
-namespace Spatie\LaravelEloquentStatus\Tests;
+namespace Spatie\LaravelStatus\Tests;
 
-use Spatie\LaravelEloquentStatus\Models\Status;
-use Spatie\LaravelEloquentStatus\Tests\Models\TestModel;
-use Spatie\LaravelEloquentStatus\Tests\Models\ValidationTestModel;
+use Spatie\LaravelStatus\Models\Status;
+use Spatie\LaravelStatus\Tests\Models\TestModel;
+use Spatie\LaravelStatus\Tests\Models\ValidationTestModel;
 
 class StatusTest extends TestCase
 {

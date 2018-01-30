@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Spatie\LaravelEloquentStatus\Tests;
+namespace Spatie\LaravelStatus\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
