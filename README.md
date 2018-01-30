@@ -1,4 +1,4 @@
-# Very short description of the package
+# Laravel status addition 
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-status)
 [![Build Status](https://img.shields.io/travis/spatie/laravel-status/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-status)
@@ -6,7 +6,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-status)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-status)
 
-Assign statuses to Eloquent Models
+Assigns statuses to Eloquent Models
 
 ## Installation
 
@@ -15,7 +15,9 @@ You can install the package via composer:
 ```bash
 composer require spatie/laravel-status
 ```
+
 Migrate the statuses table:
+
 ```php
 php artisan migrate
 ```
@@ -23,6 +25,7 @@ php artisan migrate
 ## Usage
 
 Add  ``` use HasStatuses``` to the model you like to use statuses on.
+
 ```php
 <?php
 
@@ -34,25 +37,34 @@ class YourEloquentModel extends Model{
     use HasStatuses;
 }
 ```
+
 ####Setting
+
 You can set a status like this:
+
 ```php
 $model->setStatus('status-name', 'explenation-of-the-status');
 ```
+
 ####Getting
+
 getting all the statuses:
+
 ```php
 $allStatuses = $model->statuses;
 ```
 
 You can get the last status like this:
+
 ```php
 $currentStatus = $model->getStatus();
 ```
-####Validation
-You can set custom validation to the status:
-```php
 
+####Validation
+
+You can set custom validation to the status:
+
+```php
 public function isValidStatus($status_name, $status_explanation)
     {
         if (condition) {
@@ -63,9 +75,11 @@ public function isValidStatus($status_name, $status_explanation)
 ```
 
 ### Testing
+
 This package contains integration tests that are powered by [orchestral/testbench](https://github.com/orchestral/testbench).
 
 You can run all tests with:
+
 ```bash
 composer test
 ```
