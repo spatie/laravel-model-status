@@ -19,18 +19,19 @@ trait HasStatuses
         return $this->statuses->last();
     }
 
-    /** @throws \Throwable */
-    public function setStatus($status_name, $status_explanation): ?Status
+    /**
+     * @param $status_name
+     * @param $status_explanation
+     * @return Status
+     * @throws \Spatie\LaravelStatus\Exception\StatusError
+     */
+    public function setStatus($status_name, $status_explanation): Status
     {
         if ($this->isValidStatus($status_name, $status_explanation)) {
             $StatusSet = $this->statuses()->create(['name'=>$status_name,'explanation'=>$status_explanation]);
             return $StatusSet;
         }
-
-        throw_unless(
-            $this->isValidStatus($status_name, $status_explanation),
-            new StatusError("The status is not valid, check the status or adjust the isValidStatus method. ")
-        );
+        throw new StatusError("The status is not valid, check the status or adjust the isValidStatus method. ");
     }
 
     public function isValidStatus($status_name, $status_explanation): bool

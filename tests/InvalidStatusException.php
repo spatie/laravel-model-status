@@ -2,11 +2,12 @@
 
 namespace Spatie\LaravelStatus\Tests;
 
+use Spatie\LaravelStatus\Exception\StatusError;
 use Spatie\LaravelStatus\Models\Status;
 use Spatie\LaravelStatus\Tests\Models\TestModel;
 use Spatie\LaravelStatus\Tests\Models\ValidationTestModel;
 
-class StatusTest extends TestCase
+class InvalidStatusException extends TestCase
 {
     /** @test */
     public function it_creates_a_test_model()
@@ -44,8 +45,10 @@ class StatusTest extends TestCase
     /** @test **/
     public function it_can_check_if_the_status_is_valid()
     {
+        $this->expectException(StatusError::class);
+        $this->expectExceptionMessage("The status is not valid, check the status or adjust the isValidStatus method. ");
+
         $testUser = ValidationTestModel::create(['name'=> 'Thomas']);
-        $returnedStatus = $testUser->setStatus('', '');
-        $this->assertNull($returnedStatus);
+        $testUser->setStatus('', '');
     }
 }
