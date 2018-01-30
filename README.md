@@ -6,7 +6,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-status)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-status)
 
-Assigns statuses to Eloquent Models
+Assign statuses to Eloquent Models
 
 ## Installation
 
