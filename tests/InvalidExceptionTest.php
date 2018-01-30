@@ -7,7 +7,7 @@ use Spatie\LaravelStatus\Models\Status;
 use Spatie\LaravelStatus\Tests\Models\TestModel;
 use Spatie\LaravelStatus\Tests\Models\ValidationTestModel;
 
-class InvalidStatusException extends TestCase
+class InvalidExceptionTest extends TestCase
 {
     /** @test */
     public function it_creates_a_test_model()
