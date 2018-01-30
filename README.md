@@ -88,7 +88,7 @@ You can execute a closure every time a new status is set.
 $user->setCallbackOnSetStatus(
     function ($latest_name, $latest_explenation) 
     {
-        /* callback functionality */
+        // callback functionality
     }
 );
 ```

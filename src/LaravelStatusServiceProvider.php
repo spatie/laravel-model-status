@@ -19,8 +19,8 @@ class LaravelStatusServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_statuses_table.php'
-                => database_path('migrations/'.$timestamp.'create_statuses_table.php'),
-            ], 'migrations');
+                => database_path('migrations/'.$timestamp.'create_statuses_table.php')
+                ], 'migrations');
         }
     }
 

@@ -30,7 +30,7 @@ trait HasStatuses
     /**
      * @param $status_name
      * @param $status_explanation
-     * @return Status
+     * @return \Spatie\LaravelStatus\Models\Status
      * @throws \Spatie\LaravelStatus\Exception\StatusError
      */
     public function setStatus($status_name, $status_explanation): Status

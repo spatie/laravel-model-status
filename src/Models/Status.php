@@ -8,13 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Status extends Model
 {
-//    use SoftDeletes;
-
     protected $fillable = ['name','explanation','status_id','status_type'];
-
     protected $table = "statuses";
-
-//    protected $dates = ['deleted_at'];
 
     public function status()
     {

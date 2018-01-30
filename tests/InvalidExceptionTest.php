@@ -71,7 +71,8 @@ class InvalidExceptionTest extends TestCase
 
         $user->setCallbackOnSetStatus(
 
-            function ($name) {
+            function ($name)
+            {
                 $this->assertEquals('pending', $name);
             }
         );
