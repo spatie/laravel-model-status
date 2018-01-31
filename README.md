@@ -1,6 +1,28 @@
-# Laravel status addition 
+# Assign statuses to Eloquent Models
 
-Assign statuses to Eloquent Models
+This package can be used when a status need to be given to a specific model. 
+
+Once the trait is installed on the model you can do these things:
+```php
+$picture = new picture()
+
+$picture->setStatus('picture pending', 'picture needs to be checked. ');
+$picture->setStatus('picture declined', 'the picture is completely red. ');
+
+$picture->setStatus('picture pending', 'the picture needs to be checked. ');
+$picture->setStatus('picture declined', 'the picture has a spelling mistake. ');
+
+$picture->setStatus('picture pending', 'the picture needs to be checked. ');
+
+
+$currentStatus = $picture->getCurrentStatus();
+
+if($currentStatus === 'picture declined'){
+    $lastDeclineReason = $picture->findLastStatus('picture declined');
+}
+
+$lastDeclineReason->description;
+```
 
 ## Installation
 
@@ -18,73 +40,57 @@ php artisan migrate
 
 ## Usage
 
-Add  ``` use HasStatuses``` to the model you like to use statuses on.
+Add ` use HasStatuses` to the model you like to use statuses on.
 
 ```php
-<?php
+use Spatie\LaravelModelStatus\HasStatuses;
 
-namespace App;
-
-use Spatie\LaravelStatus\HasStatuses;
-
-class YourEloquentModel extends Model{
+class YourEloquentModel extends Model
+{
     use HasStatuses;
 }
 ```
 
-#### Setting
+#### Set a new status
 
-You can set a status like this:
+You can set a new status like this:
 
 ```php
-$model->setStatus('status-name', 'explenation-of-the-status');
+$model->setStatus('status-name', 'status-description');
 ```
 
-#### Getting
+#### Get the current status
 
-getting all the statuses:
+You can get all the statuses:
 
 ```php
 $allStatuses = $model->statuses;
 ```
 
-You can get the last status like this:
+You can get the current status like this:
 
 ```php
-$currentStatus = $model->getStatus();
+$currentStatus = $model->getCurrentStatus();
 ```
 
 You can get the a status by name:
 
 ```php
-$currentStatus = $model->getStatusByName("status_name");
+$lastStatus = $model->findLastStatus("status-name");
 ```
 
-#### Validation
+#### Validating a status before setting it
 
 You can set custom validation to the status:
 
 ```php
-public function isValidStatus($status_name, $status_explanation)
+public function isValidStatus($name, $description): bool
     {
         if (condition) {
             return true;
         }
         return false;
     }
-```
-
-#### Callback when a new status is set
-
-You can execute a closure every time a new status is set. 
-
-```php
-$user->setCallbackOnSetStatus(
-    function ($latest_name, $latest_explenation) 
-    {
-        // callback functionality
-    }
-);
 ```
 
 ### Testing

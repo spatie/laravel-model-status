@@ -1,7 +1,6 @@
 <?php
 
-
-namespace Spatie\LaravelStatus\Tests;
+namespace Spatie\LaravelModelStatus\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -12,6 +11,11 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        $this->setUpDatabase();
+    }
+
+    protected function setUpDatabase()
+    {
         $this->app['db']->connection()->getSchemaBuilder()->create('test_models', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');

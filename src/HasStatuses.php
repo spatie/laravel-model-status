@@ -1,60 +1,49 @@
 <?php
 
+namespace Spatie\LaravelModelStatus;
 
-namespace Spatie\LaravelStatus;
-
-use Closure;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Spatie\LaravelStatus\Exception\StatusError;
-use Spatie\LaravelStatus\Models\Status;
+use Spatie\LaravelModelStatus\Exceptions\InvalidStatus;
+use Spatie\LaravelModelStatus\Models\Status;
 
 trait HasStatuses
 {
-    protected $callback;
-
     public function statuses(): MorphMany
     {
-        return $this->morphMany(Status::class, 'status');
+        return $this->morphMany(Status::class, 'model');
     }
 
-    public function getStatus(): Status
+    public function getCurrentStatus(): Status
     {
         return $this->statuses->last();
     }
 
-    public function setCallbackOnSetStatus(Closure $callback)
-    {
-        $this->callback = $callback;
-    }
-
     /**
-     * @param $status_name
-     * @param $status_explanation
-     * @return \Spatie\LaravelStatus\Models\Status
-     * @throws \Spatie\LaravelStatus\Exception\StatusError
+     * @param $name
+     * @param $description
+     * @return \Spatie\LaravelModelStatus\Models\Status
+     * @throws InvalidStatus
      */
-    public function setStatus($status_name, $status_explanation): Status
+    public function setStatus($name, $description): Status
     {
-        if ($this->isValidStatus($status_name, $status_explanation)) {
-            $StatusSet = $this->statuses()->create(['name'=>$status_name,'explanation'=>$status_explanation]);
+        if ($this->isValidStatus($name, $description)) {
+            $attributes = compact(['name', 'description']);
 
-            if ($this->callback) {
-                ($this->callback)($status_name, $status_explanation);
-            }
+            $statusSet = $this->statuses()->create($attributes);
 
-            return $StatusSet;
+            return $statusSet;
         }
 
-        throw new StatusError("The status is not valid, check the status or adjust the isValidStatus method. ");
+        throw new InvalidStatus();
     }
 
-    public function isValidStatus($status_name, $status_explanation): bool
+    public function isValidStatus($name, $description): bool
     {
         return true;
     }
 
-    public function findStatusByName($status_name)
+    public function findLastStatus($name): Status
     {
-        return $this->statuses()->where('name', $status_name)->first();
+        return $this->statuses()->where('name', $name)->latest()->first();
     }
 }

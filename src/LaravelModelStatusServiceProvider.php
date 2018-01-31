@@ -4,11 +4,8 @@ namespace Spatie\Skeleton;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelStatusServiceProvider extends ServiceProvider
+class LaravelModelStatusServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     */
     public function boot()
     {
         if ($this->app->runningInConsole()) {
@@ -22,13 +19,5 @@ class LaravelStatusServiceProvider extends ServiceProvider
                 => database_path('migrations/'.$timestamp.'create_statuses_table.php')
                 ], 'migrations');
         }
-    }
-
-    /**
-     * Register the application services.
-     */
-    public function register()
-    {
-        //
     }
 }

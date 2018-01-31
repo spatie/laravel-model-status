@@ -1,21 +1,16 @@
 <?php
 
+namespace Spatie\LaravelModelStatus\Tests\Models;
 
-namespace Spatie\LaravelStatus\Tests\Models;
-
-use Illuminate\Database\Eloquent\Model;
-use Spatie\LaravelStatus\HasStatuses;
-
-class ValidationTestModel extends Model
+class ValidationTestModel extends TestModel
 {
-    use HasStatuses;
-
-    protected $guarded = [];
-    public $timestamps = false;
-
-    public function isValidStatus($status_name, $status_explanation)
+    public function isValidStatus($name, $description): bool
     {
-        if (count($status_name)<=1 && count($status_explanation)<=1) {
+        if ($name === '') {
+            return false;
+        }
+
+        if ($description === '') {
             return false;
         }
 
