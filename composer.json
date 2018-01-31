@@ -5,7 +5,7 @@
         "spatie",
         "laravel-status"
     ],
-    "homepage": "https://github.com/spatie/laravel-status",
+    "homepage": "https://github.com/spatie/laravel-model-status",
     "license": "MIT",
     "authors": [
         {
@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\LaravelStatus\\": "src"
+            "Spatie\\LaravelModelStatus\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\LaravelStatus\\Tests\\": "tests"
+            "Spatie\\LaravelModelStatus\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -44,7 +44,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\LaravelStatus\\SkeletonServiceProvider"
+                "Spatie\\LaravelModelStatus\\LaravelModelStatusServiceProvider"
             ]
         }
     }

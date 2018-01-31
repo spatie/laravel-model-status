@@ -1,17 +1,16 @@
 <?php
 
-
-namespace Spatie\LaravelStatus\Models;
+namespace Spatie\LaravelModelStatus\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Status extends Model
 {
-    protected $fillable = ['name','explanation','status_id','status_type'];
-    protected $table = "statuses";
+    protected $fillable = ['name', 'description'];
+    protected $table = 'statuses';
 
-    public function status()
+    public function model(): MorphTo
     {
         return $this->morphTo();
     }
