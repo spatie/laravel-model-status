@@ -7,7 +7,7 @@ Assign statuses to Eloquent Models
 You can install the package via composer:
 
 ```bash
-composer require spatie/laravel-status
+composer require spatie/laravel-model-status
 ```
 
 Migrate the statuses table:
