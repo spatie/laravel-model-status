@@ -2,12 +2,11 @@
 
 namespace Spatie\LaravelModelStatus\Exceptions;
 
-use Exception;
-
-class InvalidStatus extends Exception
+class InvalidStatus extends \Exception
 {
-    public function __construct()
+    public static function create($name, $description)
     {
-        parent::__construct('The status is not valid, check the status or adjust the isValidStatus method. ');
+        return new static ('The status: '. $name .' with the description: '. $description .', '.
+        'check where you use the setStatus method or adjust the isValidStatus method in the model. ');
     }
 }
