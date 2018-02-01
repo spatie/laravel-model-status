@@ -22,19 +22,17 @@ trait HasStatuses
      * @param $name
      * @param $description
      * @return \Spatie\LaravelModelStatus\Models\Status
-     * @throws InvalidStatus
+     * @throws \Spatie\LaravelModelStatus\Exceptions\InvalidStatus
      */
     public function setStatus($name, $description): Status
     {
         if ($this->isValidStatus($name, $description)) {
             $attributes = compact(['name', 'description']);
 
-            $statusSet = $this->statuses()->create($attributes);
-
-            return $statusSet;
+            return $this->statuses()->create($attributes);
         }
 
-        throw new InvalidStatus();
+        throw (new InvalidStatus())->create($name, $description);
     }
 
     public function isValidStatus($name, $description): bool
