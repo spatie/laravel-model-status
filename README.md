@@ -1,4 +1,4 @@
-# Assign statuses to Eloquent Models
+# Assign statuses to Eloquent models
 
 This package can be used when a status need to be given to a specific model.
 
@@ -7,14 +7,12 @@ Once the trait is installed on the model you can do things like this:
 ```php
 $model = new Model();
 
-$model->setStatus('pending', 'needs to be checked.');
-$model->setStatus('declined', 'not valid.');
-
-$model->setStatus('pending', 'needs to be checked.');
+$model->setStatus('pending', 'extra description');
+$model->setStatus('declined', '');
 
 $currentStatus = $model->getCurrentStatus();
 
-if($currentStatus === 'pending'){
+if($currentStatus === 'pending') {
     $lastDeclined = $model->lastestStatus('declined');
 }
 
