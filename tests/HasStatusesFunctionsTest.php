@@ -99,6 +99,7 @@ class HasStatusesFunctionsTest extends TestCase
     public function it_can_handle_an_empty_latest_status()
     {
         $this->testUser->setStatus('status');
+
         $lateststatus = $this->testUser->latestStatus();
 
         $this->assertEquals('status', $lateststatus->name);

@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelModelStatus\Tests;
 
+use CreateStatusesTable;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -28,6 +29,6 @@ class TestCase extends BaseTestCase
 
         include_once __DIR__.'/../database/migrations/create_statuses_table.php';
 
-        (new \CreateStatusesTable())->up();
+        (new CreateStatusesTable())->up();
     }
 }

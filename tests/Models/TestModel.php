@@ -10,5 +10,6 @@ class TestModel extends Model
     use HasStatuses;
 
     protected $guarded = [];
+
     public $timestamps = false;
 }

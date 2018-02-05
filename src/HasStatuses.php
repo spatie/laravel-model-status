@@ -18,12 +18,6 @@ trait HasStatuses
         return $this->statuses->last();
     }
 
-    /**
-     * @param $name
-     * @param $description
-     * @return \Spatie\LaravelModelStatus\Models\Status
-     * @throws \Spatie\LaravelModelStatus\Exceptions\InvalidStatus
-     */
     public function setStatus(string $name, string $description = ''): Status
     {
         if ($this->isValidStatus($name, $description)) {
