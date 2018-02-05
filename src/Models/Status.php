@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Status extends Model
 {
-    protected $fillable = ['name', 'description'];
-    protected $table = 'statuses';
+    protected $guarded = [];
 
     public function model(): MorphTo
     {

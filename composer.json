@@ -9,7 +9,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Thomas",
+            "name": "Thomas Verhelst",
             "email": "tvke91@gmail.com",
             "homepage": "https://spatie.be",
             "role": "Developer"
@@ -19,9 +19,9 @@
         "php": "^7.1"
     },
     "require-dev": {
+        "phpunit/phpunit": "^7.0",
         "larapack/dd": "^1.0",
-        "phpunit/phpunit": "^6.0",
-        "orchestra/testbench": "~3.0"
+        "orchestra/testbench": "^3.5"
     },
     "autoload": {
         "psr-4": {
@@ -47,5 +47,7 @@
                 "Spatie\\LaravelModelStatus\\LaravelModelStatusServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable" : true
 }
