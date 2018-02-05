@@ -40,12 +40,22 @@ trait HasStatuses
         return true;
     }
 
-    public function latestStatus(string $name = ''): Status
+    /**
+     * @param array|... $names
+     * @return Status
+     */
+    public function latestStatus($names = []): Status
     {
-        if (!empty($name)) {
-            return $this->statuses()->where('name', $name)->latest()->first();
+        $names = is_array($names) ? $names : func_get_args();
+
+        if (count($names) > 0) {
+            $result = $this->statuses()->whereIn('name', $names)->latest()->orderByDesc('id')->first();
+
+            if ($result) {
+                return $result;
+            }
         }
 
-        return $this->statuses()->latest()->first();
+        return $this->statuses()->latest()->orderByDesc('id')->first();
     }
 }

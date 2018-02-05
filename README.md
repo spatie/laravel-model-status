@@ -76,6 +76,16 @@ You can get the a status by name:
 $lastStatus = $model->lastestStatus('status-name');
 ```
 
+You can get the last set status from a few of statuses:
+
+```php
+$lastStatus = $model->lastestStatus('status 1', 'status 2');
+```
+
+```php
+$lastStatus = $model->lastestStatus(['status 1', 'status 2', 'status 3']);
+```
+
 or just the last status:
 
 ```php

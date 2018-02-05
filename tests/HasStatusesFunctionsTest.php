@@ -15,7 +15,7 @@ class HasStatusesFunctionsTest extends TestCase
         parent::setUp();
 
         $this->testUser = TestModel::create([
-            'name' => 'Thomas',
+            'name' => 'Thomas'
         ]);
     }
 
@@ -65,7 +65,7 @@ class HasStatusesFunctionsTest extends TestCase
         $validationUser->setStatus('');
     }
 
-    /** @test */
+    //** @test */
     public function it_can_find_the_last_status_by_name()
     {
         $this->testUser->setStatus('pending', 'waiting on action 1');
@@ -95,7 +95,7 @@ class HasStatusesFunctionsTest extends TestCase
         $this->assertEquals('status', $status->name);
     }
 
-    /** @test */
+    //** @test */
     public function it_can_handle_an_empty_latest_status()
     {
         $this->testUser->setStatus('status');
@@ -113,13 +113,13 @@ class HasStatusesFunctionsTest extends TestCase
         $this->testUser->setStatus('status 1');
         $this->testUser->setStatus('status 2');
 
-        $latestStatusOfTwo = $this->testUser->latestStatus(['status 1','status 3']);
+        $latestStatusOfTwo = $this->testUser->latestStatus(['status 1', 'status 3']);
 
-        $this->assertEquals('status 1', $latestStatusOfTwo);
+        $this->assertEquals('status 1', $latestStatusOfTwo->name);
 
-        $latestStatusOfThree = $this->testUser->latestStatus(['status 1','status 2','status 3']);
+        $latestStatusOfThree = $this->testUser->latestStatus(['status 3', 'status 1', 'status 2']);
 
-        $this->assertEquals('status 2', $latestStatusOfThree);
+        $this->assertEquals('status 2', $latestStatusOfThree->name);
     }
 
     /** @test */
@@ -133,10 +133,24 @@ class HasStatusesFunctionsTest extends TestCase
 
         $latestStatusOfTwo = $this->testUser->latestStatus('status 1', 'status 3');
 
-        $this->assertEquals('status 1', $latestStatusOfTwo);
+        $this->assertEquals('status 1', $latestStatusOfTwo->name);
 
         $latestStatusOfThree = $this->testUser->latestStatus('status 1', 'status 2', 'status 3');
 
-        $this->assertEquals('status 2', $latestStatusOfThree);
+        $this->assertEquals('status 2', $latestStatusOfThree->name);
+    }
+
+    /** @test */
+    public function it_can_gives_the_last_status_when_given_wrong_values_in_latest_status()
+    {
+        $this->testUser->setStatus('status 1');
+        $this->testUser->setStatus('status 3');
+        $this->testUser->setStatus('status 2');
+        $this->testUser->setStatus('status 1');
+        $this->testUser->setStatus('status 2');
+
+        $latestStatus = $this->testUser->latestStatus('wrong', 'status');
+
+        $this->assertEquals('status 2', $latestStatus->name);
     }
 }
