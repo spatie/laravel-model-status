@@ -28,9 +28,9 @@ class HasStatusesFunctionsTest extends TestCase
 
         $description = $this->testUser->statuses->first()->description;
 
-        $this->assertEquals('pending',$name);
+        $this->assertEquals('pending', $name);
 
-        $this->assertEquals('waiting on action',$description);
+        $this->assertEquals('waiting on action', $description);
     }
 
     /** @test */

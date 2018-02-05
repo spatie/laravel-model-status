@@ -5,7 +5,7 @@ This package can be used when a status need to be given to a specific model.
 Once the trait is installed on the model you can do things like this:
 
 ```php
-$model = new Model()
+$model = new Model();
 
 $model->setStatus('pending', 'needs to be checked.');
 $model->setStatus('declined', 'not valid.');
