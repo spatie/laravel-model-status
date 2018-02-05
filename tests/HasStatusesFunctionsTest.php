@@ -24,10 +24,13 @@ class HasStatusesFunctionsTest extends TestCase
     {
         $this->testUser->setStatus('pending', 'waiting on action');
 
-        $this->assertDatabaseHas('statuses', [
-            'name' => 'pending',
-            'description' => 'waiting on action',
-            ]);
+        $name = $this->testUser->statuses->first()->name;
+
+        $description = $this->testUser->statuses->first()->description;
+
+        $this->assertEquals('pending',$name);
+
+        $this->assertEquals('waiting on action',$description);
     }
 
     /** @test */
