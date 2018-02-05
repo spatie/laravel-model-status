@@ -103,4 +103,40 @@ class HasStatusesFunctionsTest extends TestCase
 
         $this->assertEquals('status', $lateststatus->name);
     }
+
+    /** @test */
+    public function it_can_accept_an_array_and_give_the_latest_status()
+    {
+        $this->testUser->setStatus('status 1');
+        $this->testUser->setStatus('status 3');
+        $this->testUser->setStatus('status 2');
+        $this->testUser->setStatus('status 1');
+        $this->testUser->setStatus('status 2');
+
+        $latestStatusOfTwo = $this->testUser->latestStatus(['status 1','status 3']);
+
+        $this->assertEquals('status 1', $latestStatusOfTwo);
+
+        $latestStatusOfThree = $this->testUser->latestStatus(['status 1','status 2','status 3']);
+
+        $this->assertEquals('status 2', $latestStatusOfThree);
+    }
+
+    /** @test */
+    public function it_can_accept_a_list_of_arguments_and_give_the_latest_status()
+    {
+        $this->testUser->setStatus('status 1');
+        $this->testUser->setStatus('status 3');
+        $this->testUser->setStatus('status 2');
+        $this->testUser->setStatus('status 1');
+        $this->testUser->setStatus('status 2');
+
+        $latestStatusOfTwo = $this->testUser->latestStatus('status 1', 'status 3');
+
+        $this->assertEquals('status 1', $latestStatusOfTwo);
+
+        $latestStatusOfThree = $this->testUser->latestStatus('status 1', 'status 2', 'status 3');
+
+        $this->assertEquals('status 2', $latestStatusOfThree);
+    }
 }
