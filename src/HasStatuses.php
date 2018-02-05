@@ -13,7 +13,7 @@ trait HasStatuses
         return $this->morphMany(Status::class, 'model');
     }
 
-    public function getCurrentStatus(): Status
+    public function getCurrentStatus(): ?Status
     {
         return $this->statuses->last();
     }
@@ -24,7 +24,7 @@ trait HasStatuses
      * @return \Spatie\LaravelModelStatus\Models\Status
      * @throws \Spatie\LaravelModelStatus\Exceptions\InvalidStatus
      */
-    public function setStatus($name, $description): Status
+    public function setStatus(string $name, string $description = ''): Status
     {
         if ($this->isValidStatus($name, $description)) {
             $attributes = compact(['name', 'description']);
@@ -32,16 +32,20 @@ trait HasStatuses
             return $this->statuses()->create($attributes);
         }
 
-        throw (new InvalidStatus())->create($name, $description);
+        throw InvalidStatus::create($name, $description);
     }
 
-    public function isValidStatus($name, $description): bool
+    public function isValidStatus(string $name, string $description): bool
     {
         return true;
     }
 
-    public function findLastStatus($name): Status
+    public function latestStatus(string $name = ''): Status
     {
-        return $this->statuses()->where('name', $name)->latest()->first();
+        if (!empty($name)) {
+            return $this->statuses()->where('name', $name)->latest()->first();
+        }
+
+        return $this->statuses()->latest()->first();
     }
 }

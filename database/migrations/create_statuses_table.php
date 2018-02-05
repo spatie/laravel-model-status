@@ -17,8 +17,7 @@ class CreateStatusesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->longText('description');
-            $table->unsignedInteger('model_id');
-            $table->string('model_type');
+            $table->morphs('model');
             $table->timestamps();
         });
     }

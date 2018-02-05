@@ -1,24 +1,21 @@
 # Assign statuses to Eloquent Models
 
-This package can be used when a status need to be given to a specific model. 
+This package can be used when a status need to be given to a specific model.
 
-Once the trait is installed on the model you can do these things:
+Once the trait is installed on the model you can do things like this:
+
 ```php
-$picture = new picture()
+$model = new Model()
 
-$picture->setStatus('picture pending', 'picture needs to be checked. ');
-$picture->setStatus('picture declined', 'the picture is completely red. ');
+$model->setStatus('pending', 'needs to be checked.');
+$model->setStatus('declined', 'not valid.');
 
-$picture->setStatus('picture pending', 'the picture needs to be checked. ');
-$picture->setStatus('picture declined', 'the picture has a spelling mistake. ');
+$model->setStatus('pending', 'needs to be checked.');
 
-$picture->setStatus('picture pending', 'the picture needs to be checked. ');
+$currentStatus = $model->getCurrentStatus();
 
-
-$currentStatus = $picture->getCurrentStatus();
-
-if($currentStatus === 'picture declined'){
-    $lastDeclineReason = $picture->findLastStatus('picture declined');
+if($currentStatus === 'pending'){
+    $lastDeclined = $model->lastestStatus('declined');
 }
 
 $lastDeclineReason->description;
@@ -76,7 +73,13 @@ $currentStatus = $model->getCurrentStatus();
 You can get the a status by name:
 
 ```php
-$lastStatus = $model->findLastStatus("status-name");
+$lastStatus = $model->lastestStatus('status-name');
+```
+
+or just the last status:
+
+```php
+$lastStatus = $model->lastestStatus();
 ```
 
 #### Validating a status before setting it
@@ -84,7 +87,7 @@ $lastStatus = $model->findLastStatus("status-name");
 You can set custom validation to the status:
 
 ```php
-public function isValidStatus($name, $description): bool
+public function isValidStatus(string $name, string $description): bool
     {
         if (condition) {
             return true;
@@ -125,14 +128,14 @@ We publish all received postcards [on our company website](https://spatie.be/en/
 
 ## Credits
 
-- [Thomas](https://github.com/TVke)
+- [Thomas Verhelst](https://github.com/TVke)
 - [All Contributors](../../contributors)
 
 ## Support us
 
 Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
 
-Does your business depend on our contributions? Reach out and support us on [Patreon](https://www.patreon.com/spatie). 
+Does your business depend on our contributions? Reach out and support us on [Patreon](https://www.patreon.com/spatie).
 All pledges will be dedicated to allocating workforce on maintenance and new awesome stuff.
 
 ## License
