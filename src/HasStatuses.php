@@ -36,6 +36,7 @@ trait HasStatuses
 
     /**
      * @param string|array $name
+     *
      * @return Status
      */
     public function latestStatus($name = []): Status
