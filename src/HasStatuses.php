@@ -24,7 +24,7 @@ trait HasStatuses
             throw InvalidStatus::create($name, $description);
         }
 
-        $attributes = compact(['name', 'description']);
+        $attributes = compact('name', 'description');
 
         $this->statuses()->create($attributes);
 
