@@ -36,23 +36,12 @@ trait HasStatuses
         return true;
     }
 
-    /**
-     * @param string|array $name
-     *
-     * @return \Spatie\LaravelModelStatus\Models\Status|null
-     */
-    public function latestStatus($name = []): ?Status
+    public function latestStatus(string ...$name): ?Status
     {
-        $name = is_array($name) ? $name : func_get_args();
-
-        if (count($name) > 0) {
-            $result = $this->statuses()->whereIn('name', $name)->latest()->orderByDesc('id')->first();
-
-            if ($result) {
-                return $result;
-            }
+        if (empty($name)) {
+            return $this->statuses()->latest()->orderByDesc('id')->first();
         }
 
-        return $this->statuses()->latest()->orderByDesc('id')->first();
+        return $this->statuses()->whereIn('name', $name)->latest()->orderByDesc('id')->first();
     }
 }
