@@ -124,7 +124,7 @@ Migrate after editing with:
 php artisan migrate
 ```
 
-In the published config-file called `model-status.php` you can change the statuses_model.
+In the published config-file called `model-status.php` you can change the status_model.
 Don't forget to extend the new model with `\Spatie\LaravelModelStatus\Models\Status` otherwise it will not work.
 
 ### Testing

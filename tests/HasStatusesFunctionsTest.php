@@ -130,9 +130,9 @@ class HasStatusesFunctionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_handle_a_different_statuses_model()
+    public function it_can_handle_a_different_status_model()
     {
-        $this->app['config']->set('model-status.statuses_model',
+        $this->app['config']->set('model-status.status_model',
             \Spatie\LaravelModelStatus\Tests\Models\StatusTestModel::class);
 
         $this->testUser->setStatus('pending', 'waiting on action');
