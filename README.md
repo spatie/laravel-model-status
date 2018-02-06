@@ -98,12 +98,12 @@ You can set custom validation to the status:
 
 ```php
 public function isValidStatus(string $name, string $description): bool
-    {
-        if (condition) {
-            return true;
-        }
-        return false;
+{
+    if (condition) {
+        return true;
     }
+    return false;
+}
 ```
 
 ### Testing
