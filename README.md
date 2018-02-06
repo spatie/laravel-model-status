@@ -109,14 +109,19 @@ public function isValidStatus(string $name, string $description): bool
 
 ### Custom model and migration
 
-First publish the config-file with:
+You can publish the config-file with:
 ```bash
-php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Spatie\LaravelModelStatus\ModelStatusServiceProvider" --tag="config"
 ```
 
-And publish the migration file with:
+You can publish the migration with:
 ```bash
-php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Spatie\LaravelModelStatus\ModelStatusServiceProvider" --tag="migrations"
+```
+
+Migrate after editing with: 
+```bash
+php artisan migrate
 ```
 
 In the published config-file called `model-status.php` you can change the statuses_model.

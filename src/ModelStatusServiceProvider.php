@@ -1,10 +1,10 @@
 <?php
 
-namespace Spatie\Skeleton;
+namespace Spatie\LaravelModelStatus;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelModelStatusServiceProvider extends ServiceProvider
+class ModelStatusServiceProvider extends ServiceProvider
 {
     public function boot()
     {
@@ -20,6 +20,10 @@ class LaravelModelStatusServiceProvider extends ServiceProvider
                     database_path('migrations/'.$timestamp.'create_statuses_table.php'),
             ], 'migrations');
         }
+
+        $this->publishes([
+            __DIR__ . '/../config/model-status.php' => config_path('model-status.php')
+        ], 'config');
     }
 
     public function register()
