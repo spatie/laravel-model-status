@@ -31,7 +31,7 @@ trait HasStatuses
         return $this;
     }
 
-    public function isValidStatus(string $name, string $description): bool
+    public function isValidStatus(string $name, string $description = ''): bool
     {
         return true;
     }
