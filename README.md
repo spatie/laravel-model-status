@@ -12,7 +12,7 @@ $model->setStatus('declined', 'not valid.');
 
 $model->setStatus('pending', 'needs to be checked.');
 
-$currentStatus = $model->getCurrentStatus();
+$currentStatus = $model->currentStatus();
 
 if($currentStatus === 'pending'){
     $lastDeclined = $model->lastestStatus('declined');
@@ -67,7 +67,7 @@ $allStatuses = $model->statuses;
 You can get the current status like this:
 
 ```php
-$currentStatus = $model->getCurrentStatus();
+$currentStatus = $model->currentStatus();
 ```
 
 You can get the a status by name:
