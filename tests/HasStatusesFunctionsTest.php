@@ -2,8 +2,8 @@
 
 namespace Spatie\LaravelModelStatus\Tests;
 
-use Spatie\LaravelModelStatus\Exceptions\InvalidStatus;
 use Spatie\LaravelModelStatus\Tests\Models\TestModel;
+use Spatie\LaravelModelStatus\Exceptions\InvalidStatus;
 use Spatie\LaravelModelStatus\Tests\Models\ValidationTestModel;
 
 class HasStatusesFunctionsTest extends TestCase
@@ -15,7 +15,7 @@ class HasStatusesFunctionsTest extends TestCase
         parent::setUp();
 
         $this->testUser = TestModel::create([
-            'name' => 'my-name'
+            'name' => 'my-name',
         ]);
     }
 
@@ -132,8 +132,10 @@ class HasStatusesFunctionsTest extends TestCase
     /** @test */
     public function it_can_handle_a_different_status_model()
     {
-        $this->app['config']->set('model-status.status_model',
-            \Spatie\LaravelModelStatus\Tests\Models\StatusTestModel::class);
+        $this->app['config']->set(
+            'model-status.status_model',
+            \Spatie\LaravelModelStatus\Tests\Models\StatusTestModel::class
+        );
 
         $this->testUser->setStatus('pending', 'waiting on action');
 

@@ -6,5 +6,4 @@ use Spatie\LaravelModelStatus\Models\Status;
 
 class StatusTestModel extends Status
 {
-
 }
