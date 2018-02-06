@@ -35,8 +35,9 @@ trait HasStatuses
     }
 
     /**
-     * @param array|... $names
-     * @return null|Status
+     * @param string|array $name
+     *
+     * @return \Spatie\LaravelModelStatus\Models\Status|null
      */
     public function latestStatus($name = []): ?Status
     {
