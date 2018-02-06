@@ -35,15 +35,15 @@ trait HasStatuses
     }
 
     /**
-     * @param array|... $names
+     * @param string|array $name
      * @return Status
      */
-    public function latestStatus($names = []): Status
+    public function latestStatus($name = []): Status
     {
-        $names = is_array($names) ? $names : func_get_args();
+        $name = is_array($name) ? $name : func_get_args();
 
-        if (count($names) > 0) {
-            $result = $this->statuses()->whereIn('name', $names)->latest()->orderByDesc('id')->first();
+        if (count($name) > 0) {
+            $result = $this->statuses()->whereIn('name', $name)->latest()->orderByDesc('id')->first();
 
             if ($result) {
                 return $result;
