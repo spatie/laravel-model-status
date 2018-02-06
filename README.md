@@ -8,7 +8,7 @@ Once the trait is installed on the model you can do things like this:
 $model = new Model();
 
 $model->setStatus('pending', 'extra description');
-$model->setStatus('declined', '');
+$model->setStatus('declined');
 
 $currentStatus = $model->currentStatus();
 
@@ -16,7 +16,7 @@ if($currentStatus === 'pending') {
     $lastDeclined = $model->latestStatus('declined');
 }
 
-$lastDeclineReason->description;
+$declinedReason = $lastDeclined->description;
 ```
 
 ## Installation
@@ -35,7 +35,7 @@ php artisan migrate
 
 ## Usage
 
-Add ` use HasStatuses` to the model you like to use statuses on.
+Add `use HasStatuses` to the model you like to use statuses on.
 
 ```php
 use Spatie\LaravelModelStatus\HasStatuses;
@@ -51,7 +51,13 @@ class YourEloquentModel extends Model
 You can set a new status like this:
 
 ```php
-$model->setStatus('status-name', 'status-description');
+$model->setStatus('status-name');
+```
+
+or with an optional description:
+
+```php
+$model->setStatus('status-name', 'optional desription');
 ```
 
 #### Get the current status
@@ -80,7 +86,7 @@ You can get the a status by name:
 $lastStatus = $model->latestStatus('status-name');
 ```
 
-You can get the last set status from a few of statuses:
+You can get the last set status from a few statuses:
 
 ```php
 $lastStatus = $model->latestStatus('status 1', 'status 2');
@@ -92,7 +98,7 @@ $lastStatus = $model->latestStatus(['status 1', 'status 2', 'status 3']);
 
 #### Validating a status before setting it
 
-You can set custom validation to the status:
+You can add custom validation when setting a status by overwriting the `isValidStatus` method:
 
 ```php
 public function isValidStatus(string $name, string $description): bool
@@ -100,6 +106,7 @@ public function isValidStatus(string $name, string $description): bool
     if (condition) {
         return true;
     }
+
     return false;
 }
 ```
