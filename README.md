@@ -5,7 +5,9 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-model-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-model-status)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-model-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-model-status)
 
-This package can be used when a status need to be given to a specific model.
+This package can be used when a status needs to be given to a specific model. 
+The statuses are all saved so the model has a history which can using `statuses`.
+Changing the status is as easy as `setStatus('pending')`.
 
 Once the trait is installed on the model you can do things like this:
 
