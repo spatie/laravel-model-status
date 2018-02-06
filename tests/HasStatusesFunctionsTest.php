@@ -40,7 +40,7 @@ class HasStatusesFunctionsTest extends TestCase
 
         $user = TestModel::find(1);
 
-        $testStatus = $user->getCurrentStatus()->name;
+        $testStatus = $user->currentStatus()->name;
 
         $this->assertEquals('pending', $testStatus);
     }
@@ -82,7 +82,7 @@ class HasStatusesFunctionsTest extends TestCase
     /** @test */
     public function it_can_handle_getting_a_status_when_there_are_none_set()
     {
-        $emptyCurrentStatus = $this->testUser->getCurrentStatus();
+        $emptyCurrentStatus = $this->testUser->currentStatus();
 
         $this->assertNull($emptyCurrentStatus);
     }
@@ -153,5 +153,11 @@ class HasStatusesFunctionsTest extends TestCase
         $latestStatus = $this->testUser->latestStatus('wrong', 'status');
 
         $this->assertEquals('status 2', $latestStatus->name);
+    }
+
+    /** @test */
+    public function it_can_handle_getting_a_status_by_latest_status_when_there_are_none_set()
+    {
+        $this->assertNull($this->testUser->latestStatus());
     }
 }

@@ -13,9 +13,9 @@ trait HasStatuses
         return $this->morphMany(Status::class, 'model');
     }
 
-    public function getCurrentStatus(): ?Status
+    public function currentStatus(): ?Status
     {
-        return $this->statuses->last();
+        return $this->latestStatus();
     }
 
     public function setStatus(string $name, string $description = ''): Status
@@ -35,11 +35,10 @@ trait HasStatuses
     }
 
     /**
-     * @param string|array $name
-     *
-     * @return Status
+     * @param array|... $names
+     * @return null|Status
      */
-    public function latestStatus($name = []): Status
+    public function latestStatus($names = []): ?Status
     {
         $name = is_array($name) ? $name : func_get_args();
 

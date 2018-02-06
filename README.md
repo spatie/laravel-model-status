@@ -10,7 +10,7 @@ $model = new Model();
 $model->setStatus('pending', 'extra description');
 $model->setStatus('declined', '');
 
-$currentStatus = $model->getCurrentStatus();
+$currentStatus = $model->currentStatus();
 
 if($currentStatus === 'pending') {
     $lastDeclined = $model->latestStatus('declined');
@@ -65,7 +65,13 @@ $allStatuses = $model->statuses;
 You can get the current status like this:
 
 ```php
-$currentStatus = $model->getCurrentStatus();
+$currentStatus = $model->currentStatus();
+```
+
+or the last status:
+
+```php
+$lastStatus = $model->lastestStatus();
 ```
 
 You can get the a status by name:
@@ -84,24 +90,18 @@ $lastStatus = $model->latestStatus('status 1', 'status 2');
 $lastStatus = $model->latestStatus(['status 1', 'status 2', 'status 3']);
 ```
 
-or just the last status:
-
-```php
-$lastStatus = $model->latestStatus();
-```
-
 #### Validating a status before setting it
 
 You can set custom validation to the status:
 
 ```php
 public function isValidStatus(string $name, string $description): bool
-    {
-        if (condition) {
-            return true;
-        }
-        return false;
+{
+    if (condition) {
+        return true;
     }
+    return false;
+}
 ```
 
 ### Testing
