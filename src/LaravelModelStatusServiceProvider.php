@@ -16,9 +16,14 @@ class LaravelModelStatusServiceProvider extends ServiceProvider
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([
-                __DIR__ . '/../database/migrations/create_statuses_table.php' =>
+                __DIR__ . '/../database/migrations/create_statuses_table.php.stub.stub' =>
                     database_path('migrations/'.$timestamp.'create_statuses_table.php'),
             ], 'migrations');
         }
+    }
+
+    public function register()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../config/model-status.php', 'model-status');
     }
 }

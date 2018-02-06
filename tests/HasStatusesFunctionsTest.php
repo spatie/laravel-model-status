@@ -40,7 +40,7 @@ class HasStatusesFunctionsTest extends TestCase
 
         $user = TestModel::find(1);
 
-        $testStatus = $user->currentStatus()->name;
+        $testStatus = $user->status()->name;
 
         $this->assertEquals('pending', $testStatus);
     }
@@ -48,9 +48,9 @@ class HasStatusesFunctionsTest extends TestCase
     /** @test */
     public function it_returns_the_created_model()
     {
-        $currentStatus = $this->testUser->setStatus('pending', 'waiting on action');
+        $this->testUser->setStatus('pending', 'waiting on action');
 
-        $this->assertEquals('pending', $currentStatus->name);
+        $this->assertEquals('pending', $this->testUser->status()->name);
     }
 
     /** @test */
@@ -65,7 +65,7 @@ class HasStatusesFunctionsTest extends TestCase
         $validationUser->setStatus('');
     }
 
-    //** @test */
+    /** @test */
     public function it_can_find_the_last_status_by_name()
     {
         $this->testUser->setStatus('pending', 'waiting on action 1');
@@ -82,7 +82,7 @@ class HasStatusesFunctionsTest extends TestCase
     /** @test */
     public function it_can_handle_getting_a_status_when_there_are_none_set()
     {
-        $emptyCurrentStatus = $this->testUser->currentStatus();
+        $emptyCurrentStatus = $this->testUser->status();
 
         $this->assertNull($emptyCurrentStatus);
     }
@@ -90,12 +90,12 @@ class HasStatusesFunctionsTest extends TestCase
     /** @test */
     public function it_can_handle_an_empty_description_when_setting_a_status()
     {
-        $status = $this->testUser->setStatus('status');
+        $this->testUser->setStatus('status');
 
-        $this->assertEquals('status', $status->name);
+        $this->assertEquals('status', $this->testUser->status()->name);
     }
 
-    //** @test */
+    /** @test */
     public function it_can_handle_an_empty_latest_status()
     {
         $this->testUser->setStatus('status');
@@ -103,24 +103,6 @@ class HasStatusesFunctionsTest extends TestCase
         $lateststatus = $this->testUser->latestStatus();
 
         $this->assertEquals('status', $lateststatus->name);
-    }
-
-    /** @test */
-    public function it_can_accept_an_array_and_give_the_latest_status()
-    {
-        $this->testUser->setStatus('status 1');
-        $this->testUser->setStatus('status 3');
-        $this->testUser->setStatus('status 2');
-        $this->testUser->setStatus('status 1');
-        $this->testUser->setStatus('status 2');
-
-        $latestStatusOfTwo = $this->testUser->latestStatus(['status 1', 'status 3']);
-
-        $this->assertEquals('status 1', $latestStatusOfTwo->name);
-
-        $latestStatusOfThree = $this->testUser->latestStatus(['status 3', 'status 1', 'status 2']);
-
-        $this->assertEquals('status 2', $latestStatusOfThree->name);
     }
 
     /** @test */
@@ -142,22 +124,25 @@ class HasStatusesFunctionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_gives_the_last_status_when_given_wrong_values_in_latest_status()
-    {
-        $this->testUser->setStatus('status 1');
-        $this->testUser->setStatus('status 3');
-        $this->testUser->setStatus('status 2');
-        $this->testUser->setStatus('status 1');
-        $this->testUser->setStatus('status 2');
-
-        $latestStatus = $this->testUser->latestStatus('wrong', 'status');
-
-        $this->assertEquals('status 2', $latestStatus->name);
-    }
-
-    /** @test */
     public function it_can_handle_getting_a_status_by_latest_status_when_there_are_none_set()
     {
         $this->assertNull($this->testUser->latestStatus());
+    }
+
+    /** @test */
+    public function it_can_handle_a_different_statuses_model()
+    {
+        $this->app['config']->set('model-status.statuses_model',
+            \Spatie\LaravelModelStatus\Tests\Models\StatusTestModel::class);
+
+        $this->testUser->setStatus('pending', 'waiting on action');
+
+        $name = $this->testUser->status()->name;
+
+        $description = $this->testUser->status()->description;
+
+        $this->assertEquals('pending', $name);
+
+        $this->assertEquals('waiting on action', $description);
     }
 }

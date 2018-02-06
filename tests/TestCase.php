@@ -29,8 +29,8 @@ class TestCase extends BaseTestCase
             $table->timestamps();
         });
 
-        include_once __DIR__.'/../database/migrations/create_statuses_table.php';
+        include_once __DIR__ . '/../database/migrations/create_statuses_table.php.stub';
 
-        (new CreateStatusesTable())->up();
+        (new \CreateStatusesTable())->up();
     }
 }

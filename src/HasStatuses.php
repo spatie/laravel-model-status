@@ -13,7 +13,7 @@ trait HasStatuses
         return $this->morphMany(Status::class, 'model');
     }
 
-    public function currentStatus(): ?Status
+    public function status(): ?Status
     {
         return $this->latestStatus();
     }

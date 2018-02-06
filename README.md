@@ -10,7 +10,7 @@ $model = new Model();
 $model->setStatus('pending', 'extra description');
 $model->setStatus('declined');
 
-$currentStatus = $model->currentStatus();
+$currentStatus = $model->status();
 
 if($currentStatus === 'pending') {
     $lastDeclined = $model->latestStatus('declined');
@@ -71,16 +71,16 @@ $allStatuses = $model->statuses;
 You can get the current status like this:
 
 ```php
-$currentStatus = $model->currentStatus();
+$currentStatus = $model->status();
 ```
 
 or the last status:
 
 ```php
-$lastStatus = $model->lastestStatus();
+$lastStatus = $model->latestStatus();
 ```
 
-You can get the a status by name:
+You can get a status by name:
 
 ```php
 $lastStatus = $model->latestStatus('status-name');
@@ -89,11 +89,7 @@ $lastStatus = $model->latestStatus('status-name');
 You can get the last set status from a few statuses:
 
 ```php
-$lastStatus = $model->latestStatus('status 1', 'status 2');
-```
-
-```php
-$lastStatus = $model->latestStatus(['status 1', 'status 2', 'status 3']);
+$lastStatus = $model->latestStatus('status 1', 'status 2', 'status 3');
 ```
 
 #### Validating a status before setting it
@@ -110,6 +106,21 @@ public function isValidStatus(string $name, string $description): bool
     return false;
 }
 ```
+
+### Custom model and migration
+
+First publish the config-file with:
+```bash
+php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="config"
+```
+
+And publish the migration file with:
+```bash
+php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="config"
+```
+
+In the published config-file called `model-status.php` you can change the statuses_model.
+Don't forget to extend the new model with `\Spatie\LaravelModelStatus\Models\Status` otherwise it will not work.
 
 ### Testing
 
