@@ -15,7 +15,7 @@ class HasStatusesFunctionsTest extends TestCase
         parent::setUp();
 
         $this->testUser = TestModel::create([
-            'name' => 'Thomas'
+            'name' => 'my-name'
         ]);
     }
 
@@ -57,7 +57,7 @@ class HasStatusesFunctionsTest extends TestCase
     public function it_checks_if_the_status_is_valid()
     {
         $validationUser = ValidationTestModel::create([
-            'name' => 'Thomas',
+            'name' => 'my-name',
         ]);
 
         $this->expectException(InvalidStatus::class);
