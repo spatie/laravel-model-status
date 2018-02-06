@@ -97,7 +97,7 @@ $lastStatus = $model->latestStatus('status 1', 'status 2', 'status 3');
 You can add custom validation when setting a status by overwriting the `isValidStatus` method:
 
 ```php
-public function isValidStatus(string $name, string $description): bool
+public function isValidStatus(string $name, string $description = ''): bool
 {
     if (condition) {
         return true;
