@@ -38,7 +38,7 @@ trait HasStatuses
      * @param array|... $names
      * @return null|Status
      */
-    public function latestStatus($names = []): ?Status
+    public function latestStatus($name = []): ?Status
     {
         $name = is_array($name) ? $name : func_get_args();
 
