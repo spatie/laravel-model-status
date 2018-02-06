@@ -6,8 +6,8 @@ use Exception;
 
 class InvalidStatus extends Exception
 {
-    public static function create(string $name)
+    public static function create(string $name): self
     {
-        return new static ("The status `{$name}` is an invalid status.");
+        return new self("The status `{$name}` is an invalid status.");
     }
 }
