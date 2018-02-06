@@ -13,7 +13,7 @@ $model->setStatus('declined', '');
 $currentStatus = $model->getCurrentStatus();
 
 if($currentStatus === 'pending') {
-    $lastDeclined = $model->lastestStatus('declined');
+    $lastDeclined = $model->latestStatus('declined');
 }
 
 $lastDeclineReason->description;
@@ -71,23 +71,23 @@ $currentStatus = $model->getCurrentStatus();
 You can get the a status by name:
 
 ```php
-$lastStatus = $model->lastestStatus('status-name');
+$lastStatus = $model->latestStatus('status-name');
 ```
 
 You can get the last set status from a few of statuses:
 
 ```php
-$lastStatus = $model->lastestStatus('status 1', 'status 2');
+$lastStatus = $model->latestStatus('status 1', 'status 2');
 ```
 
 ```php
-$lastStatus = $model->lastestStatus(['status 1', 'status 2', 'status 3']);
+$lastStatus = $model->latestStatus(['status 1', 'status 2', 'status 3']);
 ```
 
 or just the last status:
 
 ```php
-$lastStatus = $model->lastestStatus();
+$lastStatus = $model->latestStatus();
 ```
 
 #### Validating a status before setting it
