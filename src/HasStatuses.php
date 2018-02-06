@@ -2,9 +2,9 @@
 
 namespace Spatie\LaravelModelStatus;
 
+use Spatie\LaravelModelStatus\Models\Status;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\LaravelModelStatus\Exceptions\InvalidStatus;
-use Spatie\LaravelModelStatus\Models\Status;
 
 trait HasStatuses
 {
