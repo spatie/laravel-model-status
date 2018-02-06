@@ -70,6 +70,12 @@ You can get the current status like this:
 $currentStatus = $model->currentStatus();
 ```
 
+or the last status:
+
+```php
+$lastStatus = $model->lastestStatus();
+```
+
 You can get the a status by name:
 
 ```php
@@ -84,12 +90,6 @@ $lastStatus = $model->lastestStatus('status 1', 'status 2');
 
 ```php
 $lastStatus = $model->lastestStatus(['status 1', 'status 2', 'status 3']);
-```
-
-or just the last status:
-
-```php
-$lastStatus = $model->lastestStatus();
 ```
 
 #### Validating a status before setting it
