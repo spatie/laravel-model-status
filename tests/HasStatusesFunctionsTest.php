@@ -26,11 +26,11 @@ class HasStatusesFunctionsTest extends TestCase
 
         $name = $this->testUser->statuses->first()->name;
 
-        $description = $this->testUser->statuses->first()->description;
+        $reason = $this->testUser->statuses->first()->reason;
 
         $this->assertEquals('pending', $name);
 
-        $this->assertEquals('waiting on action', $description);
+        $this->assertEquals('waiting on action', $reason);
     }
 
     /** @test */
@@ -76,7 +76,7 @@ class HasStatusesFunctionsTest extends TestCase
 
         $foundStatus = $this->testUser->latestStatus('validated');
 
-        $this->assertEquals('validated action 1', $foundStatus->description);
+        $this->assertEquals('validated action 1', $foundStatus->reason);
     }
 
     /** @test */
@@ -88,7 +88,7 @@ class HasStatusesFunctionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_handle_an_empty_description_when_setting_a_status()
+    public function it_can_handle_an_empty_reason_when_setting_a_status()
     {
         $this->testUser->setStatus('status');
 
@@ -141,10 +141,10 @@ class HasStatusesFunctionsTest extends TestCase
 
         $name = $this->testUser->status()->name;
 
-        $description = $this->testUser->status()->description;
+        $reason = $this->testUser->status()->reason;
 
         $this->assertEquals('pending', $name);
 
-        $this->assertEquals('waiting on action', $description);
+        $this->assertEquals('waiting on action', $reason);
     }
 }

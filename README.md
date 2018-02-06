@@ -6,25 +6,29 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-model-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-model-status)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-model-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-model-status)
 
-This package can be used when a status needs to be given to a specific model. 
-The statuses are all saved so the model has a history which can using `statuses`.
-Changing the status is as easy as `setStatus('pending')`.
+Image you want to have an Eloquent model hold a status. It's easily solved by just adding a `status` field to that model an be done with it. But in cases you need a history of status changes or need store some extra info on why a status changed, just adding a field won't cut it. 
 
-Once the trait is installed on the model you can do things like this:
+This package provides a `HasStatuses` trait that, once installed on a model, allows you to do things like this:
+
 
 ```php
-$model = new Model();
 
-$model->setStatus('pending', 'extra description');
-$model->setStatus('declined');
+// set a status
+$model->setStatus('pending', 'needs verification');
 
-$currentStatus = $model->status();
+// set another status
+$model->setStatus('accepted');
 
-if($currentStatus === 'pending') {
-    $lastDeclined = $model->latestStatus('declined');
-}
+// specify a reason
+$model->setStatus('rejected', 'My rejection reason');
 
-$declinedReason = $lastDeclined->description;
+// get the current status
+$model->status(); // returns an instance of \Spatie\Model\Status\Models\Status
+
+// get the a previous status
+$lastestPendingStatus = $model->latestStatus('pending') 
+
+$lastestPendingStatus->reason; // returns 'needs verification'
 ```
 
 ## Installation
@@ -35,10 +39,35 @@ You can install the package via composer:
 composer require spatie/laravel-model-status
 ```
 
-Migrate the statuses table:
+You must publish the migration with:
+```bash
+php artisan vendor:publish --provider="Spatie\LaravelModelStatus\ModelStatusServiceProvider" --tag="migrations"
+```
+
+Migrate the `statuses` table:
 
 ```php
 php artisan migrate
+```
+
+Optionally you can publish the config-file with:
+```bash
+php artisan vendor:publish --provider="Spatie\LaravelModelStatus\ModelStatusServiceProvider" --tag="config"
+```
+
+This is the contents of the file which will be published at `config/models-status.php`
+
+```php
+return [
+
+    /*
+     * The class name of the status model that holds all statuses.
+     * 
+     * The model must be or extend `Spatie\LaravelModelStatus\Models\Status`.
+     */
+    'status_model' => Spatie\LaravelModelStatus\Models\Status::class,
+
+];
 ```
 
 ## Usage
@@ -65,12 +94,12 @@ $model->setStatus('status-name');
 or with an optional description:
 
 ```php
-$model->setStatus('status-name', 'optional desription');
+$model->setStatus('status-name', 'optional reason');
 ```
 
 #### Get the current status
 
-You can get all the statuses:
+You can get a collection with all the statuses:
 
 ```php
 $allStatuses = $model->statuses;
@@ -79,25 +108,28 @@ $allStatuses = $model->statuses;
 You can get the current status like this:
 
 ```php
-$currentStatus = $model->status();
+$currentStatus = $model->status(); // returns an instance of \Spatie\Model\Status\Models\Status
 ```
 
-or the last status:
+or the lastest status:
 
 ```php
-$lastStatus = $model->latestStatus();
+$lastestStatus = $model->latestStatus();
 ```
 
-You can get a status by name:
+You can also get latest status for a given name:
 
 ```php
-$lastStatus = $model->latestStatus('status-name');
+$lastestStatus = $model->latestStatus('status-name');
 ```
 
-You can get the last set status from a few statuses:
+Returns the latest status of type `status 1` or `status 2` whichever is latest.
 
 ```php
-$lastStatus = $model->latestStatus('status 1', 'status 2', 'status 3');
+$lastStatus = $model->latestStatus(['status 1', 'status 2']);
+
+// or alternatively...
+$lastStatus = $model->latestStatus('status 1', 'status 2');
 ```
 
 #### Validating a status before setting it
@@ -107,33 +139,19 @@ You can add custom validation when setting a status by overwriting the `isValidS
 ```php
 public function isValidStatus(string $name, string $description = ''): bool
 {
-    if (condition) {
-        return true;
+    if (! condition) {
+        return false;
     }
 
-    return false;
+    return true;
 }
 ```
 
+If `isValidStatus` returns `false` a `Spatie\LaravelModelStatus\Exceptions\InvalidStatus` exception will be thrown.
+
 ### Custom model and migration
 
-You can publish the config-file with:
-```bash
-php artisan vendor:publish --provider="Spatie\LaravelModelStatus\ModelStatusServiceProvider" --tag="config"
-```
-
-You can publish the migration with:
-```bash
-php artisan vendor:publish --provider="Spatie\LaravelModelStatus\ModelStatusServiceProvider" --tag="migrations"
-```
-
-Migrate after editing with: 
-```bash
-php artisan migrate
-```
-
-In the published config-file called `model-status.php` you can change the status_model.
-Don't forget to extend the new model with `\Spatie\LaravelModelStatus\Models\Status` otherwise it will not work.
+You can change the model used by specifying a class name in the `status_model` key of the `model-status` config file. 
 
 ### Testing
 
@@ -168,6 +186,7 @@ We publish all received postcards [on our company website](https://spatie.be/en/
 ## Credits
 
 - [Thomas Verhelst](https://github.com/TVke)
+- [Freek Van der Herten](https://github.com/freekmurze)
 - [All Contributors](../../contributors)
 
 ## Support us

@@ -4,13 +4,13 @@ namespace Spatie\LaravelModelStatus\Tests\Models;
 
 class ValidationTestModel extends TestModel
 {
-    public function isValidStatus(string $name, string $description = ''): bool
+    public function isValidStatus(string $name, string $reason = ''): bool
     {
         if ($name === '') {
             return false;
         }
 
-        if ($description === '') {
+        if ($reason === '') {
             return false;
         }
 

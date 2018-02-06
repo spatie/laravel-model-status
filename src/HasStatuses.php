@@ -18,20 +18,20 @@ trait HasStatuses
         return $this->latestStatus();
     }
 
-    public function setStatus(string $name, string $description = ''): self
+    public function setStatus(string $name, string $reason = ''): self
     {
-        if (! $this->isValidStatus($name, $description)) {
-            throw InvalidStatus::create($name, $description);
+        if (! $this->isValidStatus($name, $reason)) {
+            throw InvalidStatus::create($name, $reason);
         }
 
-        $attributes = compact('name', 'description');
+        $attributes = compact('name', 'reason');
 
         $this->statuses()->create($attributes);
 
         return $this;
     }
 
-    public function isValidStatus(string $name, string $description = ''): bool
+    public function isValidStatus(string $name, string $reason = ''): bool
     {
         return true;
     }
