@@ -18,12 +18,6 @@ trait HasStatuses
         return $this->latestStatus();
     }
 
-    /**
-     * @param $name
-     * @param $description
-     * @return \Spatie\LaravelModelStatus\Models\Status
-     * @throws \Spatie\LaravelModelStatus\Exceptions\InvalidStatus
-     */
     public function setStatus(string $name, string $description = ''): Status
     {
         if ($this->isValidStatus($name, $description)) {
@@ -46,10 +40,10 @@ trait HasStatuses
      */
     public function latestStatus($names = []): ?Status
     {
-        $names = is_array($names) ? $names : func_get_args();
+        $name = is_array($name) ? $name : func_get_args();
 
-        if (count($names) > 0) {
-            $result = $this->statuses()->whereIn('name', $names)->latest()->orderByDesc('id')->first();
+        if (count($name) > 0) {
+            $result = $this->statuses()->whereIn('name', $name)->latest()->orderByDesc('id')->first();
 
             if ($result) {
                 return $result;

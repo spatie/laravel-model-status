@@ -1,4 +1,4 @@
-# Assign statuses to Eloquent Models
+# Assign statuses to Eloquent models
 
 This package can be used when a status need to be given to a specific model.
 
@@ -7,15 +7,13 @@ Once the trait is installed on the model you can do things like this:
 ```php
 $model = new Model();
 
-$model->setStatus('pending', 'needs to be checked.');
-$model->setStatus('declined', 'not valid.');
-
-$model->setStatus('pending', 'needs to be checked.');
+$model->setStatus('pending', 'extra description');
+$model->setStatus('declined', '');
 
 $currentStatus = $model->currentStatus();
 
-if($currentStatus === 'pending'){
-    $lastDeclined = $model->lastestStatus('declined');
+if($currentStatus === 'pending') {
+    $lastDeclined = $model->latestStatus('declined');
 }
 
 $lastDeclineReason->description;
@@ -79,17 +77,17 @@ $lastStatus = $model->lastestStatus();
 You can get the a status by name:
 
 ```php
-$lastStatus = $model->lastestStatus('status-name');
+$lastStatus = $model->latestStatus('status-name');
 ```
 
 You can get the last set status from a few of statuses:
 
 ```php
-$lastStatus = $model->lastestStatus('status 1', 'status 2');
+$lastStatus = $model->latestStatus('status 1', 'status 2');
 ```
 
 ```php
-$lastStatus = $model->lastestStatus(['status 1', 'status 2', 'status 3']);
+$lastStatus = $model->latestStatus(['status 1', 'status 2', 'status 3']);
 ```
 
 #### Validating a status before setting it
