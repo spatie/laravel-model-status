@@ -8,6 +8,6 @@ class InvalidStatus extends Exception
 {
     public static function create(string $name)
     {
-        return new static ("The status `{$name}` is an invalid status. ");
+        return new static ("The status `{$name}` is an invalid status.");
     }
 }
