@@ -179,4 +179,17 @@ class HasStatusesFunctionsTest extends TestCase
 
         $this->testUser->setStatus('pending', 'waiting on action');
     }
+
+    /** @test */
+    public function it_can_delete_statuses_from_a_model()
+    {
+        $this->testUser->setStatus('pending');
+        $this->testUser->setStatus('rejected');
+
+        $this->assertEquals('rejected', $this->testUser->status()->name);
+
+        $this->testUser->clearStatuses();
+
+        $this->assertNull($this->testUser->status());
+    }
 }

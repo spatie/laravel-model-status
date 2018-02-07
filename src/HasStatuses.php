@@ -49,4 +49,9 @@ trait HasStatuses
 
         return $this->statuses()->whereIn('name', $names)->latest()->orderByDesc('id')->first();
     }
+
+    public function clearStatuses(): ?bool
+    {
+        return $this->statuses()->delete();
+    }
 }
