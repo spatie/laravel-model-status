@@ -125,6 +125,24 @@ class HasStatusesFunctionsTest extends TestCase
     }
 
     /** @test */
+    public function it_can_accept_an_array_and_give_the_latest_status()
+    {
+        $this->testUser->setStatus('status 1');
+        $this->testUser->setStatus('status 3');
+        $this->testUser->setStatus('status 2');
+        $this->testUser->setStatus('status 1');
+        $this->testUser->setStatus('status 2');
+
+        $latestStatusOfTwo = $this->testUser->latestStatus(['status 1', 'status 3']);
+
+        $this->assertEquals('status 1', $latestStatusOfTwo->name);
+
+        $latestStatusOfThree = $this->testUser->latestStatus(['status 1', 'status 2', 'status 3']);
+
+        $this->assertEquals('status 2', $latestStatusOfThree->name);
+    }
+
+    /** @test */
     public function it_can_handle_getting_a_status_by_latest_status_when_there_are_none_set()
     {
         $this->assertNull($this->testUser->latestStatus());
