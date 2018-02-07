@@ -23,7 +23,7 @@ $model->setStatus('rejected', 'My rejection reason');
 // get the current status
 $model->status(); // returns an instance of \Spatie\ModelStatus\Status
 
-// get the a previous status
+// get the previous status
 $lastestPendingStatus = $model->latestStatus('pending');
 
 $lastestPendingStatus->reason; // returns 'needs verification'
