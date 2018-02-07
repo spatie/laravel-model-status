@@ -24,9 +24,9 @@ $model->setStatus('rejected', 'My rejection reason');
 $model->status(); // returns an instance of \Spatie\ModelStatus\Status
 
 // get the previous status
-$lastestPendingStatus = $model->latestStatus('pending');
+$latestPendingStatus = $model->latestStatus('pending');
 
-$lastestPendingStatus->reason; // returns 'needs verification'
+$latestPendingStatus->reason; // returns 'needs verification'
 ```
 
 ## Installation
@@ -44,7 +44,7 @@ php artisan vendor:publish --provider="Spatie\ModelStatus\ModelStatusServiceProv
 
 Migrate the `statuses` table:
 
-```php
+```bash
 php artisan migrate
 ```
 
@@ -109,16 +109,16 @@ You can get the current status like this:
 $currentStatus = $model->status(); // returns an instance of \Spatie\ModelStatus\Status
 ```
 
-or the lastest status:
+or the latest status:
 
 ```php
-$lastestStatus = $model->latestStatus();
+$latestStatus = $model->latestStatus();
 ```
 
 You can also get latest status for a given name:
 
 ```php
-$lastestStatus = $model->latestStatus('status-name');
+$latestStatus = $model->latestStatus('status-name');
 ```
 
 Returns the latest status of type `status 1` or `status 2` whichever is latest.
