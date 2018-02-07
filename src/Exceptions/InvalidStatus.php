@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelModelStatus\Exceptions;
+namespace Spatie\ModelStatus\Exceptions;
 
 use Exception;
 

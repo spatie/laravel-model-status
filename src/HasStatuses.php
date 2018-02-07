@@ -1,10 +1,10 @@
 <?php
 
-namespace Spatie\LaravelModelStatus;
+namespace Spatie\ModelStatus;
 
-use Spatie\LaravelModelStatus\Models\Status;
+use Spatie\ModelStatus\Models\Status;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Spatie\LaravelModelStatus\Exceptions\InvalidStatus;
+use Spatie\ModelStatus\Exceptions\InvalidStatus;
 
 trait HasStatuses
 {

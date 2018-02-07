@@ -22,7 +22,7 @@ $model->setStatus('accepted');
 $model->setStatus('rejected', 'My rejection reason');
 
 // get the current status
-$model->status(); // returns an instance of \Spatie\Model\Status\Models\Status
+$model->status(); // returns an instance of \Spatie\ModelStatus\Models\Status
 
 // get the a previous status
 $lastestPendingStatus = $model->latestStatus('pending') 
@@ -40,7 +40,7 @@ composer require spatie/laravel-model-status
 
 You must publish the migration with:
 ```bash
-php artisan vendor:publish --provider="Spatie\LaravelModelStatus\ModelStatusServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="Spatie\ModelStatus\ModelStatusServiceProvider" --tag="migrations"
 ```
 
 Migrate the `statuses` table:
@@ -51,7 +51,7 @@ php artisan migrate
 
 Optionally you can publish the config-file with:
 ```bash
-php artisan vendor:publish --provider="Spatie\LaravelModelStatus\ModelStatusServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Spatie\ModelStatus\ModelStatusServiceProvider" --tag="config"
 ```
 
 This is the contents of the file which will be published at `config/models-status.php`
@@ -62,9 +62,9 @@ return [
     /*
      * The class name of the status model that holds all statuses.
      * 
-     * The model must be or extend `Spatie\LaravelModelStatus\Models\Status`.
+     * The model must be or extend `Spatie\ModelStatus\Models\Status`.
      */
-    'status_model' => Spatie\LaravelModelStatus\Models\Status::class,
+    'status_model' => Spatie\ModelStatus\Models\Status::class,
 
 ];
 ```
@@ -74,7 +74,7 @@ return [
 Add `use HasStatuses` to the model you like to use statuses on.
 
 ```php
-use Spatie\LaravelModelStatus\HasStatuses;
+use Spatie\ModelStatus\HasStatuses;
 
 class YourEloquentModel extends Model
 {
@@ -107,7 +107,7 @@ $allStatuses = $model->statuses;
 You can get the current status like this:
 
 ```php
-$currentStatus = $model->status(); // returns an instance of \Spatie\Model\Status\Models\Status
+$currentStatus = $model->status(); // returns an instance of \Spatie\ModelStatus\Models\Status
 ```
 
 or the lastest status:
@@ -148,7 +148,7 @@ public function isValidStatus(string $name, string $description = ''): bool
 }
 ```
 
-If `isValidStatus` returns `false` a `Spatie\LaravelModelStatus\Exceptions\InvalidStatus` exception will be thrown.
+If `isValidStatus` returns `false` a `Spatie\ModelStatus\Exceptions\InvalidStatus` exception will be thrown.
 
 ### Custom model and migration
 

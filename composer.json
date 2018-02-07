@@ -31,12 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\LaravelModelStatus\\": "src"
+            "Spatie\\ModelStatus\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\LaravelModelStatus\\Tests\\": "tests"
+            "Spatie\\ModelStatus\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -50,7 +50,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\LaravelModelStatus\\LaravelModelStatusServiceProvider"
+                "Spatie\\ModelStatus\\ModelStatusServiceProvider"
             ]
         }
     }

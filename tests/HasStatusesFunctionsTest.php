@@ -1,10 +1,10 @@
 <?php
 
-namespace Spatie\LaravelModelStatus\Tests;
+namespace Spatie\ModelStatus\Tests;
 
-use Spatie\LaravelModelStatus\Tests\Models\TestModel;
-use Spatie\LaravelModelStatus\Exceptions\InvalidStatus;
-use Spatie\LaravelModelStatus\Tests\Models\ValidationTestModel;
+use Spatie\ModelStatus\Tests\Models\TestModel;
+use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
 class HasStatusesFunctionsTest extends TestCase
 {
@@ -134,7 +134,7 @@ class HasStatusesFunctionsTest extends TestCase
     {
         $this->app['config']->set(
             'model-status.status_model',
-            \Spatie\LaravelModelStatus\Tests\Models\StatusTestModel::class
+            \Spatie\ModelStatus\Tests\Models\StatusTestModel::class
         );
 
         $this->testUser->setStatus('pending', 'waiting on action');

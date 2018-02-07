@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelModelStatus;
+namespace Spatie\ModelStatus;
 
 use Illuminate\Support\ServiceProvider;
 

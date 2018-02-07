@@ -1,8 +1,8 @@
 <?php
 
-namespace Spatie\LaravelModelStatus\Tests\Models;
+namespace Spatie\ModelStatus\Tests\Models;
 
-use Spatie\LaravelModelStatus\Models\Status;
+use Spatie\ModelStatus\Models\Status;
 
 class StatusTestModel extends Status
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelModelStatus\Tests\Models;
+namespace Spatie\ModelStatus\Tests\Models;
 
 class ValidationTestModel extends TestModel
 {

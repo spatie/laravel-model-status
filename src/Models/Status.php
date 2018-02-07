@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelModelStatus\Models;
+namespace Spatie\ModelStatus\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;

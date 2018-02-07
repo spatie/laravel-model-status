@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelModelStatus\Tests;
+namespace Spatie\ModelStatus\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;

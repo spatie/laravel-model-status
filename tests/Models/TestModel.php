@@ -1,9 +1,9 @@
 <?php
 
-namespace Spatie\LaravelModelStatus\Tests\Models;
+namespace Spatie\ModelStatus\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\LaravelModelStatus\HasStatuses;
+use Spatie\ModelStatus\HasStatuses;
 
 class TestModel extends Model
 {
