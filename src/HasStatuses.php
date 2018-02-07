@@ -2,8 +2,8 @@
 
 namespace Spatie\ModelStatus;
 
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasStatuses
 {
@@ -39,9 +39,9 @@ trait HasStatuses
      * @param string|array $names
      * @return null|Status
      */
-    public function latestStatus(... $names): ?Status
+    public function latestStatus(...$names): ?Status
     {
-        $names = is_array($names)? array_flatten($names) : func_get_args();
+        $names = is_array($names) ? array_flatten($names) : func_get_args();
 
         if (count($names) < 1) {
             return $this->statuses()->latest()->orderByDesc('id')->first();

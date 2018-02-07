@@ -2,8 +2,8 @@
 
 namespace Spatie\ModelStatus\Tests\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\HasStatuses;
+use Illuminate\Database\Eloquent\Model;
 
 class TestModel extends Model
 {
