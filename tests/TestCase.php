@@ -14,6 +14,16 @@ class TestCase extends BaseTestCase
         $this->setUpDatabase();
     }
 
+    public function getEnvironmentSetUp($app)
+    {
+        $app['config']->set(
+            'model-status.status_model',
+            \Spatie\ModelStatus\Tests\Models\StatusTestModel::class
+        );
+
+        $app['config']->set('app.key', '6rE9Nz59bGRbeMATftriyQjrpF7DcOQm');
+    }
+
     protected function setUpDatabase()
     {
         $this->app['db']->connection()->getSchemaBuilder()->create('test_models', function (Blueprint $table) {

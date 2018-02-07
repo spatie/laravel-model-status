@@ -2,7 +2,6 @@
 
 namespace Spatie\ModelStatus;
 
-use Spatie\ModelStatus\Models\Status;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 
@@ -10,7 +9,7 @@ trait HasStatuses
 {
     public function statuses(): MorphMany
     {
-        return $this->morphMany(Status::class, 'model');
+        return $this->morphMany(ModelStatusServiceProvider::getStatusModel(), 'model');
     }
 
     public function status(): ?Status

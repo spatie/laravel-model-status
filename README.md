@@ -22,7 +22,7 @@ $model->setStatus('accepted');
 $model->setStatus('rejected', 'My rejection reason');
 
 // get the current status
-$model->status(); // returns an instance of \Spatie\ModelStatus\Models\Status
+$model->status(); // returns an instance of \Spatie\ModelStatus\Status
 
 // get the a previous status
 $lastestPendingStatus = $model->latestStatus('pending') 
@@ -62,9 +62,9 @@ return [
     /*
      * The class name of the status model that holds all statuses.
      * 
-     * The model must be or extend `Spatie\ModelStatus\Models\Status`.
+     * The model must be or extend `Spatie\ModelStatus\Status`.
      */
-    'status_model' => Spatie\ModelStatus\Models\Status::class,
+    'status_model' => Spatie\ModelStatus\Status::class,
 
 ];
 ```
@@ -107,7 +107,7 @@ $allStatuses = $model->statuses;
 You can get the current status like this:
 
 ```php
-$currentStatus = $model->status(); // returns an instance of \Spatie\ModelStatus\Models\Status
+$currentStatus = $model->status(); // returns an instance of \Spatie\ModelStatus\Status
 ```
 
 or the lastest status:

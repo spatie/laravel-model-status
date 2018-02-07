@@ -2,6 +2,7 @@
 
 namespace Spatie\ModelStatus\Tests;
 
+use Spatie\ModelStatus\Exceptions\InvalidStatusModel;
 use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
@@ -146,5 +147,18 @@ class HasStatusesFunctionsTest extends TestCase
         $this->assertEquals('pending', $name);
 
         $this->assertEquals('waiting on action', $reason);
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_the_status_model_does_not_extend_the_status_model()
+    {
+        $this->app['config']->set(
+            'model-status.status_model',
+            \Spatie\ModelStatus\Tests\Models\InvalidExtendTestModel::class
+        );
+
+        $this->expectException(InvalidStatusModel::class);
+
+        $this->testUser->setStatus('pending', 'waiting on action');
     }
 }

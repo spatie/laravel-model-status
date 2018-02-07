@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\ModelStatus\Models;
+namespace Spatie\ModelStatus;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Status extends Model
 {
     protected $guarded = [];
+
+    protected $table = 'statuses';
 
     public function model(): MorphTo
     {

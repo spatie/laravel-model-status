@@ -2,7 +2,9 @@
 
 namespace Spatie\ModelStatus;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Spatie\ModelStatus\Exceptions\InvalidStatusModel;
 
 class ModelStatusServiceProvider extends ServiceProvider
 {
@@ -28,5 +30,16 @@ class ModelStatusServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/model-status.php', 'model-status');
+    }
+
+    public static function getStatusModel(): string
+    {
+        $statusModel = config('model-status.status_model') ?? Status::class;
+
+        if (!is_a($statusModel, Status::class, true)) {
+            throw InvalidStatusModel::create($statusModel);
+        }
+
+        return $statusModel;
     }
 }

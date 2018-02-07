@@ -2,7 +2,7 @@
 
 namespace Spatie\ModelStatus\Tests\Models;
 
-use Spatie\ModelStatus\Models\Status;
+use Spatie\ModelStatus\Status;
 
 class StatusTestModel extends Status
 {
