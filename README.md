@@ -6,7 +6,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-model-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-model-status)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-model-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-model-status)
 
-Image you want to have an Eloquent model hold a status. It's easily solved by just adding a `status` field to that model an be done with it. But in cases you need a history of status changes or need to store some extra info on why a status changed, just adding a field won't cut it. 
+Image you want to have an Eloquent model hold a status. It's easily solved by just adding a `status` field to that model and be done with it. But in case you need a history of status changes or need to store some extra info on why a status changed, just adding a single field won't cut it. 
 
 This package provides a `HasStatuses` trait that, once installed on a model, allows you to do things like this:
 
