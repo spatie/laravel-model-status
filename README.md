@@ -12,7 +12,6 @@ This package provides a `HasStatuses` trait that, once installed on a model, all
 
 
 ```php
-
 // set a status
 $model->setStatus('pending', 'needs verification');
 
@@ -139,7 +138,9 @@ You can add custom validation when setting a status by overwriting the `isValidS
 ```php
 public function isValidStatus(string $name, string $description = ''): bool
 {
-    if (! condition) {
+    ...
+
+    if (! $condition) {
         return false;
     }
 
