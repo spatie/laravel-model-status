@@ -6,6 +6,7 @@ use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Exceptions\InvalidStatusModel;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
+use DB;
 
 class HasStatusesFunctionsTest extends TestCase
 {
@@ -200,7 +201,12 @@ class HasStatusesFunctionsTest extends TestCase
 
         $testUser2->setStatus('status-C');
 
-        $this->assertEquals('fourth-user', TestModel::hasStatus('status-B')->first()->name);
+        $testUser2->setStatus('status-B');
+
+        $modelsWithStatus = TestModel::hasStatus('status-B')->get()->pluck('name');
+        $this->assertContains('fourth-user', $modelsWithStatus);
+        $this->assertContains('second-user', $modelsWithStatus);
+        $this->assertCount(2, $modelsWithStatus);
     }
 
     /** @test */

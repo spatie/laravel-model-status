@@ -3,8 +3,7 @@
 namespace Spatie\ModelStatus;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use DB;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -19,7 +18,6 @@ trait HasStatuses
     {
         return $this->latestStatus();
     }
-
 
     public function setStatus(string $name, string $reason = ''): self
     {
@@ -54,52 +52,19 @@ trait HasStatuses
         return $this->statuses()->whereIn('name', $names)->orderByDesc('id')->first();
     }
 
-//    public function scopeHasStatus(Builder $query, string $status): Builder
-//    {
-//        $modelType = str_replace("\\", '\\\\', get_class($this));
-//
-//        $tableName = $this->getTable();
-//
-//        $statusTable = 'statuses';
-//
-//
-//        $query->select($tableName.'.*');
-//
-//        $subSelect = DB::table($statusTable)
-//            ->select($statusTable.'.name')
-//            ->whereRaw($statusTable.'.model_id = '.$tableName.'.id')
-//            ->whereRaw($statusTable.".model_type = '".$modelType."'")
-//            ->orderByDesc($statusTable.'.id')
-//            ->take(1);
-//
-//        $query->selectSub($subSelect, 'current_status');
-//
-//        $query->groupBy($tableName.'.id');
-//
-//        $query->having('current_status', $status);
-//
-//        dump($query);
-//
-//        return $query;
-//    }
-
-    public function scopeHasStatus($builder, string $name)
+    public function scopeHasStatus(Builder $builder, string $name)
     {
-        return $builder->whereIn('id', function ($query) use ($name) {
-            $query
-                ->select('model_id')
-                ->from('statuses')
-                ->where('model_type', static::class)
-                ->where('name', $name)
-                ->whereIn('id', function ($query) use ($name) {
-                    $query
-                        ->select('model_id')
-                        ->from('statuses')
-                        ->where('model_type', static::class)
-                        ->latest()
-                        ->groupBy('model_id');
-                });
-        });
+        return $builder
+            ->whereHas('statuses', function (Builder $query) use ($name) {
+                $query
+                    ->where('name', $name)
+                    ->whereIn('id', function ($query) use ($name) {
+                        $query
+                            ->select(DB::raw('max(id)'))
+                            ->from('statuses')
+                            ->groupBy('model_id');
+                    });
+            });
     }
 
     public function getStatusAttribute(): string
