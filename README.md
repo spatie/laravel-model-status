@@ -102,9 +102,9 @@ You can get the current status of model:
 ```php
 $model->status; // returns a string with the name of the latest status
 
-$model->status() // returns the latest instance of `Spatie\ModelStatus\Status`
+$model->status(); // returns the latest instance of `Spatie\ModelStatus\Status`
 
-$model->latestStatus() // equivalent to `$model->status()`
+$model->latestStatus(); // equivalent to `$model->status()`
 ```
 
 You can also get latest status of a given name:
