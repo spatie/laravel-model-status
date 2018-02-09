@@ -70,7 +70,7 @@ return [
 
 ## Usage
 
-Add `use HasStatuses` to the model you like to use statuses on.
+Add the `HasStatuses` trait to a model you like to use statuses on.
 
 ```php
 use Spatie\ModelStatus\HasStatuses;
