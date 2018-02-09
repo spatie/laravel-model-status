@@ -15,4 +15,9 @@ class Status extends Model
     {
         return $this->morphTo();
     }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }

@@ -179,4 +179,48 @@ class HasStatusesFunctionsTest extends TestCase
 
         $this->testUser->setStatus('pending', 'waiting on action');
     }
+
+    /** @test */
+    public function it_can_give_back_all_the_models_that_have_as_a_last_status_the_given_name()
+    {
+        $testUser2 = TestModel::create(['name' => 'second-user']);
+        $testUser3 = TestModel::create(['name' => 'third-user']);
+        $testUser4 = TestModel::create(['name' => 'fourth-user']);
+        $testUser5 = TestModel::create(['name' => 'last-user']);
+
+        $this->testUser->setStatus('status-A');
+
+        $testUser2->setStatus('status-B');
+
+        $testUser3->setStatus('status-C');
+
+        $testUser4->setStatus('status-B');
+
+        $testUser5->setStatus('status-A');
+
+        $testUser2->setStatus('status-C');
+
+        $testUser2->setStatus('status-B');
+
+        $modelsWithStatus = TestModel::hasStatus('status-B')->get()->pluck('name');
+
+        $this->assertContains('fourth-user', $modelsWithStatus);
+
+        $this->assertContains('second-user', $modelsWithStatus);
+
+        $this->assertCount(2, $modelsWithStatus);
+    }
+
+    /** @test */
+    public function it_can_return_a_string_when_calling_the_attribute()
+    {
+        $this->testUser->setStatus('free');
+        $this->testUser->setStatus('pending', 'waiting for a change');
+
+        $this->assertEquals('pending', $this->testUser->status);
+
+        $this->assertEquals('pending', $this->testUser->status()->name);
+
+        $this->assertEquals('waiting for a change', $this->testUser->status()->reason);
+    }
 }
