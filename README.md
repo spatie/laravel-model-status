@@ -103,6 +103,12 @@ You can get a collection with all the statuses:
 $allStatuses = $model->statuses;
 ```
 
+or get all the models that have a specific status as there current status:
+
+```php
+$allPendingModels = Model::hasStatus('pending');
+```
+
 You can get the current status like this:
 
 ```php
@@ -113,6 +119,12 @@ or the latest status:
 
 ```php
 $latestStatus = $model->latestStatus();
+```
+
+or just the name of the latest status:
+
+```php
+$currentStatus = $model->status;
 ```
 
 You can also get latest status for a given name:

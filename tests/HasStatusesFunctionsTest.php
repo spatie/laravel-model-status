@@ -204,8 +204,11 @@ class HasStatusesFunctionsTest extends TestCase
         $testUser2->setStatus('status-B');
 
         $modelsWithStatus = TestModel::hasStatus('status-B')->get()->pluck('name');
+
         $this->assertContains('fourth-user', $modelsWithStatus);
+
         $this->assertContains('second-user', $modelsWithStatus);
+
         $this->assertCount(2, $modelsWithStatus);
     }
 
