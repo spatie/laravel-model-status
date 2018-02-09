@@ -5,7 +5,7 @@ All notable changes to `laravel-model-status` will be documented in this file
 ## 1.0.5 - 2018-02-09
 
 - add return string when called as an attribute
-- add hasStatus('status') to find the models with the given status as there current status
+- add `hasStatus('status')` to find the models with the given status as there current status
 
 ## 1.0.4 - 2018-02-08
 
