@@ -89,7 +89,7 @@ You can set a new status like this:
 $model->setStatus('status-name');
 ```
 
-or with an optional description:
+A reason for the status change can be passed as a second argument.
 
 ```php
 $model->setStatus('status-name', 'optional reason');
