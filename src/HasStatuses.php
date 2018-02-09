@@ -22,7 +22,7 @@ trait HasStatuses
 
     public function setStatus(string $name, string $reason = ''): self
     {
-        if (!$this->isValidStatus($name, $reason)) {
+        if (! $this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name, $reason);
         }
 

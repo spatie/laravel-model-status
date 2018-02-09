@@ -2,12 +2,10 @@
 
 namespace Spatie\ModelStatus\Tests;
 
-use Spatie\ModelStatus\Tests\Models\InvalidStatusModel;
-use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
 use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
-use Spatie\ModelStatus\Exceptions\InvalidStatusModel as InvalidStatusModelException;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
+use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
 
 class HasStatusesTest extends TestCase
 {
