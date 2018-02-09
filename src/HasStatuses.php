@@ -2,8 +2,8 @@
 
 namespace Spatie\ModelStatus;
 
-use Illuminate\Database\Eloquent\Builder;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -21,7 +21,7 @@ trait HasStatuses
 
     public function setStatus(string $name, string $reason = ''): self
     {
-        if (!$this->isValidStatus($name, $reason)) {
+        if (! $this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name, $reason);
         }
 

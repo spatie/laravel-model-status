@@ -6,7 +6,6 @@ use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Exceptions\InvalidStatusModel;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
-use DB;
 
 class HasStatusesFunctionsTest extends TestCase
 {
