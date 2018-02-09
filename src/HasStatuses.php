@@ -6,12 +6,13 @@ use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 trait HasStatuses
 {
     public function statuses(): MorphMany
     {
-        return $this->morphMany(ModelStatusServiceProvider::getStatusModel(), 'model')->latest();
+        return $this->morphMany($this->getStatusModelClassName(), 'model')->latest();
     }
 
     public function status(): ?Status
@@ -21,13 +22,14 @@ trait HasStatuses
 
     public function setStatus(string $name, string $reason = ''): self
     {
-        if (! $this->isValidStatus($name, $reason)) {
+        if (!$this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name, $reason);
         }
 
-        $attributes = compact('name', 'reason');
-
-        $this->statuses()->create($attributes);
+        $this->statuses()->create([
+            'name' => $name,
+            'reason' => $reason,
+        ]);
 
         return $this;
     }
@@ -39,6 +41,7 @@ trait HasStatuses
 
     /**
      * @param string|array $names
+     *
      * @return null|Status
      */
     public function latestStatus(...$names): ?Status
@@ -52,16 +55,17 @@ trait HasStatuses
         return $this->statuses()->whereIn('name', $names)->orderByDesc('id')->first();
     }
 
-    public function scopeHasStatus(Builder $builder, string $name)
+    public function scopeCurrentStatus(Builder $builder, string $name)
     {
-        return $builder
+        $builder
             ->whereHas('statuses', function (Builder $query) use ($name) {
                 $query
                     ->where('name', $name)
-                    ->whereIn('id', function ($query) use ($name) {
+                    ->whereIn('id', function (QueryBuilder $query) use ($name) {
                         $query
                             ->select(DB::raw('max(id)'))
-                            ->from('statuses')
+                            ->from($this->getStatusTableName())
+                            ->where('model_type', static::class)
                             ->groupBy('model_id');
                     });
             });
@@ -69,6 +73,18 @@ trait HasStatuses
 
     public function getStatusAttribute(): string
     {
-        return $this->latestStatus();
+        return (string) $this->latestStatus();
+    }
+
+    protected function getStatusTableName(): string
+    {
+        $modelClass = $this->getStatusModelClassName();
+
+        return (new $modelClass)->getTable();
+    }
+
+    protected function getStatusModelClassName(): string
+    {
+        return config('model-status.status_model');
     }
 }

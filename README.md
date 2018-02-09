@@ -95,7 +95,7 @@ or with an optional description:
 $model->setStatus('status-name', 'optional reason');
 ```
 
-#### Get the current status
+#### Retrieving statuses
 
 You can get a collection with all the statuses:
 

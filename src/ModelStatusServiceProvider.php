@@ -24,6 +24,8 @@ class ModelStatusServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/model-status.php' => config_path('model-status.php'),
         ], 'config');
+
+        $this->guardAgainstInvalidStatusModel();
     }
 
     public function register()
@@ -31,14 +33,12 @@ class ModelStatusServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/model-status.php', 'model-status');
     }
 
-    public static function getStatusModel(): string
+    public function guardAgainstInvalidStatusModel()
     {
-        $statusModel = config('model-status.status_model') ?? Status::class;
+        $modelClassName = config('model-status.status_model');
 
-        if (! is_a($statusModel, Status::class, true)) {
-            throw InvalidStatusModel::create($statusModel);
+        if (! is_a($modelClassName, Status::class, true)) {
+            throw InvalidStatusModel::create($modelClassName);
         }
-
-        return $statusModel;
     }
 }
