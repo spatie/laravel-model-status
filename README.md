@@ -81,7 +81,7 @@ class YourEloquentModel extends Model
 }
 ```
 
-#### Set a new status
+### Set a new status
 
 You can set a new status like this:
 
@@ -95,51 +95,46 @@ or with an optional description:
 $model->setStatus('status-name', 'optional reason');
 ```
 
-#### Retrieving statuses
+### Retrieving statuses
 
-You can get a collection with all the statuses:
-
-```php
-$allStatuses = $model->statuses;
-```
-
-or get all the models that have a specific status as there current status:
+You can get the current status of model:
 
 ```php
-$allPendingModels = Model::hasStatus('pending');
+$model->status; // returns a string with the name of the latest status
+
+$model->status() // returns the latest instance of `Spatie\ModelStatus\Status`
+
+$model->latestStatus() // equivalent to `$model->status()`
 ```
 
-You can get the current status like this:
+You can also get latest status of a given name:
 
 ```php
-$currentStatus = $model->status(); // returns an instance of \Spatie\ModelStatus\Status
+$model->latestStatus('pending'); // returns an instance of `Spatie\ModelStatus\Status` that has the name `pending`
 ```
 
-or the latest status:
-
-```php
-$latestStatus = $model->latestStatus();
-```
-
-or just the name of the latest status:
-
-```php
-$currentStatus = $model->status;
-```
-
-You can also get latest status for a given name:
-
-```php
-$latestStatus = $model->latestStatus('status-name');
-```
-
-Returns the latest status of type `status 1` or `status 2` whichever is latest.
+The following examples will return statusses of type `status 1` or `status 2`, whichever is latest.
 
 ```php
 $lastStatus = $model->latestStatus(['status 1', 'status 2']);
 
 // or alternatively...
 $lastStatus = $model->latestStatus('status 1', 'status 2');
+```
+
+All associated statuses of a model can be retrieved like this:
+
+```php
+$allStatuses = $model->statuses;
+```
+
+
+### Retrieving models with a given latest state
+
+The `currentStatus` scope will return models that have a status with the give name.
+
+```php
+$allPendingModels = Model::currentStatus('pending');
 ```
 
 #### Validating a status before setting it
