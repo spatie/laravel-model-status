@@ -3,7 +3,6 @@
 namespace Spatie\ModelStatus\Exceptions;
 
 use Exception;
-use Illuminate\Database\Eloquent\Model;
 
 class InvalidStatusModel extends Exception
 {
