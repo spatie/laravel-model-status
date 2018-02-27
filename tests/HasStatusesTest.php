@@ -43,7 +43,7 @@ class HasStatusesTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_setting_an_invalid_model()
+    public function it_throws_an_exception_when_setting_an_invalid_status()
     {
         $validationUser = ValidationTestModel::create([
             'name' => 'name',
