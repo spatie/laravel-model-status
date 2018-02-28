@@ -137,6 +137,14 @@ The `currentStatus` scope will return models that have a status with the give na
 $allPendingModels = Model::currentStatus('pending');
 ```
 
+### Retrieving models that do not have a status
+
+The `withoutStatus` scope will return models that do not have a status assigned to them.
+
+```php
+$withoutStatusModels = Model::withoutStatus();
+```
+
 #### Validating a status before setting it
 
 You can add custom validation when setting a status by overwriting the `isValidStatus` method:
