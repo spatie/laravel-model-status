@@ -71,6 +71,11 @@ trait HasStatuses
             });
     }
 
+    public function scopeWithoutStatus(Builder $builder)
+    {
+        $builder->whereDoesntHave('statuses');
+    }
+
     public function getStatusAttribute(): string
     {
         return (string) $this->latestStatus();

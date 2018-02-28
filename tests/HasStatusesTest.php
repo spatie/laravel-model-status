@@ -180,4 +180,20 @@ class HasStatusesTest extends TestCase
 
         $this->assertEquals('waiting for a change', $this->testModel->status()->reason);
     }
+
+    /** @test */
+    public function it_can_return_all_models_without_a_status()
+    {
+        $model1 = TestModel::create(['name' => 'model1']);
+        $model2 = TestModel::create(['name' => 'model2']);
+
+        $model1->setStatus('pending');
+        $model2->setStatus('pending');
+
+        $this->assertCount(3, TestModel::all());
+
+        $this->assertCount(2, TestModel::currentStatus('pending')->get());
+
+        $this->assertCount(1, TestModel::withoutStatus()->get());
+    }
 }
