@@ -180,4 +180,25 @@ class HasStatusesTest extends TestCase
 
         $this->assertEquals('waiting for a change', $this->testModel->status()->reason);
     }
+
+    /** @test */
+    public function it_can_find_all_models_that_do_not_have_a_status_with_the_given_name()
+    {
+        $model1 = TestModel::create(['name' => 'model1']);
+        $model2 = TestModel::create(['name' => 'model2']);
+        $model3 = TestModel::create(['name' => 'model3']);
+        $model4 = TestModel::create(['name' => 'model4']);
+
+        $this->testModel->setStatus('initiated');
+        $model1->setStatus('initiated');
+
+        $model2->setStatus('pending');
+        $model3->setStatus('ready');
+        $model4->setStatus('complete');
+
+        $this->assertCount(3, TestModel::notCurrentStatus('initiated')->get());
+        $this->assertCount(2, TestModel::notCurrentStatus('initiated', 'pending')->get());
+        $this->assertCount(2, TestModel::notCurrentStatus(['initiated', 'pending'])->get());
+
+    }
 }

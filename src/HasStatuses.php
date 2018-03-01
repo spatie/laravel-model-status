@@ -71,6 +71,30 @@ trait HasStatuses
             });
     }
 
+    /**
+     * @param string|array $names
+     *
+     * @return void
+     **/
+    public function scopeNotCurrentStatus(Builder $builder, ...$names)
+    {
+        $names = is_array($names) ? array_flatten($names) : func_get_args();
+
+        $builder
+            ->whereHas('statuses', function (Builder $query) use ($names) {
+                $query
+                    ->whereNotIn('name', $names)
+                    ->whereIn('id', function (QueryBuilder $query) use ($names) {
+                        $query
+                            ->select(DB::raw('max(id)'))
+                            ->from($this->getStatusTableName())
+                            ->where('model_type', static::class)
+                            ->groupBy('model_id');
+                    });
+
+            });
+    }
+
     public function getStatusAttribute(): string
     {
         return (string) $this->latestStatus();
