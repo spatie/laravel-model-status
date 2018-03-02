@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.1.0 - 2018-03-02
+
+- add `notCurrentStatus` scope
+
 ## 1.0.6 - 2018-02-09
 
 - add `__toString` to `Spatie\ModelStatus\Status`
