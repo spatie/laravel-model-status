@@ -131,10 +131,26 @@ $allStatuses = $model->statuses;
 
 ### Retrieving models with a given latest state
 
-The `currentStatus` scope will return models that have a status with the give name.
+The `currentStatus` scope will return models that have a status with the given name.
 
 ```php
 $allPendingModels = Model::currentStatus('pending');
+```
+
+### Retrieving models without a given state
+
+The `otherCurrentStatus` scope will return all models that do not have a status with the given name, including any model that does not have any statuses associated with them.
+
+```php
+$allNonPendingModels = Model::otherCurrentStatus('pending');
+```
+
+You can also provide an array of status names to exclude from the query.
+```php
+$allNonInitiatedOrPendingModels = Model::otherCurrentStatus(['initiated', 'pending']);
+
+// or alternatively...
+$allNonInitiatedOrPendingModels = Model::otherCurrentStatus('initiated', 'pending');
 ```
 
 #### Validating a status before setting it
