@@ -49,10 +49,10 @@ trait HasStatuses
         $names = is_array($names) ? array_flatten($names) : func_get_args();
 
         if (count($names) < 1) {
-            return $this->statuses()->orderByDesc('id')->first();
+            return $this->statuses()->first();
         }
 
-        return $this->statuses()->whereIn('name', $names)->orderByDesc('id')->first();
+        return $this->statuses()->whereIn('name', $names)->first();
     }
 
     public function scopeCurrentStatus(Builder $builder, string $name)
