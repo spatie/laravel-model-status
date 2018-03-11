@@ -99,6 +99,16 @@ trait HasStatuses
         return (string) $this->latestStatus();
     }
 
+    public function forceSetStatus(string $name, string $reason = ''): self
+    {
+        $this->statuses()->create([
+            'name' => $name,
+            'reason' => $reason,
+        ]);
+
+        return $this;
+    }
+
     protected function getStatusTableName(): string
     {
         $modelClass = $this->getStatusModelClassName();

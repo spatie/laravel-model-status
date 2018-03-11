@@ -51,7 +51,21 @@ class HasStatusesTest extends TestCase
 
         $this->expectException(InvalidStatus::class);
 
-        $validationUser->setStatus('');
+        $validationUser->setStatus('InvalidStatus');
+    }
+
+    /** @test */
+    public function it_can_force_set_an_invalid_status()
+    {
+        $validationUser = ValidationTestModel::create([
+            'name' => 'name',
+        ]);
+
+        $validationUser->forceSetStatus('InvalidStatus');
+
+        $name = $validationUser->statuses->first()->name;
+
+        $this->assertEquals('InvalidStatus', $name);
     }
 
     /** @test */

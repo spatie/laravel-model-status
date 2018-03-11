@@ -6,11 +6,11 @@ class ValidationTestModel extends TestModel
 {
     public function isValidStatus(string $name, string $reason = ''): bool
     {
-        if ($name === '') {
+        if ($name === 'InvalidStatus') {
             return false;
         }
 
-        if ($reason === '') {
+        if ($reason === 'InvalidReason') {
             return false;
         }
 
