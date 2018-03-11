@@ -57,10 +57,18 @@ class HasStatusesTest extends TestCase
     /** @test */
     public function it_can_find_the_last_status_by_name()
     {
-        $this->testModel
-            ->setStatus('status a', 'reason 1')
-            ->setStatus('status b', 'reason 2')
-            ->setStatus('status a', 'reason 3');
+        $statuses = [
+            'status a' => 'reason 1',
+            'status b' => 'reason 2',
+            'status a' => 'reason 3',
+        ];
+
+        foreach ($statuses as $status => $reason) {
+            \Carbon\Carbon::setTestNow(\Carbon\Carbon::now()->addSecond(1));
+            $this->testModel->setStatus($status, $reason);
+        }
+
+        \Carbon\Carbon::setTestNow(null);
 
         $this->assertEquals(
             'reason 3',
@@ -90,12 +98,14 @@ class HasStatusesTest extends TestCase
     /** @test */
     public function it_can_return_the_latest_status()
     {
-        $this->testModel
-            ->setStatus('status 1')
-            ->setStatus('status 3')
-            ->setStatus('status 2')
-            ->setStatus('status 1')
-            ->setStatus('status 2');
+        $statuses = ['status 1', 'status 3', 'status 2', 'status 1', 'status 2'];
+
+        foreach ($statuses as $status) {
+            \Carbon\Carbon::setTestNow(\Carbon\Carbon::now()->addSecond(1));
+            $this->testModel->setStatus($status);
+        }
+
+        \Carbon\Carbon::setTestNow(null);
 
         $this->assertEquals(
             'status 1',
@@ -169,16 +179,19 @@ class HasStatusesTest extends TestCase
     /** @test */
     public function it_can_return_a_string_when_calling_the_attribute()
     {
-        $this
-            ->testModel
-            ->setStatus('free')
-            ->setStatus('pending', 'waiting for a change');
+        $this->testModel->setStatus('free');
+
+        \Carbon\Carbon::setTestNow(\Carbon\Carbon::now()->addSecond(1));
+
+        $this->testModel->setStatus('pending', 'waiting for a change');
 
         $this->assertEquals('pending', $this->testModel->status);
 
         $this->assertEquals('pending', $this->testModel->status()->name);
 
         $this->assertEquals('waiting for a change', $this->testModel->status()->reason);
+
+        \Carbon\Carbon::setTestNow(null);
     }
 
     /** @test */
