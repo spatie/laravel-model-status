@@ -172,6 +172,12 @@ public function isValidStatus(string $name, string $description = ''): bool
 
 If `isValidStatus` returns `false` a `Spatie\ModelStatus\Exceptions\InvalidStatus` exception will be thrown.
 
+You may bypass validation with the `forceSetStatus` method:
+
+```php
+$model->forceSetStatus('invalid-status-name');
+```
+
 ### Custom model and migration
 
 You can change the model used by specifying a class name in the `status_model` key of the `model-status` config file. 
