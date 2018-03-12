@@ -2,10 +2,10 @@
 
 namespace Spatie\ModelStatus;
 
-use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 
@@ -54,9 +54,9 @@ trait HasStatuses
      */
     public function latestStatus(...$names): ?Status
     {
-        $names = is_array($names) ? array_flatten($names) : func_get_args();
+        $names = \is_array($names) ? array_flatten($names) : \func_get_args();
 
-        if (count($names) < 1)
+        if (\count($names) < 1)
         {
             return $this->statuses()->orderByDesc('id')->first();
         }
@@ -93,7 +93,7 @@ trait HasStatuses
      **/
     public function scopeOtherCurrentStatus(Builder $builder, ...$names)
     {
-        $names = is_array($names) ? array_flatten($names) : func_get_args();
+        $names = \is_array($names) ? array_flatten($names) : \func_get_args();
         $builder
             ->whereHas('statuses',
                 function (Builder $query) use ($names) {
