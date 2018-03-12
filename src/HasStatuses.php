@@ -26,7 +26,7 @@ trait HasStatuses
     {
         if (!$this->isValidStatus($name, $reason))
         {
-            throw InvalidStatus::create($name, $reason);
+            throw InvalidStatus::create($name);
         }
 
         return $this->forceSetStatus($name, $reason);
