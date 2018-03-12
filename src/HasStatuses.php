@@ -12,26 +12,36 @@ use Spatie\ModelStatus\Exceptions\InvalidStatus;
 trait HasStatuses
 {
 
+    /**
+     * Relationship between our model and the status model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
     public function statuses(): MorphMany
     {
         return $this->morphMany($this->getStatusModelClassName(), 'model')->latest();
     }
 
+    /**
+     * Get the latest model status
+     *
+     * @return null|\Spatie\ModelStatus\Status
+     */
     public function status(): ?Status
     {
         return $this->latestStatus();
     }
 
-    public function setStatus(string $name, string $reason = ''): self
-    {
-        if (!$this->isValidStatus($name, $reason))
-        {
-            throw InvalidStatus::create($name);
-        }
-
-        return $this->forceSetStatus($name, $reason);
-    }
-
+    /**
+     * Allows checking if a status is valid before actually setting it. This function is used by the setStatus
+     * function in order to decide if the new status can be persisted.
+     *
+     * The forceSetStatus function ignores this function.
+     *
+     * @param string $name
+     * @param string $reason
+     * @return bool
+     */
     public function isValidStatus(string $name, string $reason = ''): bool
     {
         return true;
@@ -54,6 +64,10 @@ trait HasStatuses
         return $this->statuses()->whereIn('name', $names)->orderByDesc('id')->first();
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     * @param string                                $name
+     */
     public function scopeCurrentStatus(Builder $builder, string $name)
     {
         $builder
@@ -97,11 +111,42 @@ trait HasStatuses
             ->orWhereDoesntHave('statuses');
     }
 
+    /**
+     * Easy property access to the latest status
+     *
+     * @return string
+     */
     public function getStatusAttribute(): string
     {
         return (string)$this->latestStatus();
     }
 
+
+    /**
+     * Change the model status
+     *
+     * @param string $name   The new status name
+     * @param string $reason An optional reason to explain the new status
+     * @return self
+     * @throws \Spatie\ModelStatus\Exceptions\InvalidStatus
+     */
+    public function setStatus(string $name, string $reason = ''): self
+    {
+        if (!$this->isValidStatus($name, $reason))
+        {
+            throw InvalidStatus::create($name);
+        }
+
+        return $this->forceSetStatus($name, $reason);
+    }
+
+    /**
+     * Force a status change without checking the validity of the new status.
+     *
+     * @param string $name
+     * @param string $reason
+     * @return self
+     */
     public function forceSetStatus(string $name, string $reason = ''): self
     {
         // Keep track of the previous status before updating
@@ -122,6 +167,11 @@ trait HasStatuses
         return $this;
     }
 
+    /**
+     * Can be overridden if needed to use another status table
+     *
+     * @return string
+     */
     protected function getStatusTableName(): string
     {
         $modelClass = $this->getStatusModelClassName();
@@ -129,6 +179,11 @@ trait HasStatuses
         return (new $modelClass)->getTable();
     }
 
+    /**
+     * Can be overridden if needed to use another status model
+     *
+     * @return string
+     */
     protected function getStatusModelClassName(): string
     {
         return config('model-status.status_model');
