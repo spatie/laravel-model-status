@@ -178,6 +178,18 @@ You may bypass validation with the `forceSetStatus` method:
 $model->forceSetStatus('invalid-status-name');
 ```
 
+### Events
+
+An event of type `Spatie\ModelStatus\Events\StatusUpdated` will be dispatched when the status is updated 
+(i.e. the status name changes). You can get information about the model, old an new status by using the event 
+accessors:
+
+```php
+$e->getModel()
+$e->getNewStatus()
+$e->getOldStatus()
+```
+
 ### Custom model and migration
 
 You can change the model used by specifying a class name in the `status_model` key of the `model-status` config file. 
