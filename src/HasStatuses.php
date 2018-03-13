@@ -111,7 +111,6 @@ trait HasStatuses
             'reason' => $reason,
         ]);
 
-        // Dispatch an event in case the status has changed
         if ($oldStatus !== $name)
         {
             event(new StatusUpdated($oldStatus, $name, $this));
