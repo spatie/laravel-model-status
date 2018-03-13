@@ -104,19 +104,17 @@ trait HasStatuses
 
     public function forceSetStatus(string $name, string $reason = ''): self
     {
-        // Keep track of the previous status before updating
         $oldStatus = $this->status;
 
-        // Update current status
         $this->statuses()->create([
-            'name'   => $name,
+            'name' => $name,
             'reason' => $reason,
         ]);
 
         // Dispatch an event in case the status has changed
         if ($oldStatus !== $name)
         {
-            \event(new StatusUpdated($oldStatus, $name, $this));
+            event(new StatusUpdated($oldStatus, $name, $this));
         }
 
         return $this;
