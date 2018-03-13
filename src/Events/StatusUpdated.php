@@ -11,22 +11,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class StatusUpdated
 {
-    /** @var string */
-    private $oldStatus;
+    protected $oldStatus;
+    protected $newStatus;
+    protected $model;
 
-    /** @var string */
-    private $newStatus;
-
-    /** @var \Illuminate\Database\Eloquent\Model */
-    private $model;
-
-    /**
-     * StatusUpdated constructor.
-     *
-     * @param string                              $oldStatus
-     * @param string                              $newStatus
-     * @param \Illuminate\Database\Eloquent\Model $model
-     */
     public function __construct(string $oldStatus, string $newStatus, Model $model)
     {
         $this->oldStatus = $oldStatus;
@@ -34,25 +22,16 @@ class StatusUpdated
         $this->model = $model;
     }
 
-    /**
-     * @return string
-     */
     public function getOldStatus(): string
     {
         return $this->oldStatus;
     }
 
-    /**
-     * @return string
-     */
     public function getNewStatus(): string
     {
         return $this->newStatus;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Model
-     */
     public function getModel(): Model
     {
         return $this->model;
