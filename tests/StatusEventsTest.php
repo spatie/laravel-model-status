@@ -20,7 +20,7 @@ class StatusEventsTest extends TestCase
     }
 
     /** @test */
-    public function it_fires_an_event_when_status_changes()
+    public function it_fires_an_event_when_status_changes(): void
     {
         $this->testModel->setStatus('pending', 'waiting on action');
         Event::fake(); // Fake after, in order not to get the initial event
@@ -36,7 +36,7 @@ class StatusEventsTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_fire_an_event_when_status_stays_the_same()
+    public function it_does_not_fire_an_event_when_status_stays_the_same(): void
     {
         $this->testModel->setStatus('pending', 'waiting on action');
         Event::fake(); // Fake after, in order not to get the initial event
