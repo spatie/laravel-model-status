@@ -108,7 +108,7 @@ trait HasStatuses
             'name' => $name,
             'reason' => $reason,
         ]);
-dd($oldStatus, $newStatus);
+
         event(new StatusUpdated($oldStatus, $newStatus, $this));
 
         return $this;

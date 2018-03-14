@@ -3,19 +3,20 @@
 namespace Spatie\ModelStatus\Events;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\ModelStatus\Status;
 
 class StatusUpdated
 {
-    /** @var string */
+    /** @var \Spatie\ModelStatus\Status|null */
     public $oldStatus;
 
-    /** @var string */
+    /** @var \Spatie\ModelStatus\Status */
     public $newStatus;
 
     /** @var \Illuminate\Database\Eloquent\Model */
     public $model;
 
-    public function __construct(string $oldStatus, string $newStatus, Model $model)
+    public function __construct(?Status $oldStatus, Status $newStatus, Model $model)
     {
         $this->oldStatus = $oldStatus;
 

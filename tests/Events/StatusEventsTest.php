@@ -32,9 +32,19 @@ class StatusUpdatedTest extends TestCase
 
         Event::assertDispatched(StatusUpdated::class,
             function (StatusUpdated $event) {
-                return $event->model->id = $this->testModel->id
-                       && $event->newStatus === 'status a'
-                       && $event->oldStatus === 'pending';
+                if ($event->model->id !== $this->testModel->id) {
+                    return false;
+                }
+
+                if ($event->newStatus->name !== 'status a') {
+                    return false;
+                }
+
+                if ($event->oldStatus->name !== 'pending') {
+                    return false;
+                }
+
+                return true;
             });
     }
 
