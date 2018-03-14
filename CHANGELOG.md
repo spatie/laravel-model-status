@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.4.0 - 2018-03-14
+
+- Add `StatusUpdated` event
+
 ## 1.3.0 - 2018-03-12
 
 - Dispatch an event when status is updated
