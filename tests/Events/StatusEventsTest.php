@@ -22,7 +22,7 @@ class StatusUpdatedTest extends TestCase
     }
 
     /** @test */
-    public function it_fires_an_event_when_status_changes(): void
+    public function it_fires_an_event_when_status_changes()
     {
         $this->testModel->setStatus('pending', 'waiting on action');
 
@@ -46,16 +46,5 @@ class StatusUpdatedTest extends TestCase
 
                 return true;
             });
-    }
-
-    /** @test */
-    public function it_does_not_fire_an_event_when_status_stays_the_same(): void
-    {
-        $this->testModel->setStatus('pending', 'waiting on action');
-        Event::fake();
-
-        $this->testModel->setStatus('pending', 'Still waiting');
-
-        Event::assertNotDispatched(StatusUpdated::class);
     }
 }
