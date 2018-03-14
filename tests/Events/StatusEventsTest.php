@@ -1,13 +1,15 @@
 <?php
 
-namespace Spatie\ModelStatus\Tests;
+namespace Spatie\ModelStatus\Tests\Events;
 
 use Illuminate\Support\Facades\Event;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Tests\Models\TestModel;
+use Spatie\ModelStatus\Tests\TestCase;
 
-class StatusEventsTest extends TestCase
+class StatusUpdatedTest extends TestCase
 {
+    /** @var \Spatie\ModelStatus\Tests\Models\TestModel */
     protected $testModel;
 
     protected function setUp()
@@ -23,15 +25,16 @@ class StatusEventsTest extends TestCase
     public function it_fires_an_event_when_status_changes(): void
     {
         $this->testModel->setStatus('pending', 'waiting on action');
+
         Event::fake();
 
         $this->testModel->setStatus('status a', 'Reason a');
 
         Event::assertDispatched(StatusUpdated::class,
             function (StatusUpdated $event) {
-                return $event->getModel()->is($this->testModel)
-                       && $event->getNewStatus() === 'status a'
-                       && $event->getOldStatus() === 'pending';
+                return $event->model->id = $this->testModel->id
+                       && $event->newStatus === 'status a'
+                       && $event->oldStatus === 'pending';
             });
     }
 
