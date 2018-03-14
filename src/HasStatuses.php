@@ -2,14 +2,16 @@
 
 namespace Spatie\ModelStatus;
 
-use DB;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
+use Spatie\ModelStatus\Events\StatusUpdated;
+use Spatie\ModelStatus\Exceptions\InvalidStatus;
 
 trait HasStatuses
 {
+
     public function statuses(): MorphMany
     {
         return $this->morphMany($this->getStatusModelClassName(), 'model')->latest();
@@ -22,16 +24,12 @@ trait HasStatuses
 
     public function setStatus(string $name, string $reason = ''): self
     {
-        if (! $this->isValidStatus($name, $reason)) {
-            throw InvalidStatus::create($name, $reason);
+        if (!$this->isValidStatus($name, $reason))
+        {
+            throw InvalidStatus::create($name);
         }
 
-        $this->statuses()->create([
-            'name' => $name,
-            'reason' => $reason,
-        ]);
-
-        return $this;
+        return $this->forceSetStatus($name, $reason);
     }
 
     public function isValidStatus(string $name, string $reason = ''): bool
@@ -48,7 +46,8 @@ trait HasStatuses
     {
         $names = is_array($names) ? array_flatten($names) : func_get_args();
 
-        if (count($names) < 1) {
+        if (count($names) < 1)
+        {
             return $this->statuses()->orderByDesc('id')->first();
         }
 
@@ -58,17 +57,19 @@ trait HasStatuses
     public function scopeCurrentStatus(Builder $builder, string $name)
     {
         $builder
-            ->whereHas('statuses', function (Builder $query) use ($name) {
-                $query
-                    ->where('name', $name)
-                    ->whereIn('id', function (QueryBuilder $query) use ($name) {
-                        $query
-                            ->select(DB::raw('max(id)'))
-                            ->from($this->getStatusTableName())
-                            ->where('model_type', static::class)
-                            ->groupBy('model_id');
-                    });
-            });
+            ->whereHas('statuses',
+                function (Builder $query) use ($name) {
+                    $query
+                        ->where('name', $name)
+                        ->whereIn('id',
+                            function (QueryBuilder $query) use ($name) {
+                                $query
+                                    ->select(DB::raw('max(id)'))
+                                    ->from($this->getStatusTableName())
+                                    ->where('model_type', static::class)
+                                    ->groupBy('model_id');
+                            });
+                });
     }
 
     /**
@@ -80,31 +81,40 @@ trait HasStatuses
     {
         $names = is_array($names) ? array_flatten($names) : func_get_args();
         $builder
-            ->whereHas('statuses', function (Builder $query) use ($names) {
-                $query
-                    ->whereNotIn('name', $names)
-                    ->whereIn('id', function (QueryBuilder $query) use ($names) {
-                        $query
-                            ->select(DB::raw('max(id)'))
-                            ->from($this->getStatusTableName())
-                            ->where('model_type', static::class)
-                            ->groupBy('model_id');
-                    });
-            })
+            ->whereHas('statuses',
+                function (Builder $query) use ($names) {
+                    $query
+                        ->whereNotIn('name', $names)
+                        ->whereIn('id',
+                            function (QueryBuilder $query) use ($names) {
+                                $query
+                                    ->select(DB::raw('max(id)'))
+                                    ->from($this->getStatusTableName())
+                                    ->where('model_type', static::class)
+                                    ->groupBy('model_id');
+                            });
+                })
             ->orWhereDoesntHave('statuses');
     }
 
     public function getStatusAttribute(): string
     {
-        return (string) $this->latestStatus();
+        return (string)$this->latestStatus();
     }
 
     public function forceSetStatus(string $name, string $reason = ''): self
     {
+        $oldStatus = $this->status;
+
         $this->statuses()->create([
             'name' => $name,
             'reason' => $reason,
         ]);
+
+        if ($oldStatus !== $name)
+        {
+            event(new StatusUpdated($oldStatus, $name, $this));
+        }
 
         return $this;
     }
