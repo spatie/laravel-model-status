@@ -24,8 +24,7 @@ trait HasStatuses
 
     public function setStatus(string $name, string $reason = ''): self
     {
-        if (!$this->isValidStatus($name, $reason))
-        {
+        if (!$this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name);
         }
 
@@ -46,8 +45,7 @@ trait HasStatuses
     {
         $names = is_array($names) ? array_flatten($names) : func_get_args();
 
-        if (count($names) < 1)
-        {
+        if (count($names) < 1) {
             return $this->statuses()->orderByDesc('id')->first();
         }
 
@@ -104,17 +102,14 @@ trait HasStatuses
 
     public function forceSetStatus(string $name, string $reason = ''): self
     {
-        $oldStatus = $this->status;
+        $oldStatus = $this->latestStatus();
 
-        $this->statuses()->create([
+        $newStatus = $this->statuses()->create([
             'name' => $name,
             'reason' => $reason,
         ]);
-
-        if ($oldStatus !== $name)
-        {
-            event(new StatusUpdated($oldStatus, $name, $this));
-        }
+dd($oldStatus, $newStatus);
+        event(new StatusUpdated($oldStatus, $newStatus, $this));
 
         return $this;
     }
