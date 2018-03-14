@@ -3,11 +3,11 @@
 namespace Spatie\ModelStatus\Tests\Events;
 
 use Illuminate\Support\Facades\Event;
+use Spatie\ModelStatus\Tests\TestCase;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Tests\Models\TestModel;
-use Spatie\ModelStatus\Tests\TestCase;
 
-class StatusUpdatedTest extends TestCase
+class StatusEventsTest extends TestCase
 {
     /** @var \Spatie\ModelStatus\Tests\Models\TestModel */
     protected $testModel;
