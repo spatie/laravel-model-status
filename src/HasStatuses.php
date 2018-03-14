@@ -2,16 +2,15 @@
 
 namespace Spatie\ModelStatus;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 trait HasStatuses
 {
-
     public function statuses(): MorphMany
     {
         return $this->morphMany($this->getStatusModelClassName(), 'model')->latest();
@@ -24,7 +23,7 @@ trait HasStatuses
 
     public function setStatus(string $name, string $reason = ''): self
     {
-        if (!$this->isValidStatus($name, $reason)) {
+        if (! $this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name);
         }
 
@@ -97,7 +96,7 @@ trait HasStatuses
 
     public function getStatusAttribute(): string
     {
-        return (string)$this->latestStatus();
+        return (string) $this->latestStatus();
     }
 
     public function forceSetStatus(string $name, string $reason = ''): self

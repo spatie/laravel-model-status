@@ -2,8 +2,8 @@
 
 namespace Spatie\ModelStatus\Events;
 
-use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\Status;
+use Illuminate\Database\Eloquent\Model;
 
 class StatusUpdated
 {
