@@ -153,7 +153,7 @@ $allNonInitiatedOrPendingModels = Model::otherCurrentStatus(['initiated', 'pendi
 $allNonInitiatedOrPendingModels = Model::otherCurrentStatus('initiated', 'pending');
 ```
 
-#### Validating a status before setting it
+### Validating a status before setting it
 
 You can add custom validation when setting a status by overwriting the `isValidStatus` method:
 
@@ -180,14 +180,34 @@ $model->forceSetStatus('invalid-status-name');
 
 ### Events
 
-An event of type `Spatie\ModelStatus\Events\StatusUpdated` will be dispatched when the status is updated 
-(i.e. the status name changes). You can get information about the model, old an new status by using the event 
-accessors:
+The`Spatie\ModelStatus\Events\StatusUpdated`  event will be dispatched when the status is updated.
 
 ```php
-$e->getModel()
-$e->getNewStatus()
-$e->getOldStatus()
+namespace Spatie\ModelStatus\Events;
+
+use Illuminate\Database\Eloquent\Model;
+use Spatie\ModelStatus\Status;
+
+class StatusUpdated
+{
+    /** @var \Spatie\ModelStatus\Status|null */
+    public $oldStatus;
+
+    /** @var \Spatie\ModelStatus\Status */
+    public $newStatus;
+
+    /** @var \Illuminate\Database\Eloquent\Model */
+    public $model;
+
+    public function __construct(?Status $oldStatus, Status $newStatus, Model $model)
+    {
+        $this->oldStatus = $oldStatus;
+
+        $this->newStatus = $newStatus;
+
+        $this->model = $model;
+    }
+}
 ```
 
 ### Custom model and migration
