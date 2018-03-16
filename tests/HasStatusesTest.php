@@ -2,6 +2,7 @@
 
 namespace Spatie\ModelStatus\Tests;
 
+use Illuminate\Support\Facades\DB;
 use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
@@ -127,6 +128,45 @@ class HasStatusesTest extends TestCase
         );
 
         $this->assertNull($this->testModel->latestStatus('non existing status'));
+    }
+
+    /** @test */
+    public function it_knows_wether_the_statuses_relation_has_been_loaded()
+    {
+        $this->testModel
+            ->setStatus('status 1', 'reason 1')
+            ->setStatus('status 2', 'reason 2');
+
+        TestModel::create(['name' => 'other name'])
+            ->setStatus('status a', 'reason a')
+            ->setStatus('status b', 'reason b');
+
+        DB::enableQueryLog();
+
+        $testModels = TestModel::with('statuses')->get();
+
+        $this->assertEquals(
+            'status 2',
+            $testModels->get(0)->status
+        );
+
+        $this->assertEquals(
+            'status b',
+            $testModels->get(1)->status
+        );
+
+        $this->assertEquals(
+            'reason 1',
+            $testModels->get(0)->latestStatus('status 1')->reason
+        );
+
+        $this->assertEquals(
+            'reason a',
+            $testModels->get(1)->latestStatus('status a')->reason
+        );
+
+        $this->assertCount(2, DB::getQueryLog());
+        DB::disableQueryLog();
     }
 
     /** @test */
