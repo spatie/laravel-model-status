@@ -13,7 +13,7 @@ trait HasStatuses
 {
     public function statuses(): MorphMany
     {
-        return $this->morphMany($this->getStatusModelClassName(), 'model')->latest();
+        return $this->morphMany($this->getStatusModelClassName(), 'model')->latest('id');
     }
 
     public function status(): ?Status
@@ -44,11 +44,13 @@ trait HasStatuses
     {
         $names = is_array($names) ? array_flatten($names) : func_get_args();
 
+        $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
+
         if (count($names) < 1) {
-            return $this->statuses()->orderByDesc('id')->first();
+            return $statuses->first();
         }
 
-        return $this->statuses()->whereIn('name', $names)->orderByDesc('id')->first();
+        return $statuses->whereIn('name', $names)->first();
     }
 
     public function scopeCurrentStatus(Builder $builder, string $name)
