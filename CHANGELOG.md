@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.3.1 - 2018-03-16
+
+- performance optimizations
+
 ## 1.3.0 - 2018-03-14
 
 - add `StatusUpdated` event
