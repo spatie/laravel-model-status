@@ -53,15 +53,16 @@ trait HasStatuses
         return $statuses->whereIn('name', $names)->first();
     }
 
-    public function scopeCurrentStatus(Builder $builder, string $name)
+    public function scopeCurrentStatus(Builder $builder, ...$names)
     {
+        $names = is_array($names) ? array_flatten($names) : func_get_args();
         $builder
             ->whereHas('statuses',
-                function (Builder $query) use ($name) {
+                function (Builder $query) use ($names) {
                     $query
-                        ->where('name', $name)
+                        ->whereIn('name', $names)
                         ->whereIn('id',
-                            function (QueryBuilder $query) use ($name) {
+                            function (QueryBuilder $query) {
                                 $query
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
