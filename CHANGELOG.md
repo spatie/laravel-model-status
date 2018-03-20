@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.4.0 - 2018-0320
+
+- add an ability to find models by multiple statuses
+
 ## 1.3.1 - 2018-03-16
 
 - performance optimizations
