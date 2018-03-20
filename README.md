@@ -135,6 +135,10 @@ The `currentStatus` scope will return models that have a status with the given n
 
 ```php
 $allPendingModels = Model::currentStatus('pending');
+
+//or array of statuses
+$allPendingModels = Model::currentStatus(['pending', 'initiated']);
+$allPendingModels = Model::currentStatus('pending', 'initiated');
 ```
 
 ### Retrieving models without a given state

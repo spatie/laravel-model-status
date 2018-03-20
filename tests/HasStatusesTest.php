@@ -218,6 +218,10 @@ class HasStatusesTest extends TestCase
         $this->assertEquals(
             [],
             TestModel::currentStatus('status-d')->get()->pluck('name')->toArray());
+
+        $this->assertEquals(
+            ['model2', 'model4'],
+            TestModel::currentStatus('status-c', 'status-a')->get()->pluck('name')->toArray());
     }
 
     /** @test */
