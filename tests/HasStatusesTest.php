@@ -5,6 +5,7 @@ namespace Spatie\ModelStatus\Tests;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
 
@@ -258,5 +259,15 @@ class HasStatusesTest extends TestCase
         $this->assertCount(4, TestModel::otherCurrentStatus('initiated')->get());
         $this->assertCount(3, TestModel::otherCurrentStatus('initiated', 'pending')->get());
         $this->assertCount(3, TestModel::otherCurrentStatus(['initiated', 'pending'])->get());
+    }
+
+    /** @test */
+    public function it_supports_custom_polymorphic_model_types()
+    {
+        Relation::morphMap(['custom-test-model' => TestModel::class]);
+
+        $this->testModel->setStatus('initiated');
+
+        $this->assertCount(1, TestModel::currentStatus('initiated')->get());
     }
 }
