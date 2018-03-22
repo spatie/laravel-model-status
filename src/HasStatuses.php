@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -66,7 +67,7 @@ trait HasStatuses
                                 $query
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
-                                    ->where('model_type', static::class)
+                                    ->where('model_type', $this->getStatusModelType())
                                     ->groupBy('model_id');
                             });
                 });
@@ -90,7 +91,7 @@ trait HasStatuses
                                 $query
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
-                                    ->where('model_type', static::class)
+                                    ->where('model_type', $this->getStatusModelType())
                                     ->groupBy('model_id');
                             });
                 })
@@ -126,5 +127,10 @@ trait HasStatuses
     protected function getStatusModelClassName(): string
     {
         return config('model-status.status_model');
+    }
+
+    protected function getStatusModelType(): string
+    {
+        return array_search(static::class, Relation::morphMap()) ?: static::class;
     }
 }
