@@ -2,7 +2,11 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
-## 1.4.0 - 2018-0320
+## 1.5.0 - 2018-03-22
+
+- add support for custom polymorphic model types
+
+## 1.4.0 - 2018-03-20
 
 - add an ability to find models by multiple statuses
 
