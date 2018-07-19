@@ -65,6 +65,13 @@ return [
      */
     'status_model' => Spatie\ModelStatus\Status::class,
 
+    /*
+     * The name of the column which holds the ID of the model related to the statuses.
+     *
+     * You can change this value if you have set a different name in the migration for the statuses table.
+     */
+    'model_primary_key_attribute' => 'model_id',
+
 ];
 ```
 
@@ -193,6 +200,9 @@ $e->getOldStatus()
 ### Custom model and migration
 
 You can change the model used by specifying a class name in the `status_model` key of the `model-status` config file. 
+
+You can change the column name used in the status table (`model_id` by default) when using a custom migration where you changed 
+that. In that case, simply change the `model_primary_key_attribute` key of the `model-status` config file. 
 
 ### Testing
 
