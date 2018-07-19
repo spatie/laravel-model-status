@@ -4,6 +4,7 @@ namespace Spatie\ModelStatus\Tests;
 
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
+use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
 use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
@@ -214,5 +215,38 @@ class HasStatusesTest extends TestCase
         $this->assertCount(4, TestModel::otherCurrentStatus('initiated')->get());
         $this->assertCount(3, TestModel::otherCurrentStatus('initiated', 'pending')->get());
         $this->assertCount(3, TestModel::otherCurrentStatus(['initiated', 'pending'])->get());
+    }
+
+    /** @test */
+    public function it_can_use_a_custom_name_for_the_relationship_id_column()
+    {
+        $this->app['config']->set(
+            'model-status.status_model',
+            CustomModelKeyStatusModel::class
+        );
+
+        $this->app['config']->set(
+            'model-status.model_primary_key_attribute',
+            'model_custom_fk'
+        );
+
+        $model = TestModel::create(['name' => 'model1']);
+        $model->setStatus('pending');
+
+        $this->assertEquals('pending', $model->status);
+        $this->assertEquals($model->id, $model->status()->model_custom_fk);
+        $this->assertTrue($model->status()->is(CustomModelKeyStatusModel::first()));
+    }
+
+    /** @test */
+    public function it_uses_the_default_relationship_id_column_when_configuration_value_is_missing()
+    {
+        $this->app['config']->offsetUnset('model-status.model_primary_key_attribute');
+
+        $model = TestModel::create(['name' => 'model1']);
+        $model->setStatus('pending');
+
+        $this->assertEquals('pending', $model->status);
+        $this->assertEquals($model->id, $model->status()->model_id);
     }
 }
