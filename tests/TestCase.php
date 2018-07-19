@@ -25,7 +25,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function setUpDatabase()
     {
-        tap($this->app['db']->connection()->getSchemaBuilder(), function($schema) {
+        tap($this->app['db']->connection()->getSchemaBuilder(), function ($schema) {
 
             $schema->create('test_models', function (Blueprint $table) {
                 $table->increments('id');
@@ -44,9 +44,9 @@ abstract class TestCase extends BaseTestCase
                 $table->string('name');
                 $table->text('reason')->nullable();
 
-                $table->string("model_type");
-                $table->unsignedBigInteger("model_custom_fk");
-                $table->index(["model_type", "model_custom_fk"]);
+                $table->string('model_type');
+                $table->unsignedBigInteger('model_custom_fk');
+                $table->index(['model_type', 'model_custom_fk']);
 
                 $table->timestamps();
             });
