@@ -2,9 +2,21 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
-## 1.3.0 - 2018-03-12
+## 1.5.0 - 2018-03-22
 
-- Dispatch an event when status is updated
+- add support for custom polymorphic model types
+
+## 1.4.0 - 2018-03-20
+
+- add an ability to find models by multiple statuses
+
+## 1.3.1 - 2018-03-16
+
+- performance optimizations
+
+## 1.3.0 - 2018-03-14
+
+- add `StatusUpdated` event
 
 ## 1.2.0 - 2018-03-12
 

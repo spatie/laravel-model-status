@@ -1,13 +1,15 @@
 <?php
 
-namespace Spatie\ModelStatus\Tests;
+namespace Spatie\ModelStatus\Tests\Events;
 
 use Illuminate\Support\Facades\Event;
+use Spatie\ModelStatus\Tests\TestCase;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Tests\Models\TestModel;
 
 class StatusEventsTest extends TestCase
 {
+    /** @var \Spatie\ModelStatus\Tests\Models\TestModel */
     protected $testModel;
 
     protected function setUp()
@@ -20,29 +22,29 @@ class StatusEventsTest extends TestCase
     }
 
     /** @test */
-    public function it_fires_an_event_when_status_changes(): void
+    public function it_fires_an_event_when_status_changes()
     {
         $this->testModel->setStatus('pending', 'waiting on action');
+
         Event::fake();
 
         $this->testModel->setStatus('status a', 'Reason a');
 
         Event::assertDispatched(StatusUpdated::class,
             function (StatusUpdated $event) {
-                return $event->getModel()->is($this->testModel)
-                       && $event->getNewStatus() === 'status a'
-                       && $event->getOldStatus() === 'pending';
+                if ($event->model->id !== $this->testModel->id) {
+                    return false;
+                }
+
+                if ($event->newStatus->name !== 'status a') {
+                    return false;
+                }
+
+                if ($event->oldStatus->name !== 'pending') {
+                    return false;
+                }
+
+                return true;
             });
-    }
-
-    /** @test */
-    public function it_does_not_fire_an_event_when_status_stays_the_same(): void
-    {
-        $this->testModel->setStatus('pending', 'waiting on action');
-        Event::fake();
-
-        $this->testModel->setStatus('pending', 'Still waiting');
-
-        Event::assertNotDispatched(StatusUpdated::class);
     }
 }

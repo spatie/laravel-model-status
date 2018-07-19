@@ -2,20 +2,20 @@
 
 namespace Spatie\ModelStatus;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 trait HasStatuses
 {
-
     public function statuses(): MorphMany
     {
         return $this->morphMany($this->getStatusModelClassName(), 'model', 'model_type', $this->getModelKeyColumnName())
-                    ->latest();
+                    ->latest('id');
     }
 
     public function status(): ?Status
@@ -25,8 +25,7 @@ trait HasStatuses
 
     public function setStatus(string $name, string $reason = ''): self
     {
-        if (!$this->isValidStatus($name, $reason))
-        {
+        if (! $this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name);
         }
 
@@ -47,27 +46,29 @@ trait HasStatuses
     {
         $names = is_array($names) ? array_flatten($names) : func_get_args();
 
-        if (count($names) < 1)
-        {
-            return $this->statuses()->orderByDesc('id')->first();
+        $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
+
+        if (count($names) < 1) {
+            return $statuses->first();
         }
 
-        return $this->statuses()->whereIn('name', $names)->orderByDesc('id')->first();
+        return $statuses->whereIn('name', $names)->first();
     }
 
-    public function scopeCurrentStatus(Builder $builder, string $name)
+    public function scopeCurrentStatus(Builder $builder, ...$names)
     {
+        $names = is_array($names) ? array_flatten($names) : func_get_args();
         $builder
             ->whereHas('statuses',
-                function (Builder $query) use ($name) {
+                function (Builder $query) use ($names) {
                     $query
-                        ->where('name', $name)
+                        ->whereIn('name', $names)
                         ->whereIn('id',
-                            function (QueryBuilder $query) use ($name) {
+                            function (QueryBuilder $query) {
                                 $query
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
-                                    ->where('model_type', static::class)
+                                    ->where('model_type', $this->getStatusModelType())
                                     ->groupBy($this->getModelKeyColumnName());
                             });
                 });
@@ -91,7 +92,7 @@ trait HasStatuses
                                 $query
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
-                                    ->where('model_type', static::class)
+                                    ->where('model_type', $this->getStatusModelType())
                                     ->groupBy($this->getModelKeyColumnName());
                             });
                 })
@@ -100,22 +101,19 @@ trait HasStatuses
 
     public function getStatusAttribute(): string
     {
-        return (string)$this->latestStatus();
+        return (string) $this->latestStatus();
     }
 
     public function forceSetStatus(string $name, string $reason = ''): self
     {
-        $oldStatus = $this->status;
+        $oldStatus = $this->latestStatus();
 
-        $this->statuses()->create([
+        $newStatus = $this->statuses()->create([
             'name'   => $name,
             'reason' => $reason,
         ]);
 
-        if ($oldStatus !== $name)
-        {
-            event(new StatusUpdated($oldStatus, $name, $this));
-        }
+        event(new StatusUpdated($oldStatus, $newStatus, $this));
 
         return $this;
     }
@@ -135,5 +133,10 @@ trait HasStatuses
     protected function getStatusModelClassName(): string
     {
         return config('model-status.status_model');
+    }
+
+    protected function getStatusModelType(): string
+    {
+        return array_search(static::class, Relation::morphMap()) ?: static::class;
     }
 }

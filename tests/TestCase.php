@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Spatie\ModelStatus\ModelStatusServiceProvider;
 
-class TestCase extends BaseTestCase
+abstract class TestCase extends BaseTestCase
 {
     protected function setUp()
     {
