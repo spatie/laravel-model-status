@@ -42,9 +42,9 @@ class TestCase extends BaseTestCase
             $table->string('name');
             $table->text('reason')->nullable();
 
-            $this->string("model_type");
-            $this->unsignedBigInteger("model_custom_fk");
-            $this->index(["model_type", "model_custom_fk"]);
+            $table->string("model_type");
+            $table->unsignedBigInteger("model_custom_fk");
+            $table->index(["model_type", "model_custom_fk"]);
 
             $table->timestamps();
         });
