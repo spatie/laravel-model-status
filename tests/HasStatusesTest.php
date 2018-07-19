@@ -2,12 +2,12 @@
 
 namespace Spatie\ModelStatus\Tests;
 
-use Illuminate\Support\Facades\DB;
-use Spatie\ModelStatus\Tests\Models\TestModel;
-use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
+use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
+use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
+use Spatie\ModelStatus\Tests\Models\TestModel;
+use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
 class HasStatusesTest extends TestCase
 {
@@ -132,45 +132,6 @@ class HasStatusesTest extends TestCase
     }
 
     /** @test */
-    public function it_knows_wether_the_statuses_relation_has_been_loaded()
-    {
-        $this->testModel
-            ->setStatus('status 1', 'reason 1')
-            ->setStatus('status 2', 'reason 2');
-
-        TestModel::create(['name' => 'other name'])
-            ->setStatus('status a', 'reason a')
-            ->setStatus('status b', 'reason b');
-
-        DB::enableQueryLog();
-
-        $testModels = TestModel::with('statuses')->get();
-
-        $this->assertEquals(
-            'status 2',
-            $testModels->get(0)->status
-        );
-
-        $this->assertEquals(
-            'status b',
-            $testModels->get(1)->status
-        );
-
-        $this->assertEquals(
-            'reason 1',
-            $testModels->get(0)->latestStatus('status 1')->reason
-        );
-
-        $this->assertEquals(
-            'reason a',
-            $testModels->get(1)->latestStatus('status a')->reason
-        );
-
-        $this->assertCount(2, DB::getQueryLog());
-        DB::disableQueryLog();
-    }
-
-    /** @test */
     public function it_can_handle_a_different_status_model()
     {
         $this->app['config']->set(
@@ -219,10 +180,6 @@ class HasStatusesTest extends TestCase
         $this->assertEquals(
             [],
             TestModel::currentStatus('status-d')->get()->pluck('name')->toArray());
-
-        $this->assertEquals(
-            ['model2', 'model4'],
-            TestModel::currentStatus('status-c', 'status-a')->get()->pluck('name')->toArray());
     }
 
     /** @test */
@@ -269,5 +226,38 @@ class HasStatusesTest extends TestCase
         $this->testModel->setStatus('initiated');
 
         $this->assertCount(1, TestModel::currentStatus('initiated')->get());
+    }
+
+    /** @test */
+    public function it_can_use_a_custom_name_for_the_relationship_id_column()
+    {
+        $this->app['config']->set(
+            'model-status.status_model',
+            CustomModelKeyStatusModel::class
+        );
+
+        $this->app['config']->set(
+            'model-status.model_primary_key_attribute',
+            'model_custom_fk'
+        );
+
+        $model = TestModel::create(['name' => 'model1']);
+        $model->setStatus('pending');
+
+        $this->assertEquals('pending', $model->status);
+        $this->assertEquals($model->id, $model->status()->model_custom_fk);
+        $this->assertTrue($model->status()->is(CustomModelKeyStatusModel::first()));
+    }
+
+    /** @test */
+    public function it_uses_the_default_relationship_id_column_when_configuration_value_is_missing()
+    {
+        $this->app['config']->offsetUnset('model-status.model_primary_key_attribute');
+
+        $model = TestModel::create(['name' => 'model1']);
+        $model->setStatus('pending');
+
+        $this->assertEquals('pending', $model->status);
+        $this->assertEquals($model->id, $model->status()->model_id);
     }
 }

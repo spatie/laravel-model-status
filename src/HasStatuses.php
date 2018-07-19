@@ -14,7 +14,8 @@ trait HasStatuses
 {
     public function statuses(): MorphMany
     {
-        return $this->morphMany($this->getStatusModelClassName(), 'model')->latest('id');
+        return $this->morphMany($this->getStatusModelClassName(), 'model', 'model_type', $this->getModelKeyColumnName())
+                    ->latest('id');
     }
 
     public function status(): ?Status
@@ -68,7 +69,7 @@ trait HasStatuses
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
-                                    ->groupBy('model_id');
+                                    ->groupBy($this->getModelKeyColumnName());
                             });
                 });
     }
@@ -92,7 +93,7 @@ trait HasStatuses
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
-                                    ->groupBy('model_id');
+                                    ->groupBy($this->getModelKeyColumnName());
                             });
                 })
             ->orWhereDoesntHave('statuses');
@@ -108,7 +109,7 @@ trait HasStatuses
         $oldStatus = $this->latestStatus();
 
         $newStatus = $this->statuses()->create([
-            'name' => $name,
+            'name'   => $name,
             'reason' => $reason,
         ]);
 
@@ -122,6 +123,11 @@ trait HasStatuses
         $modelClass = $this->getStatusModelClassName();
 
         return (new $modelClass)->getTable();
+    }
+
+    protected function getModelKeyColumnName(): string
+    {
+        return config('model-status.model_primary_key_attribute') ?? 'model_id';
     }
 
     protected function getStatusModelClassName(): string
