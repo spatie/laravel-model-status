@@ -37,6 +37,18 @@ class TestCase extends BaseTestCase
             $table->timestamps();
         });
 
+        $this->app['db']->connection()->getSchemaBuilder()->create('custom_model_key_statuses', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->text('reason')->nullable();
+
+            $this->string("model_type");
+            $this->unsignedBigInteger("model_custom_fk");
+            $this->index(["model_type", "model_custom_fk"]);
+
+            $table->timestamps();
+        });
+
         include_once __DIR__.'/../database/migrations/create_statuses_table.php.stub';
 
         (new CreateStatusesTable())->up();
