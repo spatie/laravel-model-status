@@ -169,7 +169,7 @@ $allNonInitiatedOrPendingModels = Model::otherCurrentStatus('initiated', 'pendin
 You can add custom validation when setting a status by overwriting the `isValidStatus` method:
 
 ```php
-public function isValidStatus(string $name, string $description = ''): bool
+public function isValidStatus(string $name, ?string $reason = null): bool
 {
     ...
 

@@ -23,7 +23,7 @@ trait HasStatuses
         return $this->latestStatus();
     }
 
-    public function setStatus(string $name, string $reason = ''): self
+    public function setStatus(string $name, ?string $reason = null): self
     {
         if (! $this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name);
@@ -32,7 +32,7 @@ trait HasStatuses
         return $this->forceSetStatus($name, $reason);
     }
 
-    public function isValidStatus(string $name, string $reason = ''): bool
+    public function isValidStatus(string $name, ?string $reason = null): bool
     {
         return true;
     }
@@ -59,19 +59,23 @@ trait HasStatuses
     {
         $names = is_array($names) ? array_flatten($names) : func_get_args();
         $builder
-            ->whereHas('statuses',
+            ->whereHas(
+                'statuses',
                 function (Builder $query) use ($names) {
                     $query
                         ->whereIn('name', $names)
-                        ->whereIn('id',
+                        ->whereIn(
+                            'id',
                             function (QueryBuilder $query) {
                                 $query
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
                                     ->groupBy($this->getModelKeyColumnName());
-                            });
-                });
+                            }
+                        );
+                }
+            );
     }
 
     /**
@@ -83,19 +87,23 @@ trait HasStatuses
     {
         $names = is_array($names) ? array_flatten($names) : func_get_args();
         $builder
-            ->whereHas('statuses',
+            ->whereHas(
+                'statuses',
                 function (Builder $query) use ($names) {
                     $query
                         ->whereNotIn('name', $names)
-                        ->whereIn('id',
+                        ->whereIn(
+                            'id',
                             function (QueryBuilder $query) use ($names) {
                                 $query
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
                                     ->groupBy($this->getModelKeyColumnName());
-                            });
-                })
+                            }
+                        );
+                }
+            )
             ->orWhereDoesntHave('statuses');
     }
 
@@ -104,7 +112,7 @@ trait HasStatuses
         return (string) $this->latestStatus();
     }
 
-    public function forceSetStatus(string $name, string $reason = ''): self
+    public function forceSetStatus(string $name, ?string $reason = null): self
     {
         $oldStatus = $this->latestStatus();
 

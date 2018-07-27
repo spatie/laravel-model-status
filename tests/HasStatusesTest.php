@@ -2,12 +2,12 @@
 
 namespace Spatie\ModelStatus\Tests;
 
-use Illuminate\Database\Eloquent\Relations\Relation;
+use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
 use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
-use Spatie\ModelStatus\Tests\Models\TestModel;
-use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
 class HasStatusesTest extends TestCase
 {
@@ -101,6 +101,14 @@ class HasStatusesTest extends TestCase
         $this->testModel->setStatus('status');
 
         $this->assertEquals('status', $this->testModel->status()->name);
+    }
+
+    /** @test */
+    public function it_stores_null_for_an_empty_reason_when_setting_a_status()
+    {
+        $this->testModel->setStatus('status');
+
+        $this->assertNull($this->testModel->status()->reason);
     }
 
     /** @test */
