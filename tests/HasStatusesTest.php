@@ -104,9 +104,9 @@ class HasStatusesTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_null_for_an_empty_reason_when_setting_a_status()
+    public function it_allows_null_for_an_empty_reason_when_setting_a_status()
     {
-        $this->testModel->setStatus('status');
+        $this->testModel->setStatus('status', null);
 
         $this->assertNull($this->testModel->status()->reason);
     }
