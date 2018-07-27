@@ -4,7 +4,7 @@ All notable changes to `laravel-model-status` will be documented in this file
 
 ## 1.6.1 - 2018-07-27
 
-- Use `null` as default for $reason on statuses
+- Use `null` as default for reason on statuses
 
 ## 1.6.0 - 2018-07-19
 
