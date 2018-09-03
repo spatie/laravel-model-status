@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.6.2 - 2018-09-03
+
+- add support for Laravel 5.7
+
 ## 1.6.1 - 2018-07-27
 
 - Use `null` as default for reason on statuses
