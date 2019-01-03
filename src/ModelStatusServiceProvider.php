@@ -13,7 +13,7 @@ class ModelStatusServiceProvider extends ServiceProvider
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
         }
 
-        if (! class_exists('CreateStatusesTable')) {
+        if (! count(glob(database_path('migrations/*create_statuses_table.php')))) {
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([
