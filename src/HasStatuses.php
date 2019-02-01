@@ -2,6 +2,7 @@
 
 namespace Spatie\ModelStatus;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\ModelStatus\Events\StatusUpdated;
@@ -44,7 +45,7 @@ trait HasStatuses
      */
     public function latestStatus(...$names): ?Status
     {
-        $names = is_array($names) ? array_flatten($names) : func_get_args();
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
 
         $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
 
@@ -57,7 +58,7 @@ trait HasStatuses
 
     public function scopeCurrentStatus(Builder $builder, ...$names)
     {
-        $names = is_array($names) ? array_flatten($names) : func_get_args();
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
         $builder
             ->whereHas(
                 'statuses',
@@ -85,7 +86,7 @@ trait HasStatuses
      **/
     public function scopeOtherCurrentStatus(Builder $builder, ...$names)
     {
-        $names = is_array($names) ? array_flatten($names) : func_get_args();
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
         $builder
             ->whereHas(
                 'statuses',
