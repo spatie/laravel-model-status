@@ -13,7 +13,7 @@ class HasStatusesTest extends TestCase
 {
     protected $testModel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

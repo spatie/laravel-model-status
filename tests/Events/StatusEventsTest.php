@@ -12,7 +12,7 @@ class StatusEventsTest extends TestCase
     /** @var \Spatie\ModelStatus\Tests\Models\TestModel */
     protected $testModel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

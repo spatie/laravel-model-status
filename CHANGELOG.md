@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.6.4 - 2019-02-27
+
+- add support for Laravel 5.8
+
 ## 1.6.3 - 2019-02-01
 
 - use Str:: and Arr:: instead of helper methods
