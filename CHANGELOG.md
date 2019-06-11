@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.7.1 - 2019-06-11
+
+- performance improvements
+
 ## 1.7.0 - 2019-02-27
 
 - drop support for Laravel 5.7 and below
