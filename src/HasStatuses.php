@@ -72,7 +72,7 @@ trait HasStatuses
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
-                                    ->groupBy($this->getModelKeyColumnName());
+                                    ->whereColumn($this->getModelKeyColumnName(), $this->getQualifiedKeyName());
                             }
                         );
                 }
@@ -100,7 +100,7 @@ trait HasStatuses
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
-                                    ->groupBy($this->getModelKeyColumnName());
+                                    ->whereColumn($this->getModelKeyColumnName(), $this->getQualifiedKeyName());
                             }
                         );
                 }
