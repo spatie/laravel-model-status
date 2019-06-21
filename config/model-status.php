@@ -18,7 +18,7 @@ return [
 
     /*
      * Control if the model that has the HasStatuses Trait should be touched when setting a Status.
-     * Touched refers: to update the model's updated_at timestamp column.
+     * Touched refers to: update the model's updated_at timestamp column when a Status is set.
      */
     'touches_model' => false,
 ];
