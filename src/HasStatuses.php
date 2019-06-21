@@ -122,7 +122,9 @@ trait HasStatuses
             'reason' => $reason,
         ]);
 
-        if (config('model-status.touches_model')) {
+        $touches_model = config('model-status.touches_model');
+
+        if ($touches_model) {
             $this->touch();
         }
 
