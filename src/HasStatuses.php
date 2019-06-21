@@ -122,6 +122,10 @@ trait HasStatuses
             'reason' => $reason,
         ]);
 
+        if (config('model-status.touches_model')) {
+            $this->touch();
+        }
+
         event(new StatusUpdated($oldStatus, $newStatus, $this));
 
         return $this;
