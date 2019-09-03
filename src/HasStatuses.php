@@ -16,7 +16,7 @@ trait HasStatuses
     public function statuses(): MorphMany
     {
         return $this->morphMany($this->getStatusModelClassName(), 'model', 'model_type', $this->getModelKeyColumnName())
-                    ->latest('id');
+            ->latest('id');
     }
 
     public function status(): ?Status
@@ -26,7 +26,7 @@ trait HasStatuses
 
     public function setStatus(string $name, ?string $reason = null): self
     {
-        if (! $this->isValidStatus($name, $reason)) {
+        if (!$this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name);
         }
 
@@ -45,15 +45,31 @@ trait HasStatuses
      */
     public function latestStatus(...$names): ?Status
     {
-        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
-
         $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
 
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
         if (count($names) < 1) {
             return $statuses->first();
         }
 
         return $statuses->whereIn('name', $names)->first();
+    }
+
+    public function hasStatus($name): bool
+    {
+        $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
+
+        return ($statuses->where('name', $name)->count() > 0);
+    }
+
+    public function deleteStatus(...$names)
+    {
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
+        if (count($names) < 1) {
+            return $this;
+        }
+
+        $this->statuses()->whereIn('name', $names)->delete();
     }
 
     public function scopeCurrentStatus(Builder $builder, ...$names)
@@ -110,7 +126,7 @@ trait HasStatuses
 
     public function getStatusAttribute(): string
     {
-        return (string) $this->latestStatus();
+        return (string)$this->latestStatus();
     }
 
     public function forceSetStatus(string $name, ?string $reason = null): self

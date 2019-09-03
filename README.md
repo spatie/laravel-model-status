@@ -189,6 +189,32 @@ You may bypass validation with the `forceSetStatus` method:
 $model->forceSetStatus('invalid-status-name');
 ```
 
+
+### Check if status has been assigned
+
+You can check if a specific status has been set on the model at any time by using the `hasStatus` method:
+
+```php
+$model->hasStatus('status 1');
+```
+
+### Delete status from model
+
+You can delete any given status that has been set on the model at any time by using the `deleteStatus` method:
+
+Delete single status from model:
+
+```php
+$model->deleteStatus('status 1');
+```
+
+Delete multiple statuses from model at once:
+
+```php
+$model->deleteStatus(['status 1', 'status 2']);
+```
+
+
 ### Events
 
 The`Spatie\ModelStatus\Events\StatusUpdated`  event will be dispatched when the status is updated.
