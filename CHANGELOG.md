@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.8.0 - 2019-09-04
+
+- add support for Laravel 6
+
 ## 1.7.1 - 2019-06-11
 
 - performance improvements
