@@ -6,7 +6,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-model-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-model-status)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-model-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-model-status)
 
-Imagine you want to have an Eloquent model hold a status. It's easily solved by just adding a `status` field to that model and be done with it. But in case you need a history of status changes or need to store some extra info on why a status changed, just adding a single field won't cut it. 
+Imagine you want to have an Eloquent model hold a status. It's easily solved by just adding a `status` field to that model and be done with it. But in case you need a history of status changes or need to store some extra info on why a status changed, just adding a single field won't cut it.
 
 This package provides a `HasStatuses` trait that, once installed on a model, allows you to do things like this:
 
@@ -60,7 +60,7 @@ return [
 
     /*
      * The class name of the status model that holds all statuses.
-     * 
+     *
      * The model must be or extend `Spatie\ModelStatus\Status`.
      */
     'status_model' => Spatie\ModelStatus\Status::class,
@@ -189,6 +189,32 @@ You may bypass validation with the `forceSetStatus` method:
 $model->forceSetStatus('invalid-status-name');
 ```
 
+
+### Check if status has been assigned
+
+You can check if a specific status has been set on the model at any time by using the `hasEverHadStatus` method:
+
+```php
+$model->hasEverHadStatus('status 1');
+```
+
+### Delete status from model
+
+You can delete any given status that has been set on the model at any time by using the `deleteStatus` method:
+
+Delete single status from model:
+
+```php
+$model->deleteStatus('status 1');
+```
+
+Delete multiple statuses from model at once:
+
+```php
+$model->deleteStatus(['status 1', 'status 2']);
+```
+
+
 ### Events
 
 The`Spatie\ModelStatus\Events\StatusUpdated`  event will be dispatched when the status is updated.
@@ -223,10 +249,10 @@ class StatusUpdated
 
 ### Custom model and migration
 
-You can change the model used by specifying a class name in the `status_model` key of the `model-status` config file. 
+You can change the model used by specifying a class name in the `status_model` key of the `model-status` config file.
 
-You can change the column name used in the status table (`model_id` by default) when using a custom migration where you changed 
-that. In that case, simply change the `model_primary_key_attribute` key of the `model-status` config file. 
+You can change the column name used in the status table (`model_id` by default) when using a custom migration where you changed
+that. In that case, simply change the `model_primary_key_attribute` key of the `model-status` config file.
 
 ### Testing
 

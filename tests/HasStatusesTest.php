@@ -11,6 +11,7 @@ use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
 
 class HasStatusesTest extends TestCase
 {
+    /** @var TestModel */
     protected $testModel;
 
     protected function setUp(): void
@@ -137,6 +138,53 @@ class HasStatusesTest extends TestCase
         );
 
         $this->assertNull($this->testModel->latestStatus('non existing status'));
+    }
+
+    /** @test */
+    public function it_will_return_true_if_specific_status_is_found()
+    {
+        $this->testModel->setStatus('status 1');
+
+        $this->assertTrue($this->testModel->hasEverHadStatus('status 1'));
+    }
+
+    /** @test */
+    public function it_will_return_false_if_specific_status_is_not_found()
+    {
+        $this->testModel->setStatus('status 1');
+
+        $this->assertFalse($this->testModel->hasEverHadStatus('status 2'));
+    }
+
+    /** @test */
+    public function it_can_delete_a_specific_status()
+    {
+        $this->testModel->setStatus('status to delete');
+
+        $this->assertEquals(1, $this->testModel->statuses()->count());
+        $this->testModel->deleteStatus('status to delete');
+        $this->assertEquals(0, $this->testModel->statuses()->count());
+    }
+
+    /** @test */
+    public function it_can_delete_a_multiple_statuses_at_once()
+    {
+        $this->testModel->setStatus('status to delete 1')
+            ->setStatus('status to delete 2');
+
+        $this->assertEquals(2, $this->testModel->statuses()->count());
+        $this->testModel->deleteStatus('status to delete 1', 'status to delete 2');
+        $this->assertEquals(0, $this->testModel->statuses()->count());
+    }
+
+    /** @test */
+    public function it_will_keep_status_when_invalid_delete_status_is_given()
+    {
+        $this->testModel->setStatus('status to delete');
+
+        $this->assertEquals(1, $this->testModel->statuses()->count());
+        $this->testModel->deleteStatus();
+        $this->assertEquals(1, $this->testModel->statuses()->count());
     }
 
     /** @test */
