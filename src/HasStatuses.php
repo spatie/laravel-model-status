@@ -55,7 +55,7 @@ trait HasStatuses
         return $statuses->whereIn('name', $names)->first();
     }
 
-    public function hasStatus($name): bool
+    public function hasEverHadStatus($name): bool
     {
         $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
 

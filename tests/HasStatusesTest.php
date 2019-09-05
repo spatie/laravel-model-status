@@ -145,7 +145,7 @@ class HasStatusesTest extends TestCase
     {
         $this->testModel->setStatus('status 1');
 
-        $this->assertTrue($this->testModel->hasStatus('status 1'));
+        $this->assertTrue($this->testModel->hasEverHadStatus('status 1'));
     }
 
     /** @test */
@@ -153,7 +153,7 @@ class HasStatusesTest extends TestCase
     {
         $this->testModel->setStatus('status 1');
 
-        $this->assertFalse($this->testModel->hasStatus('status 2'));
+        $this->assertFalse($this->testModel->hasEverHadStatus('status 2'));
     }
 
     /** @test */
