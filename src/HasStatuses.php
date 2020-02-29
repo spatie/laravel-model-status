@@ -2,6 +2,7 @@
 
 namespace Spatie\ModelStatus;
 
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +27,7 @@ trait HasStatuses
 
     public function setStatus(string $name, ?string $reason = null): self
     {
-        if (! $this->isValidStatus($name, $reason)) {
+        if (!$this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name);
         }
 
@@ -89,6 +90,29 @@ trait HasStatuses
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
                                     ->whereColumn($this->getModelKeyColumnName(), $this->getQualifiedKeyName());
+                            }
+                        );
+                }
+            );
+    }
+
+    public function scopeCurrentStatusDateBetween(Builder $builder, Carbon $startDate, Carbon $endDate)
+    {
+        $builder
+            ->whereHas(
+                'statuses',
+                function (Builder $query) use ($startDate, $endDate) {
+                    $query
+                        ->where('created_at', '>=', $startDate->format('Y-m-d 00:00'))
+                        ->where('created_at', '<=', $endDate->format('Y-m-d 23:59'))
+                        ->whereIn(
+                            'id',
+                            function (QueryBuilder $query) {
+                                $query
+                                    ->select(DB::raw('max(id)'))
+                                    ->from($this->getStatusTableName())
+                                    ->where('model_type', $this->getStatusModelType())
+                                    ->groupBy($this->getModelKeyColumnName());
                             }
                         );
                 }

@@ -2,6 +2,7 @@
 
 namespace Spatie\ModelStatus\Tests;
 
+use Carbon\Carbon;
 use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -223,19 +224,23 @@ class HasStatusesTest extends TestCase
 
         $this->assertEquals(
             ['model4'],
-            TestModel::currentStatus('status-a')->get()->pluck('name')->toArray());
+            TestModel::currentStatus('status-a')->get()->pluck('name')->toArray()
+        );
 
         $this->assertEquals(
             ['model1', 'model3'],
-            TestModel::currentStatus('status-b')->get()->pluck('name')->toArray());
+            TestModel::currentStatus('status-b')->get()->pluck('name')->toArray()
+        );
 
         $this->assertEquals(
             ['model2'],
-            TestModel::currentStatus('status-c')->get()->pluck('name')->toArray());
+            TestModel::currentStatus('status-c')->get()->pluck('name')->toArray()
+        );
 
         $this->assertEquals(
             [],
-            TestModel::currentStatus('status-d')->get()->pluck('name')->toArray());
+            TestModel::currentStatus('status-d')->get()->pluck('name')->toArray()
+        );
     }
 
     /** @test */
@@ -272,6 +277,20 @@ class HasStatusesTest extends TestCase
         $this->assertCount(4, TestModel::otherCurrentStatus('initiated')->get());
         $this->assertCount(3, TestModel::otherCurrentStatus('initiated', 'pending')->get());
         $this->assertCount(3, TestModel::otherCurrentStatus(['initiated', 'pending'])->get());
+    }
+
+    /** @test */
+    public function it_can_find_all_models_that_have_a_last_status_date_between_two_dates()
+    {
+        $model1 = TestModel::create(['name' => 'model1']);
+
+        $model1->setStatus('initiated');
+        Carbon::setTestNow(Carbon::now()->addDays(4));
+        $model1->setStatus('pending');
+        Carbon::setTestNow();
+
+        $this->assertCount(1, TestModel::currentStatusDateBetween(Carbon::now()->addDays(4), Carbon::now()->addDays(5))->get());
+        $this->assertCount(0, TestModel::currentStatusDateBetween(Carbon::now(), Carbon::now()->addDays(1))->get());
     }
 
     /** @test */
