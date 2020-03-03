@@ -2,12 +2,12 @@
 
 namespace Spatie\ModelStatus\Tests;
 
-use Spatie\ModelStatus\Tests\Models\TestModel;
-use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
+use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
 use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
+use Spatie\ModelStatus\Tests\Models\TestModel;
+use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
 class HasStatusesTest extends TestCase
 {
