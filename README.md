@@ -1,7 +1,7 @@
 # Assign statuses to Eloquent models
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-model-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-model-status)
-[![Build Status](https://img.shields.io/travis/spatie/laravel-model-status/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-model-status)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/spatie/laravel-model-status/run-tests?label=tests)
 [![StyleCI](https://styleci.io/repos/119671555/shield?branch=master)](https://styleci.io/repos/119671555)
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-model-status.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-model-status)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-model-status.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-model-status)
