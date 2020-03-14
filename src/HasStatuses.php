@@ -27,7 +27,7 @@ trait HasStatuses
 
     public function setStatus(string $name, ?string $reason = null): self
     {
-        if (!$this->isValidStatus($name, $reason)) {
+        if (! $this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name);
         }
 
@@ -96,13 +96,15 @@ trait HasStatuses
             );
     }
 
-    public function scopeCurrentStatusDateBetween(Builder $builder, Carbon $startDate, Carbon $endDate)
+    public function scopeCurrentStatusDateBetween(Builder $builder, Carbon $startDate, Carbon $endDate, ...$names)
     {
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
         $builder
             ->whereHas(
                 'statuses',
-                function (Builder $query) use ($startDate, $endDate) {
+                function (Builder $query) use ($startDate, $endDate, $names) {
                     $query
+                        ->whereIn('name', $names)
                         ->where('created_at', '>=', $startDate->format('Y-m-d 00:00'))
                         ->where('created_at', '<=', $endDate->format('Y-m-d 23:59'))
                         ->whereIn(

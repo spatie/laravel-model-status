@@ -280,7 +280,7 @@ class HasStatusesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_find_all_models_that_have_a_last_status_date_between_two_dates()
+    public function it_can_find_all_models_that_have_a_current_status_date_between_two_dates()
     {
         $model1 = TestModel::create(['name' => 'model1']);
 
@@ -289,8 +289,8 @@ class HasStatusesTest extends TestCase
         $model1->setStatus('pending');
         Carbon::setTestNow();
 
-        $this->assertCount(1, TestModel::currentStatusDateBetween(Carbon::now()->addDays(4), Carbon::now()->addDays(5))->get());
-        $this->assertCount(0, TestModel::currentStatusDateBetween(Carbon::now(), Carbon::now()->addDays(1))->get());
+        $this->assertCount(1, TestModel::currentStatusDateBetween(Carbon::now()->addDays(4), Carbon::now()->addDays(5), 'pending')->get());
+        $this->assertCount(0, TestModel::currentStatusDateBetween(Carbon::now(), Carbon::now()->addDays(1), 'pending')->get());
     }
 
     /** @test */

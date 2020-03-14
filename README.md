@@ -175,10 +175,10 @@ $allNonInitiatedOrPendingModels = Model::otherCurrentStatus('initiated', 'pendin
 The `currentStatusDateBetween` scope will return all models that have a current status with `created_at` between provided dates, The scope accept dates as carbon object.
 
 ```php
-$models = Model::currentStatusDateBetween(Carbon::now(), Carbon::now()->addDays(1));
+$models = Model::currentStatusDateBetween(Carbon::now(), Carbon::now()->addDays(1), ['pending']);
 ```
 
-This previous example will return all models that have a current status with `created_at` starting from today at `00:00` and tommorow until `23:59`.
+This previous example will return all models that have a current status `pending` with `created_at` starting from today at `00:00` and tommorow until `23:59`.
 
 ### Validating a status before setting it
 
