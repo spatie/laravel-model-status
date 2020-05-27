@@ -31,7 +31,11 @@ $latestPendingStatus->reason; // returns 'needs verification'
 
 ## Support us
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us). 
+Learn how to create a package like this one, by watching our premium video course:
+
+[![Laravel Package training](https://spatie.be/github/package-training.jpg)](https://laravelpackage.training)
+
+We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
 We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
@@ -141,7 +145,6 @@ All associated statuses of a model can be retrieved like this:
 $allStatuses = $model->statuses;
 ```
 
-
 ### Retrieving models with a given latest state
 
 The `currentStatus` scope will return models that have a status with the given name.
@@ -195,7 +198,6 @@ You may bypass validation with the `forceSetStatus` method:
 $model->forceSetStatus('invalid-status-name');
 ```
 
-
 ### Check if status has been assigned
 
 You can check if a specific status has been set on the model at any time by using the `hasEverHadStatus` method:
@@ -219,7 +221,6 @@ Delete multiple statuses from model at once:
 ```php
 $model->deleteStatus(['status 1', 'status 2']);
 ```
-
 
 ### Events
 
