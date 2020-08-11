@@ -157,6 +157,18 @@ $allPendingModels = Model::currentStatus(['pending', 'initiated']);
 $allPendingModels = Model::currentStatus('pending', 'initiated');
 ```
 
+### Retrieving models that could have some state
+
+Using `orCurrentStatus` is specially useful for `OR` queries or when you are trying to build a search query.
+
+```php
+$allPendingModels = Model::where('field', 'value')->orCurrentStatus('pending');
+
+//or array of statuses
+$allPendingModels = Model::where('field', 'value')->orCurrentStatus(['pending', 'initiated']);
+$allPendingModels = Model::where('field', 'value')->orCurrentStatus('pending', 'initiated');
+```
+
 ### Retrieving models without a given state
 
 The `otherCurrentStatus` scope will return all models that do not have a status with the given name, including any model that does not have any statuses associated with them.
