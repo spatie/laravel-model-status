@@ -239,6 +239,33 @@ class HasStatusesTest extends TestCase
     }
 
     /** @test */
+    public function it_can_find_all_models_that_have_a_last_status_or_the_given_name()
+    {
+        $model1 = TestModel::create(['name' => 'model1']);
+        $model2 = TestModel::create(['name' => 'model2']);
+        $model3 = TestModel::create(['name' => 'model3']);
+        $model4 = TestModel::create(['name' => 'model4']);
+
+        $model1
+            ->setStatus('status-a')
+            ->setStatus('status-b');
+
+        $model2->setStatus('status-c');
+
+        $model3->setStatus('status-b');
+
+        $model4->setStatus('status-a');
+
+        $this->assertEquals(
+            ['model1', 'model3', 'model4'],
+            TestModel::where('name', 'model4')->orCurrentStatus('status-b')->get()->pluck('name')->toArray());
+
+        $this->assertEquals(
+            ['model1', 'model2'],
+            TestModel::where('name', 'model1')->orCurrentStatus('status-c')->get()->pluck('name')->toArray());
+    }
+
+    /** @test */
     public function it_can_return_a_string_when_calling_the_attribute()
     {
         $this

@@ -72,6 +72,29 @@ trait HasStatuses
         $this->statuses()->whereIn('name', $names)->delete();
     }
 
+    public function scopeOrCurrentStatus(Builder $builder, ...$names)
+    {
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
+        $builder
+            ->orWhereHas(
+                'statuses',
+                function (Builder $query) use ($names) {
+                    $query
+                        ->whereIn('name', $names)
+                        ->whereIn(
+                            'id',
+                            function (QueryBuilder $query) {
+                                $query
+                                    ->select(DB::raw('max(id)'))
+                                    ->from($this->getStatusTableName())
+                                    ->where('model_type', $this->getStatusModelType())
+                                    ->whereColumn($this->getModelKeyColumnName(), $this->getQualifiedKeyName());
+                            }
+                        );
+                }
+            );
+    }
+
     public function scopeCurrentStatus(Builder $builder, ...$names)
     {
         $names = is_array($names) ? Arr::flatten($names) : func_get_args();
