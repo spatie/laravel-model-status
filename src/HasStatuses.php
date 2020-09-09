@@ -134,7 +134,7 @@ trait HasStatuses
         $oldStatus = $this->latestStatus();
 
         $newStatus = $this->statuses()->create([
-            'name'   => $name,
+            'name' => $name,
             'reason' => $reason,
         ]);
 

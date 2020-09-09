@@ -30,7 +30,8 @@ class StatusEventsTest extends TestCase
 
         $this->testModel->setStatus('status a', 'Reason a');
 
-        Event::assertDispatched(StatusUpdated::class,
+        Event::assertDispatched(
+            StatusUpdated::class,
             function (StatusUpdated $event) {
                 if ($event->model->id !== $this->testModel->id) {
                     return false;
@@ -45,6 +46,7 @@ class StatusEventsTest extends TestCase
                 }
 
                 return true;
-            });
+            }
+        );
     }
 }
