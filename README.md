@@ -60,7 +60,7 @@ Optionally you can publish the config-file with:
 php artisan vendor:publish --provider="Spatie\ModelStatus\ModelStatusServiceProvider" --tag="config"
 ```
 
-This is the contents of the file which will be published at `config/models-status.php`
+This is the contents of the file which will be published at `config/model-status.php`
 
 ```php
 return [
