@@ -4,6 +4,23 @@ All notable changes to `laravel-model-status` will be documented in this file
 
 ## 1.11.0 - 2022-02-03
 
+## What's Changed
+
+- Support for Laravel 9
+- Minor typo fix by @vdbelt in https://github.com/spatie/laravel-model-status/pull/80
+- Migrate to PHP-CS-Fixer 3.x by @shuvroroy in https://github.com/spatie/laravel-model-status/pull/81
+- Add PHP 8.1 Support by @patinthehat in https://github.com/spatie/laravel-model-status/pull/83
+
+## New Contributors
+
+- @vdbelt made their first contribution in https://github.com/spatie/laravel-model-status/pull/80
+- @shuvroroy made their first contribution in https://github.com/spatie/laravel-model-status/pull/81
+- @patinthehat made their first contribution in https://github.com/spatie/laravel-model-status/pull/83
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.10.2...1.11.0
+
+## 1.11.0 - 2022-02-03
+
 - Support Laravel 9
 
 ## 1.10.2 - 2020-11-04
