@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.11.0 - 2022-02-03
+
+- Support Laravel 9
+
 ## 1.10.2 - 2020-11-04
 
 - add support for PHP 8
