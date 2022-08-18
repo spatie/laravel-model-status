@@ -77,7 +77,7 @@ trait HasStatuses
         $names = is_array($names) ? Arr::flatten($names) : func_get_args();
         $builder
             ->whereHas(
-                'statuses',
+                config('model-status.table_name'),
                 function (Builder $query) use ($names) {
                     $query
                         ->whereIn('name', $names)
@@ -105,7 +105,7 @@ trait HasStatuses
         $names = is_array($names) ? Arr::flatten($names) : func_get_args();
         $builder
             ->whereHas(
-                'statuses',
+                config('model-status.table_name'),
                 function (Builder $query) use ($names) {
                     $query
                         ->whereNotIn('name', $names)

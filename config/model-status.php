@@ -15,4 +15,11 @@ return [
      * You can change this value if you have set a different name in the migration for the statuses table.
      */
     'model_primary_key_attribute' => 'model_id',
+
+    /*
+     * The name of the table in database.
+     *
+     * We have chosen a basic default value, but you may easily change it to any name you like.
+     */
+    'table_name' => 'statuses',
 ];

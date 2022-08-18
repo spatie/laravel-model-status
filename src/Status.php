@@ -9,8 +9,6 @@ class Status extends Model
 {
     protected $guarded = [];
 
-    protected $table = 'statuses';
-
     public function model(): MorphTo
     {
         return $this->morphTo();
@@ -19,5 +17,10 @@ class Status extends Model
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    public function getTable()
+    {
+        return config('model-status.table_name', parent::getTable());
     }
 }

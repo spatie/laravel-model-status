@@ -8,7 +8,7 @@ class CreateStatusesTable extends Migration
 {
     public function up()
     {
-        Schema::create('statuses', function (Blueprint $table) {
+        Schema::create(config('model-status.table_name'), function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->text('reason')->nullable();
@@ -19,6 +19,6 @@ class CreateStatusesTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('statuses');
+        Schema::dropIfExists(config('model-status.table_name'));
     }
 }

@@ -17,7 +17,7 @@ class ModelStatusServiceProvider extends ServiceProvider
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([
-                __DIR__.'/../database/migrations/create_statuses_table.php.stub' => database_path('migrations/'.$timestamp.'_create_statuses_table.php'),
+                __DIR__.'/../database/migrations/create_' . config('model-status.table_name') . '_table.php.stub' => database_path('migrations/'.$timestamp.'_create_statuses_table.php'),
             ], 'migrations');
         }
 
