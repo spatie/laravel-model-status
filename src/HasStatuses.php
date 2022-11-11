@@ -10,9 +10,17 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Illuminate\Database\Eloquent\Model;
 
 trait HasStatuses
 {
+    public static function bootHasStatuses()
+    {
+        static::deleted(function (Model $deletedModel) {
+            $deletedModel->statuses()->delete();
+        });
+    }
+
     public function statuses(): MorphMany
     {
         return $this->morphMany($this->getStatusModelClassName(), 'model', 'model_type', $this->getModelKeyColumnName())

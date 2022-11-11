@@ -320,4 +320,23 @@ class HasStatusesTest extends TestCase
         $this->assertEquals('pending', $model->status);
         $this->assertEquals($model->id, $model->status()->model_id);
     }
+
+    /** @test */
+    public function it_can_remove_statuses_on_model_delete()
+    {
+        $this->testModel->setStatus('pending');
+        $this->testModel->setStatus('ready');
+
+        $this->assertEquals(2, $this->testModel->statuses()->count());
+
+        $this->testModel->delete();
+
+        $this->assertEquals(0, $this->testModel->statuses()->count());
+    }
+
+    /** @test */
+    public function it_can_remove_model_without_statuses()
+    {
+        $this->assertTrue($this->testModel->delete());
+    }
 }
