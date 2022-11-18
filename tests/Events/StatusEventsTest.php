@@ -1,52 +1,38 @@
 <?php
 
-namespace Spatie\ModelStatus\Tests\Events;
-
 use Illuminate\Support\Facades\Event;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Tests\Models\TestModel;
-use Spatie\ModelStatus\Tests\TestCase;
 
-class StatusEventsTest extends TestCase
-{
-    /** @var \Spatie\ModelStatus\Tests\Models\TestModel */
-    protected $testModel;
+beforeEach(function () {
+    $this->testModel = TestModel::create([
+        'name' => 'name',
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('fires an event when status changes', function () {
+    $this->testModel->setStatus('pending', 'waiting on action');
 
-        $this->testModel = TestModel::create([
-            'name' => 'name',
-        ]);
-    }
+    Event::fake();
 
-    /** @test */
-    public function it_fires_an_event_when_status_changes()
-    {
-        $this->testModel->setStatus('pending', 'waiting on action');
+    $this->testModel->setStatus('status a', 'Reason a');
 
-        Event::fake();
-
-        $this->testModel->setStatus('status a', 'Reason a');
-
-        Event::assertDispatched(
-            StatusUpdated::class,
-            function (StatusUpdated $event) {
-                if ($event->model->id !== $this->testModel->id) {
-                    return false;
-                }
-
-                if ($event->newStatus->name !== 'status a') {
-                    return false;
-                }
-
-                if ($event->oldStatus->name !== 'pending') {
-                    return false;
-                }
-
-                return true;
+    Event::assertDispatched(
+        StatusUpdated::class,
+        function (StatusUpdated $event) {
+            if ($event->model->id !== $this->testModel->id) {
+                return false;
             }
-        );
-    }
-}
+
+            if ($event->newStatus->name !== 'status a') {
+                return false;
+            }
+
+            if ($event->oldStatus->name !== 'pending') {
+                return false;
+            }
+
+            return true;
+        }
+    );
+});
