@@ -26,7 +26,7 @@
         "illuminate/support": "^8.71|^9.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^7.0",
+        "orchestra/testbench": "^6.6|^7.0",
         "pestphp/pest": "^1.22",
         "phpunit/phpunit": "^9.5"
     },
