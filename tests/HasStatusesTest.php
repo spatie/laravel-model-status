@@ -67,12 +67,12 @@ it('can handle getting a status when there are none set')
     ->toBeNull();
 
 it('can handle an empty reason when setting a status')
-    ->tap(fn () =>  $this->testModel->setStatus('status'))
+    ->tap(fn () => $this->testModel->setStatus('status'))
     ->expect(fn () => $this->testModel->status()->name)
     ->toEqual('status');
 
 it('allows null for an empty reason when setting a status')
-    ->tap(fn () =>  $this->testModel->setStatus('status', null))
+    ->tap(fn () => $this->testModel->setStatus('status', null))
     ->expect(fn () => $this->testModel->status()->reason)
     ->toBeNull();
 
@@ -88,7 +88,7 @@ it('can return the latest status', function () {
         $this->testModel->latestStatus('status 1', 'status 3'),
         $this->testModel->latestStatus(['status 1', 'status 3']),
         $this->testModel->latestStatus('status 1', 'status 2', 'status 3'),
-        $this->testModel->latestStatus('non existing status')
+        $this->testModel->latestStatus('non existing status'),
     ])->sequence('status 1', 'status 1', 'status 2', null);
 });
 
@@ -98,7 +98,7 @@ it('will return `true` if specific status is found')
     ->toBeTrue();
 
 it('will return `false` if specific status is not found')
-    ->tap(fn () =>  $this->testModel->setStatus('status 1'))
+    ->tap(fn () => $this->testModel->setStatus('status 1'))
     ->expect(fn () => $this->testModel->hasEverHadStatus('status 2'))
     ->toBeFalse();
 
@@ -165,7 +165,7 @@ it('can find all models that have a last status with the given name', function (
         TestModel::currentStatus('status-a')->get()->pluck('name')->toArray(),
         TestModel::currentStatus('status-b')->get()->pluck('name')->toArray(),
         TestModel::currentStatus('status-c')->get()->pluck('name')->toArray(),
-        TestModel::currentStatus('status-d')->get()->pluck('name')->toArray()
+        TestModel::currentStatus('status-d')->get()->pluck('name')->toArray(),
     ])->sequence(['model4'], ['model1', 'model3'], ['model2'], []);
 });
 
