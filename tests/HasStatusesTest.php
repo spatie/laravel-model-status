@@ -1,7 +1,5 @@
 <?php
 
-namespace Spatie\ModelStatus\Tests;
-
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
@@ -9,315 +7,222 @@ use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
 use Spatie\ModelStatus\Tests\Models\TestModel;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
-class HasStatusesTest extends TestCase
-{
-    /** @var TestModel */
-    protected $testModel;
+beforeEach(function () {
+    $this->testModel = TestModel::create([
+        'name' => 'name',
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('can get and set a status', function () {
+    $this->testModel->setStatus('pending', 'waiting on action');
 
-        $this->testModel = TestModel::create([
-            'name' => 'name',
-        ]);
-    }
+    $name = $this->testModel->statuses->first()->name;
+    $reason = $this->testModel->statuses->first()->reason;
 
-    /** @test */
-    public function it_can_get_and_set_a_status()
-    {
-        $this->testModel->setStatus('pending', 'waiting on action');
+    expect($name)->toEqual('pending')
+        ->and($reason)->toEqual('waiting on action');
+});
 
-        $name = $this->testModel->statuses->first()->name;
+test('a reason can be set')
+    ->tap(fn () => $this->testModel->setStatus('pending', 'waiting on action'))
+    ->expect(fn () => $this->testModel->status()->reason)
+    ->toEqual('waiting on action');
 
-        $reason = $this->testModel->statuses->first()->reason;
+it('throws an exception when setting an invalid status', function () {
+    $validationUser = ValidationTestModel::create([
+        'name' => 'name',
+    ]);
 
-        $this->assertEquals('pending', $name);
+    $validationUser->setStatus('InvalidStatus');
+})->throws(InvalidStatus::class);
 
-        $this->assertEquals('waiting on action', $reason);
-    }
+it('can force set an invalid status', function () {
+    $validationUser = ValidationTestModel::create([
+        'name' => 'name',
+    ]);
 
-    /** @test */
-    public function a_reason_can_be_set()
-    {
-        $this->testModel->setStatus('pending', 'waiting on action');
+    $validationUser->forceSetStatus('InvalidStatus');
 
-        $this->assertEquals('waiting on action', $this->testModel->status()->reason);
-    }
+    $name = $validationUser->statuses->first()->name;
 
-    /** @test */
-    public function it_throws_an_exception_when_setting_an_invalid_status()
-    {
-        $validationUser = ValidationTestModel::create([
-            'name' => 'name',
-        ]);
+    expect($name)->toEqual('InvalidStatus');
+});
 
-        $this->expectException(InvalidStatus::class);
+it('can find the last status by name', function () {
+    $this->testModel
+        ->setStatus('status a', 'reason 1')
+        ->setStatus('status b', 'reason 2')
+        ->setStatus('status a', 'reason 3');
 
-        $validationUser->setStatus('InvalidStatus');
-    }
-
-    /** @test */
-    public function it_can_force_set_an_invalid_status()
-    {
-        $validationUser = ValidationTestModel::create([
-            'name' => 'name',
-        ]);
-
-        $validationUser->forceSetStatus('InvalidStatus');
-
-        $name = $validationUser->statuses->first()->name;
-
-        $this->assertEquals('InvalidStatus', $name);
-    }
-
-    /** @test */
-    public function it_can_find_the_last_status_by_name()
-    {
-        $this->testModel
-            ->setStatus('status a', 'reason 1')
-            ->setStatus('status b', 'reason 2')
-            ->setStatus('status a', 'reason 3');
-
-        $this->assertEquals(
-            'reason 3',
-            $this->testModel->latestStatus('status a')->reason
-        );
-
-        $this->assertEquals(
-            'reason 2',
+    expect(
+        $this->testModel->latestStatus('status a')->reason
+    )->toEqual('reason 3')
+        ->and(
             $this->testModel->latestStatus('status b')->reason
-        );
-    }
+        )->toEqual('reason 2');
+});
 
-    /** @test */
-    public function it_can_handle_getting_a_status_when_there_are_none_set()
-    {
-        $this->assertNull($this->testModel->status());
-    }
+it('can handle getting a status when there are none set')
+    ->expect(fn () => $this->testModel->status())
+    ->toBeNull();
 
-    /** @test */
-    public function it_can_handle_an_empty_reason_when_setting_a_status()
-    {
-        $this->testModel->setStatus('status');
+it('can handle an empty reason when setting a status')
+    ->tap(fn () => $this->testModel->setStatus('status'))
+    ->expect(fn () => $this->testModel->status()->name)
+    ->toEqual('status');
 
-        $this->assertEquals('status', $this->testModel->status()->name);
-    }
+it('allows null for an empty reason when setting a status')
+    ->tap(fn () => $this->testModel->setStatus('status', null))
+    ->expect(fn () => $this->testModel->status()->reason)
+    ->toBeNull();
 
-    /** @test */
-    public function it_allows_null_for_an_empty_reason_when_setting_a_status()
-    {
-        $this->testModel->setStatus('status', null);
+it('can return the latest status', function () {
+    $this->testModel
+        ->setStatus('status 1')
+        ->setStatus('status 3')
+        ->setStatus('status 2')
+        ->setStatus('status 1')
+        ->setStatus('status 2');
 
-        $this->assertNull($this->testModel->status()->reason);
-    }
+    expect([
+        $this->testModel->latestStatus('status 1', 'status 3'),
+        $this->testModel->latestStatus(['status 1', 'status 3']),
+        $this->testModel->latestStatus('status 1', 'status 2', 'status 3'),
+        $this->testModel->latestStatus('non existing status'),
+    ])->sequence('status 1', 'status 1', 'status 2', null);
+});
 
-    /** @test */
-    public function it_can_return_the_latest_status()
-    {
-        $this->testModel
-            ->setStatus('status 1')
-            ->setStatus('status 3')
-            ->setStatus('status 2')
-            ->setStatus('status 1')
-            ->setStatus('status 2');
+it('will return `true` if specific status is found')
+    ->tap(fn () => $this->testModel->setStatus('status 1'))
+    ->expect(fn () => $this->testModel->hasEverHadStatus('status 1'))
+    ->toBeTrue();
 
-        $this->assertEquals(
-            'status 1',
-            $this->testModel->latestStatus('status 1', 'status 3')
-        );
+it('will return `false` if specific status is not found')
+    ->tap(fn () => $this->testModel->setStatus('status 1'))
+    ->expect(fn () => $this->testModel->hasEverHadStatus('status 2'))
+    ->toBeFalse();
 
-        $this->assertEquals(
-            'status 1',
-            $this->testModel->latestStatus(['status 1', 'status 3'])
-        );
+it('can delete a specific status', function () {
+    $this->testModel->setStatus('status to delete');
 
-        $this->assertEquals(
-            'status 2',
-            $this->testModel->latestStatus('status 1', 'status 2', 'status 3')
-        );
+    expect($this->testModel->statuses()->count())->toEqual(1);
 
-        $this->assertNull($this->testModel->latestStatus('non existing status'));
-    }
+    $this->testModel->deleteStatus('status to delete');
 
-    /** @test */
-    public function it_will_return_true_if_specific_status_is_found()
-    {
-        $this->testModel->setStatus('status 1');
+    expect($this->testModel->statuses()->count())->toEqual(0);
+});
 
-        $this->assertTrue($this->testModel->hasEverHadStatus('status 1'));
-    }
+it('can delete a multiple statuses at once', function () {
+    $this->testModel->setStatus('status to delete 1')
+        ->setStatus('status to delete 2');
 
-    /** @test */
-    public function it_will_return_false_if_specific_status_is_not_found()
-    {
-        $this->testModel->setStatus('status 1');
+    expect($this->testModel->statuses()->count())->toEqual(2);
 
-        $this->assertFalse($this->testModel->hasEverHadStatus('status 2'));
-    }
+    $this->testModel->deleteStatus('status to delete 1', 'status to delete 2');
 
-    /** @test */
-    public function it_can_delete_a_specific_status()
-    {
-        $this->testModel->setStatus('status to delete');
+    expect($this->testModel->statuses()->count())->toEqual(0);
+});
 
-        $this->assertEquals(1, $this->testModel->statuses()->count());
-        $this->testModel->deleteStatus('status to delete');
-        $this->assertEquals(0, $this->testModel->statuses()->count());
-    }
+it('will keep status when invalid delete status is given', function () {
+    $this->testModel->setStatus('status to delete');
 
-    /** @test */
-    public function it_can_delete_a_multiple_statuses_at_once()
-    {
-        $this->testModel->setStatus('status to delete 1')
-            ->setStatus('status to delete 2');
+    expect($this->testModel->statuses()->count())->toEqual(1);
 
-        $this->assertEquals(2, $this->testModel->statuses()->count());
-        $this->testModel->deleteStatus('status to delete 1', 'status to delete 2');
-        $this->assertEquals(0, $this->testModel->statuses()->count());
-    }
+    $this->testModel->deleteStatus();
 
-    /** @test */
-    public function it_will_keep_status_when_invalid_delete_status_is_given()
-    {
-        $this->testModel->setStatus('status to delete');
+    expect($this->testModel->statuses()->count())->toEqual(1);
+});
 
-        $this->assertEquals(1, $this->testModel->statuses()->count());
-        $this->testModel->deleteStatus();
-        $this->assertEquals(1, $this->testModel->statuses()->count());
-    }
+it('can handle a different status model')
+    ->tap(
+        fn () => config()->set('model-status.status_model', AlternativeStatusModel::class)
+    )
+    ->tap(
+        fn () => $this->testModel->setStatus('pending', 'waiting on action')
+    )
+    ->expect(fn () => $this->testModel->status())
+    ->toBeInstanceOf(AlternativeStatusModel::class);
 
-    /** @test */
-    public function it_can_handle_a_different_status_model()
-    {
-        $this->app['config']->set(
-            'model-status.status_model',
-            AlternativeStatusModel::class
-        );
+it('can find all models that have a last status with the given name', function () {
+    $model1 = TestModel::create(['name' => 'model1']);
+    $model2 = TestModel::create(['name' => 'model2']);
+    $model3 = TestModel::create(['name' => 'model3']);
+    $model4 = TestModel::create(['name' => 'model4']);
 
-        $this->testModel->setStatus('pending', 'waiting on action');
+    $model1
+        ->setStatus('status-a')
+        ->setStatus('status-b')
+        ->setStatus('status-c')
+        ->setStatus('status-b');
 
-        $this->assertInstanceOf(AlternativeStatusModel::class, $this->testModel->status());
-    }
+    $model2->setStatus('status-c');
 
-    /** @test */
-    public function it_can_find_all_models_that_have_a_last_status_with_the_given_name()
-    {
-        $model1 = TestModel::create(['name' => 'model1']);
-        $model2 = TestModel::create(['name' => 'model2']);
-        $model3 = TestModel::create(['name' => 'model3']);
-        $model4 = TestModel::create(['name' => 'model4']);
-        $model5 = TestModel::create(['name' => 'model4']);
+    $model3->setStatus('status-b');
 
-        $model1
-            ->setStatus('status-a')
-            ->setStatus('status-b')
-            ->setStatus('status-c')
-            ->setStatus('status-b');
+    $model4->setStatus('status-a');
 
-        $model2->setStatus('status-c');
+    expect([
+        TestModel::currentStatus('status-a')->get()->pluck('name')->toArray(),
+        TestModel::currentStatus('status-b')->get()->pluck('name')->toArray(),
+        TestModel::currentStatus('status-c')->get()->pluck('name')->toArray(),
+        TestModel::currentStatus('status-d')->get()->pluck('name')->toArray(),
+    ])->sequence(['model4'], ['model1', 'model3'], ['model2'], []);
+});
 
-        $model3->setStatus('status-b');
+it('can return a string when calling the attribute', function () {
+    $this
+        ->testModel
+        ->setStatus('free')
+        ->setStatus('pending', 'waiting for a change');
 
-        $model4->setStatus('status-a');
+    expect($this->testModel->status)->toEqual('pending')
+        ->and($this->testModel->status()->name)->toEqual('pending')
+        ->and($this->testModel->status()->reason)->toEqual('waiting for a change');
+});
 
-        $this->assertEquals(
-            ['model4'],
-            TestModel::currentStatus('status-a')->get()->pluck('name')->toArray()
-        );
+it('can find all models that do not have a status with a given name', function () {
+    $model1 = TestModel::create(['name' => 'model1']);
+    $model2 = TestModel::create(['name' => 'model2']);
+    $model3 = TestModel::create(['name' => 'model3']);
+    $model4 = TestModel::create(['name' => 'model4']);
+    $model5 = TestModel::create(['name' => 'model5']);
 
-        $this->assertEquals(
-            ['model1', 'model3'],
-            TestModel::currentStatus('status-b')->get()->pluck('name')->toArray()
-        );
+    $this->testModel->setStatus('initiated');
+    $model1->setStatus('initiated');
 
-        $this->assertEquals(
-            ['model2'],
-            TestModel::currentStatus('status-c')->get()->pluck('name')->toArray()
-        );
+    $model2->setStatus('pending');
+    $model3->setStatus('ready');
+    $model4->setStatus('complete');
 
-        $this->assertEquals(
-            [],
-            TestModel::currentStatus('status-d')->get()->pluck('name')->toArray()
-        );
-    }
+    expect(TestModel::otherCurrentStatus('initiated')->get())->toHaveCount(4)
+        ->and(TestModel::otherCurrentStatus('initiated', 'pending')->get())->toHaveCount(3)
+        ->and(TestModel::otherCurrentStatus(['initiated', 'pending'])->get())->toHaveCount(3);
+});
 
-    /** @test */
-    public function it_can_return_a_string_when_calling_the_attribute()
-    {
-        $this
-            ->testModel
-            ->setStatus('free')
-            ->setStatus('pending', 'waiting for a change');
+it('supports custom polymorphic model types')
+    ->tap(fn () => Relation::morphMap(['custom-test-model' => TestModel::class]))
+    ->tap(fn () => $this->testModel->setStatus('initiated'))
+    ->expect(fn () => TestModel::currentStatus('initiated')->get())
+    ->toHaveCount(1);
 
-        $this->assertEquals('pending', $this->testModel->status);
+it('can use a custom name for the relationship id column', function () {
+    config()->set('model-status.status_model', CustomModelKeyStatusModel::class);
+    config()->set('model-status.model_primary_key_attribute',  'model_custom_fk');
 
-        $this->assertEquals('pending', $this->testModel->status()->name);
+    $model = TestModel::create(['name' => 'model1']);
+    $model->setStatus('pending');
 
-        $this->assertEquals('waiting for a change', $this->testModel->status()->reason);
-    }
+    expect($model->status)->toEqual('pending')
+        ->and($model->status()->model_custom_fk)->toEqual($model->id)
+        ->and($model->status()->is(CustomModelKeyStatusModel::first()))->toBeTrue();
+});
 
-    /** @test */
-    public function it_can_find_all_models_that_do_not_have_a_status_with_the_given_name()
-    {
-        $model1 = TestModel::create(['name' => 'model1']);
-        $model2 = TestModel::create(['name' => 'model2']);
-        $model3 = TestModel::create(['name' => 'model3']);
-        $model4 = TestModel::create(['name' => 'model4']);
-        $model5 = TestModel::create(['name' => 'model5']);
+it('uses the default relationship id column when configuration value is', function () {
+    config()->offsetUnset('model-status.model_primary_key_attribute');
 
-        $this->testModel->setStatus('initiated');
-        $model1->setStatus('initiated');
+    $model = TestModel::create(['name' => 'model1']);
+    $model->setStatus('pending');
 
-        $model2->setStatus('pending');
-        $model3->setStatus('ready');
-        $model4->setStatus('complete');
-
-        $this->assertCount(4, TestModel::otherCurrentStatus('initiated')->get());
-        $this->assertCount(3, TestModel::otherCurrentStatus('initiated', 'pending')->get());
-        $this->assertCount(3, TestModel::otherCurrentStatus(['initiated', 'pending'])->get());
-    }
-
-    /** @test */
-    public function it_supports_custom_polymorphic_model_types()
-    {
-        Relation::morphMap(['custom-test-model' => TestModel::class]);
-
-        $this->testModel->setStatus('initiated');
-
-        $this->assertCount(1, TestModel::currentStatus('initiated')->get());
-    }
-
-    /** @test */
-    public function it_can_use_a_custom_name_for_the_relationship_id_column()
-    {
-        $this->app['config']->set(
-            'model-status.status_model',
-            CustomModelKeyStatusModel::class
-        );
-
-        $this->app['config']->set(
-            'model-status.model_primary_key_attribute',
-            'model_custom_fk'
-        );
-
-        $model = TestModel::create(['name' => 'model1']);
-        $model->setStatus('pending');
-
-        $this->assertEquals('pending', $model->status);
-        $this->assertEquals($model->id, $model->status()->model_custom_fk);
-        $this->assertTrue($model->status()->is(CustomModelKeyStatusModel::first()));
-    }
-
-    /** @test */
-    public function it_uses_the_default_relationship_id_column_when_configuration_value_is_missing()
-    {
-        $this->app['config']->offsetUnset('model-status.model_primary_key_attribute');
-
-        $model = TestModel::create(['name' => 'model1']);
-        $model->setStatus('pending');
-
-        $this->assertEquals('pending', $model->status);
-        $this->assertEquals($model->id, $model->status()->model_id);
-    }
-}
+    expect($model->status)->toEqual('pending')
+        ->and($model->status()->model_id)->toEqual($model->id);
+});
