@@ -2,6 +2,20 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.11.1 - 2023-01-25
+
+### What's Changed
+
+- Refactor tests to Pest by @alexmanase in https://github.com/spatie/laravel-model-status/pull/90
+- Add PHP 8.2 Support by @patinthehat in https://github.com/spatie/laravel-model-status/pull/91
+- Laravel 10.x Compatibility by @laravel-shift in https://github.com/spatie/laravel-model-status/pull/98
+
+### New Contributors
+
+- @alexmanase made their first contribution in https://github.com/spatie/laravel-model-status/pull/90
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.11.0...1.11.1
+
 ## 1.11.0 - 2022-02-03
 
 ## What's Changed
