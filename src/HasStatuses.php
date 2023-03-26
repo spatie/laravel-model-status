@@ -24,13 +24,13 @@ trait HasStatuses
         return $this->latestStatus();
     }
 
-    public function setStatus(string $name, ?string $reason = null): self
+    public function setStatus(string $name, ?string $reason = null, $dispatch = true): self
     {
         if (! $this->isValidStatus($name, $reason)) {
             throw InvalidStatus::create($name);
         }
 
-        return $this->forceSetStatus($name, $reason);
+        return $this->forceSetStatus($name, $reason, $dispatch);
     }
 
     public function isValidStatus(string $name, ?string $reason = null): bool
@@ -129,7 +129,7 @@ trait HasStatuses
         return (string) $this->latestStatus();
     }
 
-    public function forceSetStatus(string $name, ?string $reason = null): self
+    public function forceSetStatus(string $name, ?string $reason = null, $dispatch = true): self
     {
         $oldStatus = $this->latestStatus();
 
@@ -138,7 +138,9 @@ trait HasStatuses
             'reason' => $reason,
         ]);
 
-        event(new StatusUpdated($oldStatus, $newStatus, $this));
+        if ($dispatch) {
+            event(new StatusUpdated($oldStatus, $newStatus, $this));
+        }
 
         return $this;
     }

@@ -36,3 +36,13 @@ it('fires an event when status changes', function () {
         }
     );
 });
+
+it('doesn\'t fire status updated event when explicity asked not to dispatch', function() {
+    $this->testModel->setStatus('pending', 'waiting for action');
+
+    Event::fake();
+
+    $this->testModel->setStatus('status a', 'Reason a', /*dispatch=*/false);
+
+    Event::assertNotDispatched(StatusUpdated::class);
+});
