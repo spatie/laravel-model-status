@@ -10,6 +10,13 @@ return [
     'status_model' => Spatie\ModelStatus\Status::class,
 
     /*
+     * The name of the attribute to access the latest status.
+     *
+     * You can change this value if you have need a custom status attribute.
+     */
+    'status_attribute' => 'status',
+
+    /*
      * The name of the column which holds the ID of the model related to the statuses.
      *
      * You can change this value if you have set a different name in the migration for the statuses table.
