@@ -180,6 +180,17 @@ it('can return a string when calling the attribute', function () {
         ->and($this->testModel->status()->reason)->toEqual('waiting for a change');
 });
 
+it('can handle a different status attribute', function () {
+    $this->testModel
+        ->setStatus('free')
+        ->setStatus('pending', 'waiting for a change');
+
+    config()->set('model-status.status_attribute', 'alternative_status');
+
+    expect($this->testModel->alternative_status)
+        ->toEqual('pending');
+});
+
 it('can find all models that do not have a status with a given name', function () {
     $model1 = TestModel::create(['name' => 'model1']);
     $model2 = TestModel::create(['name' => 'model2']);
