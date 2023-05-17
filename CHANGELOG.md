@@ -2,6 +2,20 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.12.0 - 2023-05-17
+
+### What's Changed
+
+- Fix Broken Badge by @SupianIDz in https://github.com/spatie/laravel-model-status/pull/101
+- Feature/configurable status attribute by @vinlim in https://github.com/spatie/laravel-model-status/pull/102
+
+### New Contributors
+
+- @SupianIDz made their first contribution in https://github.com/spatie/laravel-model-status/pull/101
+- @vinlim made their first contribution in https://github.com/spatie/laravel-model-status/pull/102
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.11.1...1.12.0
+
 ## 1.11.1 - 2023-01-25
 
 ### What's Changed
