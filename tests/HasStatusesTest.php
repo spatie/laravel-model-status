@@ -226,3 +226,30 @@ it('uses the default relationship id column when configuration value is', functi
     expect($model->status)->toEqual('pending')
         ->and($model->status()->model_id)->toEqual($model->id);
 });
+
+it('returns all available status names', function () {
+
+    $model = TestModel::create(['name' => 'model1']);
+    // Set up some test statuses
+    $model->setStatus('status1');
+    $model->setStatus('status2');
+    $model->setStatus('status3');
+
+    // Get the status names
+    $statusNames = $model->getStatusNames();
+
+    // Assert the returned status names
+    expect($statusNames)->toContain('status1')
+        ->toContain('status2')
+        ->toContain('status3');
+});
+
+it('returns an empty collection when there are no statuses', function () {
+    $model = TestModel::create(['name' => 'model1']);
+
+    // Get the status names
+    $statusNames = $model->getStatusNames();
+
+    // Assert the returned status names
+    expect($statusNames)->toBeEmpty();
+});
