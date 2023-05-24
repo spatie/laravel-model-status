@@ -184,7 +184,7 @@ trait HasStatuses
      *
      * @return \Illuminate\Support\Collection
      */
-    protected function getStatusNames(): Collection
+    public function getStatusNames(): Collection
     {
         $statusModel = app($this->getStatusModelClassName());
 
