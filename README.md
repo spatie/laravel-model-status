@@ -126,6 +126,11 @@ You can also get latest status of a given name:
 ```php
 $model->latestStatus('pending'); // returns an instance of `Spatie\ModelStatus\Status` that has the name `pending`
 ```
+Get all available status names for the model.
+
+```php
+$statusNames = $model->getStatusNames(); // returns a collection of all available status names.
+```
 
 The following examples will return statusses of type `status 1` or `status 2`, whichever is latest.
 
