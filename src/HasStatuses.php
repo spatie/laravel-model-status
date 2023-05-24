@@ -125,11 +125,6 @@ trait HasStatuses
             ->orWhereDoesntHave('statuses');
     }
 
-    public function getStatusAttribute(): string
-    {
-        return (string) $this->latestStatus();
-    }
-
     public function forceSetStatus(string $name, ?string $reason = null): self
     {
         $oldStatus = $this->latestStatus();
@@ -161,11 +156,28 @@ trait HasStatuses
         return config('model-status.status_model');
     }
 
+    protected function getStatusAttributeName(): string
+    {
+        return config('model-status.status_attribute') ?? 'status';
+    }
+
     protected function getStatusModelType(): string
     {
         return array_search(static::class, Relation::morphMap()) ?: static::class;
     }
+    /*
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function __get($key): mixed
+    {
+        if ($key === $this->getStatusAttributeName()) {
+            return (string) $this->latestStatus();
+        }
 
+        return parent::__get($key);
+    }
     /**
      * Get all available status names for the model.
      *
