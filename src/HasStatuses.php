@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use \Illuminate\Support\Collection;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 
@@ -177,5 +178,16 @@ trait HasStatuses
         }
 
         return parent::__get($key);
+    }
+    /* 
+    * Get all available status names for the model.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getStatusNames(): Collection
+    {
+        $statusModel = app($this->getStatusModelClassName());
+
+        return $statusModel->pluck('name');
     }
 }
