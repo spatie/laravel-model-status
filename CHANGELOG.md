@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.13.0 - 2023-05-25
+
+### What's Changed
+
+- getStatusNames by @tal7aouy in https://github.com/spatie/laravel-model-status/pull/104
+
+### New Contributors
+
+- @tal7aouy made their first contribution in https://github.com/spatie/laravel-model-status/pull/104
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.12.0...1.13.0
+
 ## 1.12.0 - 2023-05-17
 
 ### What's Changed
