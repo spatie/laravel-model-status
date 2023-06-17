@@ -190,4 +190,9 @@ trait HasStatuses
 
         return $statusModel->pluck('name');
     }
+
+    public function hasStatus(string $name): bool
+    {
+        return $this->statuses()->where('name', $name)->exists();
+    }
 }

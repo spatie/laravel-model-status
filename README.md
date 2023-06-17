@@ -146,6 +146,13 @@ All associated statuses of a model can be retrieved like this:
 ```php
 $allStatuses = $model->statuses;
 ```
+This will check if the model has status:
+
+```php
+$model->setStatus('status1');
+
+$isStatusExist = $model->hasStatus('status1'); // return true
+$isStatusExist = $model->hasStatus('status2'); // return false
 
 ### Retrieving models with a given latest state
 

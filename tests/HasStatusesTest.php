@@ -264,3 +264,14 @@ it('returns an empty collection when there are no statuses', function () {
     // Assert the returned status names
     expect($statusNames)->toBeEmpty();
 });
+
+it('checks if the model has a specific status', function () {
+    $model = TestModel::create(['name' => 'model1']);
+    // Set up some test statuses
+    $model->setStatus('status1');
+    $model->setStatus('status3');
+    // Assert that the model has the specified status
+    expect($model->hasStatus('status1'))->toBeTrue();
+    // Assert that the model does not have a different status
+    expect($model->hasStatus('status2'))->toBeFalse();
+});
