@@ -153,7 +153,7 @@ $model->setStatus('status1');
 
 $isStatusExist = $model->hasStatus('status1'); // return true
 $isStatusExist = $model->hasStatus('status2'); // return false
-
+```
 ### Retrieving models with a given latest state
 
 The `currentStatus` scope will return models that have a status with the given name.
