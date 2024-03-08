@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.15.0 - 2024-03-08
+
+### What's Changed
+
+* Update README.md by @Rizky92 in https://github.com/spatie/laravel-model-status/pull/106
+* Laravel 11.x Compatibility by @laravel-shift in https://github.com/spatie/laravel-model-status/pull/116
+
+### New Contributors
+
+* @Rizky92 made their first contribution in https://github.com/spatie/laravel-model-status/pull/106
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.14.0...1.15.0
+
 ## 1.14.0 - 2023-06-17
 
 ### What's Changed
