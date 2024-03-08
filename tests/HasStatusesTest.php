@@ -76,7 +76,9 @@ it('allows null for an empty reason when setting a status')
     ->expect(fn () => $this->testModel->status()->reason)
     ->toBeNull();
 
-it('can return the latest status', function () {
+it('can return the latest status', function (
+
+) {
     $this->testModel
         ->setStatus('status 1')
         ->setStatus('status 3')
@@ -84,12 +86,17 @@ it('can return the latest status', function () {
         ->setStatus('status 1')
         ->setStatus('status 2');
 
-    expect([
-        $this->testModel->latestStatus('status 1', 'status 3'),
-        $this->testModel->latestStatus(['status 1', 'status 3']),
-        $this->testModel->latestStatus('status 1', 'status 2', 'status 3'),
-        $this->testModel->latestStatus('non existing status'),
-    ])->sequence('status 1', 'status 1', 'status 2', null);
+    $model = $this->testModel->latestStatus('status 1', 'status 3');
+    expect($model->name)->toBe('status 1');
+
+    $model = $this->testModel->latestStatus(['status 1', 'status 3']);
+    expect($model->name)->toBe('status 1');
+
+    $model = $this->testModel->latestStatus('status 1', 'status 2', 'status 3');
+    expect($model->name)->toBe('status 2');
+
+    $model = $this->testModel->latestStatus('non existing status');
+    expect($model)->toBeNull();
 });
 
 it('will return `true` if specific status is found')
