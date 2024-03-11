@@ -82,11 +82,11 @@ trait HasStatuses
                 function (Builder $query) use ($names) {
                     $query
                         ->whereIn('name', $names)
-                        ->whereIn(
+                        ->where(
                             'id',
-                            function (QueryBuilder $query) {
-                                $query
-                                    ->select(DB::raw('max(id)'))
+                            function (QueryBuilder $subQuery) {
+                                $subQuery
+                                    ->selectRaw('max(id)')
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
                                     ->whereColumn($this->getModelKeyColumnName(), $this->getQualifiedKeyName());
@@ -110,11 +110,11 @@ trait HasStatuses
                 function (Builder $query) use ($names) {
                     $query
                         ->whereNotIn('name', $names)
-                        ->whereIn(
+                        ->where(
                             'id',
-                            function (QueryBuilder $query) use ($names) {
-                                $query
-                                    ->select(DB::raw('max(id)'))
+                            function (QueryBuilder $subQuery) {
+                                $subQuery
+                                    ->selectRaw('max(id)')
                                     ->from($this->getStatusTableName())
                                     ->where('model_type', $this->getStatusModelType())
                                     ->whereColumn($this->getModelKeyColumnName(), $this->getQualifiedKeyName());
