@@ -179,6 +179,21 @@ trait HasStatuses
 
         return parent::__get($key);
     }
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function __isset($key): bool
+    {
+        if ($key === $this->getStatusAttributeName()) {
+            return !is_null( $this->latestStatus() );
+        }
+
+        return parent::__isset($key);
+    }
+    
     /*
     * Get all available status names for the model.
      *
