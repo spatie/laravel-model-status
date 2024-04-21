@@ -4,9 +4,9 @@ namespace Spatie\ModelStatus\Tests\Models;
 
 class ValidationTestModel extends TestModel
 {
-    public function isValidStatus(string $name, ?string $reason = null): bool
+    public function isValidStatus($statusEnum, ?string $reason = null): bool
     {
-        if ($name === 'InvalidStatus') {
+        if ($statusEnum == TestEnum::INVALID_STATUS) {
             return false;
         }
 

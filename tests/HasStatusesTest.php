@@ -1,10 +1,16 @@
 <?php
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Spatie\ModelStatus\Exceptions\InvalidEnumType;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use Spatie\ModelStatus\Exceptions\InvalidEnumClass;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
 use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
+use Spatie\ModelStatus\Tests\Models\TestEnum;
+use Spatie\ModelStatus\Tests\Models\TestEnum2;
+use Spatie\ModelStatus\Tests\Models\TestEnumNotBacked;
 use Spatie\ModelStatus\Tests\Models\TestModel;
+use Spatie\ModelStatus\Tests\Models\TestModelInvalidEnumType;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
 beforeEach(function () {
@@ -14,17 +20,17 @@ beforeEach(function () {
 });
 
 it('can get and set a status', function () {
-    $this->testModel->setStatus('pending', 'waiting on action');
+    $this->testModel->setStatus(TestEnum::PENDING, 'waiting on action');
 
     $name = $this->testModel->statuses->first()->name;
     $reason = $this->testModel->statuses->first()->reason;
 
-    expect($name)->toEqual('pending')
+    expect($name)->toEqual(TestEnum::PENDING->value)
         ->and($reason)->toEqual('waiting on action');
 });
 
 test('a reason can be set')
-    ->tap(fn () => $this->testModel->setStatus('pending', 'waiting on action'))
+    ->tap(fn () => $this->testModel->setStatus(TestEnum::PENDING, 'waiting on action'))
     ->expect(fn () => $this->testModel->status()->reason)
     ->toEqual('waiting on action');
 
@@ -33,7 +39,7 @@ it('throws an exception when setting an invalid status', function () {
         'name' => 'name',
     ]);
 
-    $validationUser->setStatus('InvalidStatus');
+    $validationUser->setStatus(TestEnum::INVALID_STATUS);
 })->throws(InvalidStatus::class);
 
 it('can force set an invalid status', function () {
@@ -41,24 +47,29 @@ it('can force set an invalid status', function () {
         'name' => 'name',
     ]);
 
-    $validationUser->forceSetStatus('InvalidStatus');
+    $validationUser->forceSetStatus(TestEnum::INVALID_STATUS);
 
-    $name = $validationUser->statuses->first()->name;
+    $status = $validationUser->statuses->first()->name;
 
-    expect($name)->toEqual('InvalidStatus');
+    expect($status)->toEqual(TestEnum::INVALID_STATUS->value);
 });
 
-it('can find the last status by name', function () {
+it('throws an exception if status enum instance was from a different enum', function () {
+    $this->testModel->setStatus(TestEnum2::TestStatus, 'test');
+})->throws(InvalidEnumClass::class);;
+
+
+it('can find the last status by enum', function () {
     $this->testModel
-        ->setStatus('status a', 'reason 1')
-        ->setStatus('status b', 'reason 2')
-        ->setStatus('status a', 'reason 3');
+        ->setStatus(TestEnum::PENDING, 'reason 1')
+        ->setStatus(TestEnum::APPROVED, 'reason 2')
+        ->setStatus(TestEnum::PENDING, 'reason 3');
 
     expect(
-        $this->testModel->latestStatus('status a')->reason
+        $this->testModel->latestStatus(TestEnum::PENDING)->reason
     )->toEqual('reason 3')
         ->and(
-            $this->testModel->latestStatus('status b')->reason
+            $this->testModel->latestStatus(TestEnum::APPROVED)->reason
         )->toEqual('reason 2');
 });
 
@@ -67,71 +78,69 @@ it('can handle getting a status when there are none set')
     ->toBeNull();
 
 it('can handle an empty reason when setting a status')
-    ->tap(fn () => $this->testModel->setStatus('status'))
+    ->tap(fn () => $this->testModel->setStatus(TestEnum::APPROVED))
     ->expect(fn () => $this->testModel->status()->name)
-    ->toEqual('status');
+    ->toEqual(TestEnum::APPROVED->value);
 
 it('allows null for an empty reason when setting a status')
-    ->tap(fn () => $this->testModel->setStatus('status', null))
+    ->tap(fn () => $this->testModel->setStatus(TestEnum::APPROVED, null))
     ->expect(fn () => $this->testModel->status()->reason)
     ->toBeNull();
 
-it('can return the latest status', function (
-
-) {
+it('can return the latest status', function () {
     $this->testModel
-        ->setStatus('status 1')
-        ->setStatus('status 3')
-        ->setStatus('status 2')
-        ->setStatus('status 1')
-        ->setStatus('status 2');
+        ->setStatus(TestEnum::PENDING)
+        ->setStatus(TestEnum::REJECTED)
+        ->setStatus(TestEnum::APPROVED)
+        ->setStatus(TestEnum::PENDING)
+        ->setStatus(TestEnum::APPROVED);
 
-    $model = $this->testModel->latestStatus('status 1', 'status 3');
-    expect($model->name)->toBe('status 1');
+    $model = $this->testModel->latestStatus(TestEnum::PENDING, TestEnum::REJECTED);
+    expect($model->name)->toBe(TestEnum::PENDING->value);
 
-    $model = $this->testModel->latestStatus(['status 1', 'status 3']);
-    expect($model->name)->toBe('status 1');
+    $model = $this->testModel->latestStatus([TestEnum::PENDING, TestEnum::REJECTED]);
+    expect($model->name)->toBe(TestEnum::PENDING->value);
 
-    $model = $this->testModel->latestStatus('status 1', 'status 2', 'status 3');
-    expect($model->name)->toBe('status 2');
+    $model = $this->testModel->latestStatus(TestEnum::PENDING, TestEnum::APPROVED, TestEnum::REJECTED);
+    expect($model->name)->toBe(TestEnum::APPROVED->value);
 
-    $model = $this->testModel->latestStatus('non existing status');
+    $model = $this->testModel->latestStatus(TestEnum::UNUSED_STATUS);
     expect($model)->toBeNull();
 });
 
 it('will return `true` if specific status is found')
-    ->tap(fn () => $this->testModel->setStatus('status 1'))
-    ->expect(fn () => $this->testModel->hasEverHadStatus('status 1'))
+    ->tap(fn () => $this->testModel->setStatus(TestEnum::PENDING))
+    ->expect(fn () => $this->testModel->hasEverHadStatus(TestEnum::PENDING))
     ->toBeTrue();
 
 it('will return `false` if specific status is not found')
-    ->tap(fn () => $this->testModel->setStatus('status 1'))
-    ->expect(fn () => $this->testModel->hasEverHadStatus('status 2'))
+    ->tap(fn () => $this->testModel->setStatus(TestEnum::PENDING))
+    ->expect(fn () => $this->testModel->hasEverHadStatus(TestEnum::APPROVED))
     ->toBeFalse();
 
 it('can delete a specific status', function () {
-    $this->testModel->setStatus('status to delete');
+    $this->testModel->setStatus(TestEnum::REJECTED);
 
     expect($this->testModel->statuses()->count())->toEqual(1);
 
-    $this->testModel->deleteStatus('status to delete');
+    $this->testModel->deleteStatus(TestEnum::REJECTED);
 
     expect($this->testModel->statuses()->count())->toEqual(0);
 });
 
 it('can delete a multiple statuses at once', function () {
-    $this->testModel->setStatus('status to delete 1')
-        ->setStatus('status to delete 2');
+    $this->testModel->setStatus(TestEnum::REJECTED)
+        ->setStatus(TestEnum::APPROVED);
 
     expect($this->testModel->statuses()->count())->toEqual(2);
 
-    $this->testModel->deleteStatus('status to delete 1', 'status to delete 2');
+    $this->testModel->deleteStatus(TestEnum::REJECTED, TestEnum::APPROVED);
 
     expect($this->testModel->statuses()->count())->toEqual(0);
 });
 
 it('will keep status when invalid delete status is given', function () {
-    $this->testModel->setStatus('status to delete');
+    $this->testModel->setStatus(TestEnum::APPROVED);
 
     expect($this->testModel->statuses()->count())->toEqual(1);
 
@@ -145,82 +154,82 @@ it('can handle a different status model')
         fn () => config()->set('model-status.status_model', AlternativeStatusModel::class)
     )
     ->tap(
-        fn () => $this->testModel->setStatus('pending', 'waiting on action')
+        fn () => $this->testModel->setStatus(TestEnum::APPROVED, 'waiting on action')
     )
     ->expect(fn () => $this->testModel->status())
     ->toBeInstanceOf(AlternativeStatusModel::class);
 
-it('can find all models that have a last status with the given name', function () {
+it('can find all models that have a last status with the given enum', function () {
     $model1 = TestModel::create(['name' => 'model1']);
     $model2 = TestModel::create(['name' => 'model2']);
     $model3 = TestModel::create(['name' => 'model3']);
     $model4 = TestModel::create(['name' => 'model4']);
 
     $model1
-        ->setStatus('status-a')
-        ->setStatus('status-b')
-        ->setStatus('status-c')
-        ->setStatus('status-b');
+        ->setStatus(TestEnum::PENDING)
+        ->setStatus(TestEnum::APPROVED)
+        ->setStatus(TestEnum::REJECTED)
+        ->setStatus(TestEnum::APPROVED);
 
-    $model2->setStatus('status-c');
+    $model2->setStatus(TestEnum::REJECTED);
 
-    $model3->setStatus('status-b');
+    $model3->setStatus(TestEnum::APPROVED);
 
-    $model4->setStatus('status-a');
+    $model4->setStatus(TestEnum::PENDING);
 
     expect([
-        TestModel::currentStatus('status-a')->get()->pluck('name')->toArray(),
-        TestModel::currentStatus('status-b')->get()->pluck('name')->toArray(),
-        TestModel::currentStatus('status-c')->get()->pluck('name')->toArray(),
-        TestModel::currentStatus('status-d')->get()->pluck('name')->toArray(),
+        TestModel::currentStatus(TestEnum::PENDING)->get()->pluck('name')->toArray(),
+        TestModel::currentStatus(TestEnum::APPROVED)->get()->pluck('name')->toArray(),
+        TestModel::currentStatus(TestEnum::REJECTED)->get()->pluck('name')->toArray(),
+        TestModel::currentStatus(TestEnum::UNUSED_STATUS)->get()->pluck('name')->toArray(),
     ])->sequence(['model4'], ['model1', 'model3'], ['model2'], []);
 });
 
-it('can return a string when calling the attribute', function () {
+it('can return an enum instance when calling the attribute', function () {
     $this
         ->testModel
-        ->setStatus('free')
-        ->setStatus('pending', 'waiting for a change');
+        ->setStatus(TestEnum::PENDING)
+        ->setStatus(TestEnum::REJECTED, 'waiting for a change');
 
-    expect($this->testModel->status)->toEqual('pending')
-        ->and($this->testModel->status()->name)->toEqual('pending')
+    expect($this->testModel->status)->toEqual(TestEnum::REJECTED)
+        ->and($this->testModel->status()->name)->toEqual(TestEnum::REJECTED->value)
         ->and($this->testModel->status()->reason)->toEqual('waiting for a change');
 });
 
 it('can handle a different status attribute', function () {
     $this->testModel
-        ->setStatus('free')
-        ->setStatus('pending', 'waiting for a change');
+        ->setStatus(TestEnum::PENDING)
+        ->setStatus(TestEnum::APPROVED, 'waiting for a change');
 
     config()->set('model-status.status_attribute', 'alternative_status');
 
     expect($this->testModel->alternative_status)
-        ->toEqual('pending');
+        ->toEqual(TestEnum::APPROVED);
 });
 
-it('can find all models that do not have a status with a given name', function () {
+it('can find all models that do not a certain status', function () {
     $model1 = TestModel::create(['name' => 'model1']);
     $model2 = TestModel::create(['name' => 'model2']);
     $model3 = TestModel::create(['name' => 'model3']);
     $model4 = TestModel::create(['name' => 'model4']);
     $model5 = TestModel::create(['name' => 'model5']);
 
-    $this->testModel->setStatus('initiated');
-    $model1->setStatus('initiated');
+    $this->testModel->setStatus(TestEnum::PENDING);
+    $model1->setStatus(TestEnum::PENDING);
 
-    $model2->setStatus('pending');
-    $model3->setStatus('ready');
-    $model4->setStatus('complete');
+    $model2->setStatus(TestEnum::APPROVED);
+    $model3->setStatus(TestEnum::REJECTED);
+    $model4->setStatus(TestEnum::UNUSED_STATUS);
 
-    expect(TestModel::otherCurrentStatus('initiated')->get())->toHaveCount(4)
-        ->and(TestModel::otherCurrentStatus('initiated', 'pending')->get())->toHaveCount(3)
-        ->and(TestModel::otherCurrentStatus(['initiated', 'pending'])->get())->toHaveCount(3);
+    expect(TestModel::otherCurrentStatus(TestEnum::PENDING)->get())->toHaveCount(4)
+        ->and(TestModel::otherCurrentStatus(TestEnum::PENDING, TestEnum::APPROVED)->get())->toHaveCount(3)
+        ->and(TestModel::otherCurrentStatus([TestEnum::PENDING, TestEnum::APPROVED])->get())->toHaveCount(3);
 });
 
 it('supports custom polymorphic model types')
     ->tap(fn () => Relation::morphMap(['custom-test-model' => TestModel::class]))
-    ->tap(fn () => $this->testModel->setStatus('initiated'))
-    ->expect(fn () => TestModel::currentStatus('initiated')->get())
+    ->tap(fn () => $this->testModel->setStatus(TestEnum::PENDING))
+    ->expect(fn () => TestModel::currentStatus(TestEnum::PENDING)->get())
     ->toHaveCount(1);
 
 it('can use a custom name for the relationship id column', function () {
@@ -228,9 +237,9 @@ it('can use a custom name for the relationship id column', function () {
     config()->set('model-status.model_primary_key_attribute',  'model_custom_fk');
 
     $model = TestModel::create(['name' => 'model1']);
-    $model->setStatus('pending');
+    $model->setStatus(TestEnum::PENDING);
 
-    expect($model->status)->toEqual('pending')
+    expect($model->status)->toEqual(TestEnum::PENDING)
         ->and($model->status()->model_custom_fk)->toEqual($model->id)
         ->and($model->status()->is(CustomModelKeyStatusModel::first()))->toBeTrue();
 });
@@ -239,46 +248,26 @@ it('uses the default relationship id column when configuration value is', functi
     config()->offsetUnset('model-status.model_primary_key_attribute');
 
     $model = TestModel::create(['name' => 'model1']);
-    $model->setStatus('pending');
+    $model->setStatus(TestEnum::PENDING);
 
-    expect($model->status)->toEqual('pending')
+    expect($model->status)->toEqual(TestEnum::PENDING)
         ->and($model->status()->model_id)->toEqual($model->id);
 });
 
-it('returns all available status names', function () {
-
-    $model = TestModel::create(['name' => 'model1']);
-    // Set up some test statuses
-    $model->setStatus('status1');
-    $model->setStatus('status2');
-    $model->setStatus('status3');
-
-    // Get the status names
-    $statusNames = $model->getStatusNames();
-
-    // Assert the returned status names
-    expect($statusNames)->toContain('status1')
-        ->toContain('status2')
-        ->toContain('status3');
-});
-
-it('returns an empty collection when there are no statuses', function () {
-    $model = TestModel::create(['name' => 'model1']);
-
-    // Get the status names
-    $statusNames = $model->getStatusNames();
-
-    // Assert the returned status names
-    expect($statusNames)->toBeEmpty();
-});
 
 it('checks if the model has a specific status', function () {
     $model = TestModel::create(['name' => 'model1']);
     // Set up some test statuses
-    $model->setStatus('status1');
-    $model->setStatus('status3');
+    $model->setStatus(TestEnum::PENDING);
+    $model->setStatus(TestEnum::APPROVED);
     // Assert that the model has the specified status
-    expect($model->hasStatus('status1'))->toBeTrue();
+    expect($model->hasStatus(TestEnum::PENDING))->toBeTrue();
     // Assert that the model does not have a different status
-    expect($model->hasStatus('status2'))->toBeFalse();
+    expect($model->hasStatus(TestEnum::REJECTED))->toBeFalse();
 });
+
+
+it('throws an exception if the enum is not string backed', function () {
+    $model = TestModelInvalidEnumType::create(['name' => 'model1']);
+    $model->setStatus(TestEnumNotBacked::TestStatus1);
+})->throws(InvalidEnumType::class);
