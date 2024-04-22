@@ -12,11 +12,11 @@ beforeEach(function () {
 });
 
 it('fires an event when status changes', function () {
-    $this->testModel->setStatus(TestEnum::PENDING, 'waiting on action');
+    $this->testModel->setStatus(TestEnum::Pending, 'waiting on action');
 
     Event::fake();
 
-    $this->testModel->setStatus(TestEnum::APPROVED, 'Reason a');
+    $this->testModel->setStatus(TestEnum::Approved, 'Reason a');
 
     Event::assertDispatched(
         StatusUpdated::class,
@@ -25,11 +25,11 @@ it('fires an event when status changes', function () {
                 return false;
             }
 
-            if ($event->newStatus->name !== TestEnum::APPROVED->value) {
+            if ($event->newStatus->name !== TestEnum::Approved->value) {
                 return false;
             }
 
-            if ($event->oldStatus->name !== TestEnum::PENDING->value) {
+            if ($event->oldStatus->name !== TestEnum::Pending->value) {
                 return false;
             }
 

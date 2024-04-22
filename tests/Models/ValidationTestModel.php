@@ -6,7 +6,7 @@ class ValidationTestModel extends TestModel
 {
     public function isValidStatus($statusEnum, ?string $reason = null): bool
     {
-        if ($statusEnum == TestEnum::INVALID_STATUS) {
+        if ($statusEnum == TestEnum::InvalidStatus) {
             return false;
         }
 

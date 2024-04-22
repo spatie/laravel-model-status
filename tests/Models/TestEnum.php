@@ -4,9 +4,9 @@ namespace Spatie\ModelStatus\Tests\Models;
 
 enum TestEnum: string
 {
-    case PENDING = "pending";
-    case APPROVED = "approved";
-    case REJECTED = "rejected";
-    case INVALID_STATUS = "invalid_status";
-    case UNUSED_STATUS = "unused_status";
+    case Pending = "pending";
+    case Approved = "approved";
+    case Rejected = "rejected";
+    case InvalidStatus = "invalid_status";
+    case UnusedStatus = "unused_status";
 }
