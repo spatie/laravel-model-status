@@ -9,19 +9,20 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStatus\Events\StatusUpdated;
+use Spatie\ModelStatus\Exceptions\InvalidEnumClass;
 use Spatie\ModelStatus\Exceptions\InvalidEnumType;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
-use Spatie\ModelStatus\Exceptions\InvalidEnumClass;
 
 trait HasStatuses
 {
 
-    public abstract static function getStatusEnumClass(): string;
+    abstract public static function getStatusEnumClass(): string;
 
     public function statuses(): MorphMany
     {
-        if (!self::enumIsStringBacked())
+        if (! self::enumIsStringBacked()) {
             throw InvalidEnumType::create(self::getStatusEnumClass());
+        }
 
         return $this->morphMany($this->getStatusModelClassName(), 'model', 'model_type', $this->getModelKeyColumnName())
             ->latest('id');
@@ -34,7 +35,7 @@ trait HasStatuses
 
     public function setStatus($statusEnum, ?string $reason = null): self
     {
-        if (!$this->isValidStatus($statusEnum, $reason)) {
+        if (! $this->isValidStatus($statusEnum, $reason)) {
             throw InvalidStatus::create($statusEnum->value);
         }
 
@@ -148,6 +149,7 @@ trait HasStatuses
     private static function isInstanceOfEnum($statusEnum): bool
     {
         $statusEnumType = self::getStatusEnumClass();
+
         return $statusEnum instanceof $statusEnumType;
     }
 
@@ -159,8 +161,9 @@ trait HasStatuses
 
     public function forceSetStatus($statusEnum, ?string $reason = null): self
     {
-        if (!self::isInstanceOfEnum($statusEnum))
+        if (! self::isInstanceOfEnum($statusEnum)) {
             throw InvalidEnumClass::create(self::getStatusEnumClass());
+        }
 
         $oldStatus = $this->latestStatus();
 

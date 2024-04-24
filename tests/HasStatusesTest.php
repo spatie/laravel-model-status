@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Spatie\ModelStatus\Exceptions\InvalidEnumClass;
 use Spatie\ModelStatus\Exceptions\InvalidEnumType;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
-use Spatie\ModelStatus\Exceptions\InvalidEnumClass;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
 use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
 use Spatie\ModelStatus\Tests\Models\TestEnum;
@@ -56,7 +56,8 @@ it('can force set an invalid status', function () {
 
 it('throws an exception if status enum instance was from a different enum', function () {
     $this->testModel->setStatus(TestEnum2::TestStatus, 'test');
-})->throws(InvalidEnumClass::class);;
+})->throws(InvalidEnumClass::class);
+;
 
 
 it('can find the last status by enum', function () {
