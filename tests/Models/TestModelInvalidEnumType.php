@@ -5,7 +5,7 @@ namespace Spatie\ModelStatus\Tests\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStatus\HasStatuses;
 
-class TestModel extends Model
+class TestModelInvalidEnumType extends Model
 {
     use HasStatuses;
 
@@ -15,6 +15,6 @@ class TestModel extends Model
 
     public static function getStatusEnumClass(): string
     {
-        return TestEnum::class;
+        return TestEnumNotBacked::class;
     }
 }

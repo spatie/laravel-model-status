@@ -11,19 +11,22 @@ This package provides a `HasStatuses` trait that, once installed on a model, all
 
 ```php
 // set a status
-$model->setStatus('pending', 'needs verification');
+$model->setStatus(ModelStatus::Pending, 'needs verification');
 
 // set another status
-$model->setStatus('accepted');
+$model->setStatus(ModelStatus::Approved);
 
 // specify a reason
-$model->setStatus('rejected', 'My rejection reason');
+$model->setStatus(ModelStatus::Rejected, 'My rejection reason');
 
-// get the current status
+// get the current status model
 $model->status(); // returns an instance of \Spatie\ModelStatus\Status
 
+//get the current status
+$model->status; //returns an instance of the status enum
+
 // get the previous status
-$latestPendingStatus = $model->latestStatus('pending');
+$latestPendingStatus = $model->latestStatus(ModelStatus::Pending);
 
 $latestPendingStatus->reason; // returns 'needs verification'
 ```
@@ -84,7 +87,19 @@ return [
 
 ## Usage
 
-Add the `HasStatuses` trait to a model you like to use statuses on.
+Create The Enum that holds all of your available statuses for the model. \
+The enum must be string backed
+
+```php
+enum ModelStatusEnum: string
+{
+    case Pending = "pending";
+    case Approved = "approved";
+    case Rejected = "rejected";
+}
+```
+
+Add the `HasStatuses` trait to a model you like to use statuses on and implement the abstract function getStatusEnumClass. Inside, you must return the class name of the enum you desire to use with this model.
 
 ```php
 use Spatie\ModelStatus\HasStatuses;
@@ -92,6 +107,11 @@ use Spatie\ModelStatus\HasStatuses;
 class YourEloquentModel extends Model
 {
     use HasStatuses;
+
+    public static function getStatusEnumClass(): string
+    {
+        return ModelStatusEnum::class;
+    }
 }
 ```
 
@@ -100,13 +120,13 @@ class YourEloquentModel extends Model
 You can set a new status like this:
 
 ```php
-$model->setStatus('status-name');
+$model->setStatus(ModelStatusEnum::Pending);
 ```
 
 A reason for the status change can be passed as a second argument.
 
 ```php
-$model->setStatus('status-name', 'optional reason');
+$model->setStatus(ModelStatusEnum::Approved, 'optional reason');
 ```
 
 ### Retrieving statuses
@@ -114,31 +134,27 @@ $model->setStatus('status-name', 'optional reason');
 You can get the current status of model:
 
 ```php
-$model->status; // returns a string with the name of the latest status
+$model->status; // returns an enum instance of the latest status assigned to the model
 
 $model->status(); // returns the latest instance of `Spatie\ModelStatus\Status`
 
 $model->latestStatus(); // equivalent to `$model->status()`
 ```
 
-You can also get latest status of a given name:
+You can also get latest status of a given value:
 
 ```php
-$model->latestStatus('pending'); // returns an instance of `Spatie\ModelStatus\Status` that has the name `pending`
-```
-Get all available status names for the model.
-
-```php
-$statusNames = $model->getStatusNames(); // returns a collection of all available status names.
+$model->latestStatus(ModelStatusEnum::Approved); // returns an instance of `Spatie\ModelStatus\Status` that has the value `approved`
 ```
 
-The following examples will return statusses of type `status 1` or `status 2`, whichever is latest.
+
+The following examples will return statusses of type Approved or Rejected, whichever is latest.
 
 ```php
-$lastStatus = $model->latestStatus(['status 1', 'status 2']);
+$lastStatus = $model->latestStatus([ModelStatusEnum::Approved, ModelStatusEnum::Rejected]);
 
 // or alternatively...
-$lastStatus = $model->latestStatus('status 1', 'status 2');
+$lastStatus = $model->latestStatus(ModelStatusEnum::Approved, ModelStatusEnum::Rejected);
 ```
 
 All associated statuses of a model can be retrieved like this:
@@ -149,45 +165,45 @@ $allStatuses = $model->statuses;
 This will check if the model has status:
 
 ```php
-$model->setStatus('status1');
+$model->setStatus(ModelStatusEnum::Approved);
 
-$isStatusExist = $model->hasStatus('status1'); // return true
-$isStatusExist = $model->hasStatus('status2'); // return false
+$isStatusExist = $model->hasStatus(ModelStatusEnum::Approved); // return true
+$isStatusExist = $model->hasStatus(ModelStatusEnum::Rejected); // return false
 ```
 ### Retrieving models with a given latest state
 
-The `currentStatus` scope will return models that have a status with the given name.
+The `currentStatus` scope will return models that have a status with the given value.
 
 ```php
-$allPendingModels = Model::currentStatus('pending');
+$allPendingModels = Model::currentStatus(ModelStatusEnum::Approved);
 
 //or array of statuses
-$allPendingModels = Model::currentStatus(['pending', 'initiated']);
-$allPendingModels = Model::currentStatus('pending', 'initiated');
+$allPendingModels = Model::currentStatus([ModelStatusEnum::Approved, ModelStatusEnum::Pending]);
+$allPendingModels = Model::currentStatus(ModelStatusEnum::Approved, ModelStatusEnum::Pending);
 ```
 
-### Retrieving models without a given state
+### Retrieving models without a given status
 
 The `otherCurrentStatus` scope will return all models that do not have a status with the given name, including any model that does not have any statuses associated with them.
 
 ```php
-$allNonPendingModels = Model::otherCurrentStatus('pending');
+$allNonPendingModels = Model::otherCurrentStatus(ModelStatusEnum::Pending);
 ```
 
 You can also provide an array of status names to exclude from the query.
 ```php
-$allNonInitiatedOrPendingModels = Model::otherCurrentStatus(['initiated', 'pending']);
+$allNonPendingOrRejectedModels = Model::otherCurrentStatus([ModelStatusEnum::Pending, ModelStatusEnum::Rejected]);
 
 // or alternatively...
-$allNonInitiatedOrPendingModels = Model::otherCurrentStatus('initiated', 'pending');
+$allNonPendingOrRejectedModels = Model::otherCurrentStatus(ModelStatusEnum::Pending, ModelStatusEnum::Rejected);
 ```
 
 ### Validating a status before setting it
 
-You can add custom validation when setting a status by overwriting the `isValidStatus` method:
+You can add custom validation when setting a status by overriding the `isValidStatus` method:
 
 ```php
-public function isValidStatus(string $name, ?string $reason = null): bool
+public function isValidStatus($statusEnum, ?string $reason = null): bool
 {
     ...
 
@@ -204,7 +220,7 @@ If `isValidStatus` returns `false` a `Spatie\ModelStatus\Exceptions\InvalidStatu
 You may bypass validation with the `forceSetStatus` method:
 
 ```php
-$model->forceSetStatus('invalid-status-name');
+$model->forceSetStatus(ModelStatusEnum::Pending);
 ```
 
 ### Check if status has been assigned
@@ -212,7 +228,7 @@ $model->forceSetStatus('invalid-status-name');
 You can check if a specific status has been set on the model at any time by using the `hasEverHadStatus` method:
 
 ```php
-$model->hasEverHadStatus('status 1');
+$model->hasEverHadStatus(ModelStatusEnum::Approved);
 ```
 
 ### Delete status from model
@@ -222,13 +238,13 @@ You can delete any given status that has been set on the model at any time by us
 Delete single status from model:
 
 ```php
-$model->deleteStatus('status 1');
+$model->deleteStatus(ModelStatusEnum::Rejected);
 ```
 
 Delete multiple statuses from model at once:
 
 ```php
-$model->deleteStatus(['status 1', 'status 2']);
+$model->deleteStatus([ModelStatusEnum::Pending, ModelStatusEnum::Rejected]);
 ```
 
 ### Events
