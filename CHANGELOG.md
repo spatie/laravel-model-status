@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.17.1 - 2024-05-02
+
+### What's Changed
+
+* CHG: Optimize `scopeCurrentStatus` and `scopeOtherCurrentStatus` Query by @alfreddagenais in https://github.com/spatie/laravel-model-status/pull/124
+
+### New Contributors
+
+* @alfreddagenais made their first contribution in https://github.com/spatie/laravel-model-status/pull/124
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.17.0...1.17.1
+
 ## 1.17.0 - 2024-05-02
 
 Revert changes of 1.16
