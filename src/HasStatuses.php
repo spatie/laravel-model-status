@@ -81,7 +81,7 @@ trait HasStatuses
                 function (Builder $query) use ($names) {
                     $query
                         ->whereIn('name', $names)
-                        ->whereIn(
+                        ->where(
                             'id',
                             function (QueryBuilder $subQuery) {
                                 $subQuery
@@ -109,7 +109,7 @@ trait HasStatuses
                 function (Builder $query) use ($names) {
                     $query
                         ->whereNotIn('name', $names)
-                        ->whereIn(
+                        ->where(
                             'id',
                             function (QueryBuilder $subQuery) {
                                 $subQuery
