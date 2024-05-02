@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.17.2 - 2024-05-02
+
+- complete optimisation started in https://github.com/spatie/laravel-model-status/pull/124
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.17.1...1.17.2
+
 ## 1.17.1 - 2024-05-02
 
 ### What's Changed
