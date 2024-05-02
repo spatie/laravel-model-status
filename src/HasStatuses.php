@@ -2,6 +2,7 @@
 
 namespace Spatie\ModelStatus;
 
+use \Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -9,21 +10,12 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStatus\Events\StatusUpdated;
-use Spatie\ModelStatus\Exceptions\InvalidEnumClass;
-use Spatie\ModelStatus\Exceptions\InvalidEnumType;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 
 trait HasStatuses
 {
-
-    abstract public static function getStatusEnumClass(): string;
-
     public function statuses(): MorphMany
     {
-        if (! self::enumIsStringBacked()) {
-            throw InvalidEnumType::create(self::getStatusEnumClass());
-        }
-
         return $this->morphMany($this->getStatusModelClassName(), 'model', 'model_type', $this->getModelKeyColumnName())
             ->latest('id');
     }
@@ -33,72 +25,63 @@ trait HasStatuses
         return $this->latestStatus();
     }
 
-    public function setStatus($statusEnum, ?string $reason = null): self
+    public function setStatus(string $name, ?string $reason = null): self
     {
-        if (! $this->isValidStatus($statusEnum, $reason)) {
-            throw InvalidStatus::create($statusEnum->value);
+        if (! $this->isValidStatus($name, $reason)) {
+            throw InvalidStatus::create($name);
         }
 
-        return $this->forceSetStatus($statusEnum, $reason);
+        return $this->forceSetStatus($name, $reason);
     }
 
-    public function isValidStatus($statusEnum, ?string $reason = null): bool
+    public function isValidStatus(string $name, ?string $reason = null): bool
     {
         return true;
     }
 
     /**
-     * @param object|array $names
+     * @param string|array $names
      *
      * @return null|Status
      */
-    public function latestStatus(...$statusEnums): ?Status
+    public function latestStatus(...$names): ?Status
     {
         $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
 
-        $statusEnums = is_array($statusEnums) ? Arr::flatten($statusEnums) : func_get_args();
-
-        Arr::map($statusEnums, fn ($statusEnum) => $statusEnum->value);
-
-        if (count($statusEnums) < 1) {
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
+        if (count($names) < 1) {
             return $statuses->first();
         }
 
-        return $statuses->whereIn('name', $statusEnums)->first();
+        return $statuses->whereIn('name', $names)->first();
     }
 
-    public function hasEverHadStatus($statusEnum): bool
+    public function hasEverHadStatus($name): bool
     {
         $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
 
-        return $statuses->where('name', $statusEnum->value)->count() > 0;
+        return $statuses->where('name', $name)->count() > 0;
     }
 
-    public function deleteStatus(...$statusEnums)
+    public function deleteStatus(...$names)
     {
-        $statusEnums = is_array($statusEnums) ? Arr::flatten($statusEnums) : func_get_args();
-
-        Arr::map($statusEnums, fn ($statusEnum) => $statusEnum->value);
-
-        if (count($statusEnums) < 1) {
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
+        if (count($names) < 1) {
             return $this;
         }
 
-        $this->statuses()->whereIn('name', $statusEnums)->delete();
+        $this->statuses()->whereIn('name', $names)->delete();
     }
 
-    public function scopeCurrentStatus(Builder $builder, ...$statusEnums)
+    public function scopeCurrentStatus(Builder $builder, ...$names)
     {
-        $statusEnums = is_array($statusEnums) ? Arr::flatten($statusEnums) : func_get_args();
-
-        Arr::map($statusEnums, fn ($statusEnum) => $statusEnum->value);
-
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
         $builder
             ->whereHas(
                 'statuses',
-                function (Builder $query) use ($statusEnums) {
+                function (Builder $query) use ($names) {
                     $query
-                        ->whereIn('name', $statusEnums)
+                        ->whereIn('name', $names)
                         ->whereIn(
                             'id',
                             function (QueryBuilder $query) {
@@ -114,25 +97,22 @@ trait HasStatuses
     }
 
     /**
-     * @param object|array $names
+     * @param string|array $names
      *
      * @return void
      **/
-    public function scopeOtherCurrentStatus(Builder $builder, ...$statusEnums)
+    public function scopeOtherCurrentStatus(Builder $builder, ...$names)
     {
-        $statusEnums = is_array($statusEnums) ? Arr::flatten($statusEnums) : func_get_args();
-
-        Arr::map($statusEnums, fn ($statusEnum) => $statusEnum->value);
-
+        $names = is_array($names) ? Arr::flatten($names) : func_get_args();
         $builder
             ->whereHas(
                 'statuses',
-                function (Builder $query) use ($statusEnums) {
+                function (Builder $query) use ($names) {
                     $query
-                        ->whereNotIn('name', $statusEnums)
+                        ->whereNotIn('name', $names)
                         ->whereIn(
                             'id',
-                            function (QueryBuilder $query) use ($statusEnums) {
+                            function (QueryBuilder $query) use ($names) {
                                 $query
                                     ->select(DB::raw('max(id)'))
                                     ->from($this->getStatusTableName())
@@ -145,30 +125,12 @@ trait HasStatuses
             ->orWhereDoesntHave('statuses');
     }
 
-
-    private static function isInstanceOfEnum($statusEnum): bool
+    public function forceSetStatus(string $name, ?string $reason = null): self
     {
-        $statusEnumType = self::getStatusEnumClass();
-
-        return $statusEnum instanceof $statusEnumType;
-    }
-
-    private static function enumIsStringBacked(): bool
-    {
-        return method_exists(self::getStatusEnumClass(), 'from');
-    }
-
-
-    public function forceSetStatus($statusEnum, ?string $reason = null): self
-    {
-        if (! self::isInstanceOfEnum($statusEnum)) {
-            throw InvalidEnumClass::create(self::getStatusEnumClass());
-        }
-
         $oldStatus = $this->latestStatus();
 
         $newStatus = $this->statuses()->create([
-            'name' => $statusEnum->value,
+            'name' => $name,
             'reason' => $reason,
         ]);
 
@@ -212,14 +174,25 @@ trait HasStatuses
     public function __get($key): mixed
     {
         if ($key === $this->getStatusAttributeName()) {
-            return $this->getStatusEnumClass()::from((string) $this->latestStatus());
+            return (string) $this->latestStatus();
         }
 
         return parent::__get($key);
     }
-
-    public function hasStatus($statusEnum): bool
+    /*
+    * Get all available status names for the model.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getStatusNames(): Collection
     {
-        return $this->statuses()->where('name', $statusEnum->value)->exists();
+        $statusModel = app($this->getStatusModelClassName());
+
+        return $statusModel->pluck('name');
+    }
+
+    public function hasStatus(string $name): bool
+    {
+        return $this->statuses()->where('name', $name)->exists();
     }
 }
