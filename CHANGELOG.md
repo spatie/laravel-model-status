@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.17.0 - 2024-05-02
+
+Revert changes of 1.16
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.16.0...1.17.0
+
 ## 1.16.0 - 2024-04-24
 
 ### What's Changed
