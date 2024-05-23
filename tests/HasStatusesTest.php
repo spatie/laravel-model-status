@@ -109,6 +109,16 @@ it('will return `false` if specific status is not found')
     ->expect(fn () => $this->testModel->hasEverHadStatus('status 2'))
     ->toBeFalse();
 
+it('will return `false` if specific status is found')
+    ->tap(fn () => $this->testModel->setStatus('status 1'))
+    ->expect(fn () => $this->testModel->hasNeverHadStatus('status 1'))
+    ->toBeFalse();
+
+it('will return `true` if specific status is not found')
+    ->tap(fn () => $this->testModel->setStatus('status 1'))
+    ->expect(fn () => $this->testModel->hasNeverHadStatus('status 2'))
+    ->toBeTrue();
+
 it('can delete a specific status', function () {
     $this->testModel->setStatus('status to delete');
 
