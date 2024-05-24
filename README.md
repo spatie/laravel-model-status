@@ -215,6 +215,14 @@ You can check if a specific status has been set on the model at any time by usin
 $model->hasEverHadStatus('status 1');
 ```
 
+### Check if status has never been assigned
+
+You can check if a specific status has never been set on the model at any time by using the `hasNeverHadStatus` method:
+
+```php
+$model->hasNeverHadStatus('status 1');
+```
+
 ### Delete status from model
 
 You can delete any given status that has been set on the model at any time by using the `deleteStatus` method:
