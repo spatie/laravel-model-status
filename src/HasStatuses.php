@@ -77,7 +77,7 @@ trait HasStatuses
      * Check if the model has never had a status with the given name.
      *
      * This method determines whether the current model instance has never had a status
-     * with the specified name.
+     * with the specified name by negating the result of hasEverHadStatus.
      *
      * @param string $name The name of the status to check for.
      *
@@ -86,9 +86,7 @@ trait HasStatuses
      */
     public function hasNeverHadStatus($name): bool
     {
-        $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
-
-        return $statuses->where('name', $name)->count() === 0;
+        return !$this->hasEverHadStatus($name);
     }
 
     public function deleteStatus(...$names)
