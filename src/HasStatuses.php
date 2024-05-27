@@ -86,7 +86,7 @@ trait HasStatuses
      */
     public function hasNeverHadStatus($name): bool
     {
-        return !$this->hasEverHadStatus($name);
+        return ! $this->hasEverHadStatus($name);
     }
 
     public function deleteStatus(...$names)
