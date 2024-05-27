@@ -55,11 +55,38 @@ trait HasStatuses
         return $statuses->whereIn('name', $names)->first();
     }
 
+    /**
+     * Check if the model has ever had a status with the given name.
+     *
+     * This method determines whether the current model instance has ever had a status
+     * with the specified name.
+     *
+     * @param string $name The name of the status to check for.
+     *
+     * @return bool Returns true if the model has ever had the status with the given name,
+     *              otherwise returns false.
+     */
     public function hasEverHadStatus($name): bool
     {
         $statuses = $this->relationLoaded('statuses') ? $this->statuses : $this->statuses();
 
         return $statuses->where('name', $name)->count() > 0;
+    }
+
+    /**
+     * Check if the model has never had a status with the given name.
+     *
+     * This method determines whether the current model instance has never had a status
+     * with the specified name by negating the result of hasEverHadStatus.
+     *
+     * @param string $name The name of the status to check for.
+     *
+     * @return bool Returns true if the model has never had the status with the given name,
+     *              otherwise returns false.
+     */
+    public function hasNeverHadStatus($name): bool
+    {
+        return !$this->hasEverHadStatus($name);
     }
 
     public function deleteStatus(...$names)
