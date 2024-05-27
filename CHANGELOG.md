@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.18.0 - 2024-05-27
+
+### What's Changed
+
+* feat: Add method to check if a model has never had a specific status by @YazeedAlsaif in https://github.com/spatie/laravel-model-status/pull/127
+
+### New Contributors
+
+* @YazeedAlsaif made their first contribution in https://github.com/spatie/laravel-model-status/pull/127
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.17.2...1.18.0
+
 ## 1.17.2 - 2024-05-02
 
 - complete optimisation started in https://github.com/spatie/laravel-model-status/pull/124
