@@ -24,7 +24,7 @@ it('can get and set a status', function () {
 });
 
 test('a reason can be set')
-    ->tap(fn () => $this->testModel->setStatus('pending', 'waiting on action'))
+    ->defer(fn () => $this->testModel->setStatus('pending', 'waiting on action'))
     ->expect(fn () => $this->testModel->status()->reason)
     ->toEqual('waiting on action');
 
@@ -67,12 +67,12 @@ it('can handle getting a status when there are none set')
     ->toBeNull();
 
 it('can handle an empty reason when setting a status')
-    ->tap(fn () => $this->testModel->setStatus('status'))
+    ->defer(fn () => $this->testModel->setStatus('status'))
     ->expect(fn () => $this->testModel->status()->name)
     ->toEqual('status');
 
 it('allows null for an empty reason when setting a status')
-    ->tap(fn () => $this->testModel->setStatus('status', null))
+    ->defer(fn () => $this->testModel->setStatus('status', null))
     ->expect(fn () => $this->testModel->status()->reason)
     ->toBeNull();
 
@@ -100,22 +100,22 @@ it('can return the latest status', function (
 });
 
 it('will return `true` if specific status is found')
-    ->tap(fn () => $this->testModel->setStatus('status 1'))
+    ->defer(fn () => $this->testModel->setStatus('status 1'))
     ->expect(fn () => $this->testModel->hasEverHadStatus('status 1'))
     ->toBeTrue();
 
 it('will return `false` if specific status is not found')
-    ->tap(fn () => $this->testModel->setStatus('status 1'))
+    ->defer(fn () => $this->testModel->setStatus('status 1'))
     ->expect(fn () => $this->testModel->hasEverHadStatus('status 2'))
     ->toBeFalse();
 
 it('will return `false` if specific status is found')
-    ->tap(fn () => $this->testModel->setStatus('status 1'))
+    ->defer(fn () => $this->testModel->setStatus('status 1'))
     ->expect(fn () => $this->testModel->hasNeverHadStatus('status 1'))
     ->toBeFalse();
 
 it('will return `true` if specific status is not found')
-    ->tap(fn () => $this->testModel->setStatus('status 1'))
+    ->defer(fn () => $this->testModel->setStatus('status 1'))
     ->expect(fn () => $this->testModel->hasNeverHadStatus('status 2'))
     ->toBeTrue();
 
@@ -151,10 +151,10 @@ it('will keep status when invalid delete status is given', function () {
 });
 
 it('can handle a different status model')
-    ->tap(
+    ->defer(
         fn () => config()->set('model-status.status_model', AlternativeStatusModel::class)
     )
-    ->tap(
+    ->defer(
         fn () => $this->testModel->setStatus('pending', 'waiting on action')
     )
     ->expect(fn () => $this->testModel->status())
@@ -228,8 +228,8 @@ it('can find all models that do not have a status with a given name', function (
 });
 
 it('supports custom polymorphic model types')
-    ->tap(fn () => Relation::morphMap(['custom-test-model' => TestModel::class]))
-    ->tap(fn () => $this->testModel->setStatus('initiated'))
+    ->defer(fn () => Relation::morphMap(['custom-test-model' => TestModel::class]))
+    ->defer(fn () => $this->testModel->setStatus('initiated'))
     ->expect(fn () => TestModel::currentStatus('initiated')->get())
     ->toHaveCount(1);
 
