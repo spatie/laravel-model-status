@@ -13,9 +13,8 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.2]
-        laravel: ['10.*', '11.*']
+        laravel: ['10.*', '11.*', '12.*']
         dependency-version: [prefer-lowest, prefer-stable]
-
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
