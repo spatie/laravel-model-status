@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.18.1 - 2025-02-21
+
+### What's Changed
+
+* update calls to deprecated tap to defer by @Clutz88 in https://github.com/spatie/laravel-model-status/pull/130
+* Laravel 12.x Compatibility by @laravel-shift in https://github.com/spatie/laravel-model-status/pull/133
+
+### New Contributors
+
+* @Clutz88 made their first contribution in https://github.com/spatie/laravel-model-status/pull/130
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.18.0...1.18.1
+
 ## 1.18.0 - 2024-05-27
 
 ### What's Changed
