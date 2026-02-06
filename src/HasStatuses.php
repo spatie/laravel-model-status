@@ -2,17 +2,32 @@
 
 namespace Spatie\ModelStatus;
 
+use BackedEnum;
+use InvalidArgumentException;
+use ReflectionClass;
+use UnitEnum;
 use \Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
+use Spatie\ModelStatus\Attributes\UseStatus;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 
 trait HasStatuses
 {
+    /**
+     * @var array<string, array{
+     *     enum: class-string<UnitEnum>,
+     *     strict: bool,
+     *     allowedNames: array<int, string>,
+     *     caseMap: array<string, UnitEnum>
+     * }|null>
+     */
+    private static array $statusEnumConfiguration = [];
+
     public function statuses(): MorphMany
     {
         return $this->morphMany($this->getStatusModelClassName(), 'model', 'model_type', $this->getModelKeyColumnName())
@@ -24,13 +39,16 @@ trait HasStatuses
         return $this->latestStatus();
     }
 
-    public function setStatus(string $name, ?string $reason = null): self
+    public function setStatus(string|UnitEnum $name, ?string $reason = null): self
     {
-        if (! $this->isValidStatus($name, $reason)) {
-            throw InvalidStatus::create($name);
+        $normalizedName = $this->normalizeInput($name);
+        $this->isValidByAttribute($normalizedName, $name);
+
+        if (! $this->isValidStatus($normalizedName, $reason)) {
+            throw InvalidStatus::create($normalizedName);
         }
 
-        return $this->forceSetStatus($name, $reason);
+        return $this->forceSetStatus($normalizedName, $reason);
     }
 
     public function isValidStatus(string $name, ?string $reason = null): bool
@@ -151,18 +169,38 @@ trait HasStatuses
             ->orWhereDoesntHave('statuses');
     }
 
-    public function forceSetStatus(string $name, ?string $reason = null): self
+    public function forceSetStatus(string|UnitEnum $name, ?string $reason = null): self
     {
+        $normalizedName = $this->normalizeInput($name);
+        $this->isValidByAttribute($normalizedName, $name, true);
+
         $oldStatus = $this->latestStatus();
 
         $newStatus = $this->statuses()->create([
-            'name' => $name,
+            'name' => $normalizedName,
             'reason' => $reason,
         ]);
 
         event(new StatusUpdated($oldStatus, $newStatus, $this));
 
         return $this;
+    }
+
+    public function statusEnum(): ?UnitEnum
+    {
+        $status = $this->latestStatus();
+
+        if ($status === null) {
+            return null;
+        }
+
+        $configuration = $this->getStatusEnumConfiguration();
+
+        if ($configuration === null) {
+            return null;
+        }
+
+        return $configuration['caseMap'][$status->name] ?? null;
     }
 
     protected function getStatusTableName(): string
@@ -220,5 +258,101 @@ trait HasStatuses
     public function hasStatus(string $name): bool
     {
         return $this->statuses()->where('name', $name)->exists();
+    }
+
+    protected function normalizeInput(string|UnitEnum $input): string
+    {
+        if ($input instanceof BackedEnum) {
+            return (string) $input->value;
+        }
+
+        if ($input instanceof UnitEnum) {
+            return $input->name;
+        }
+
+        return $input;
+    }
+
+    protected function isValidByAttribute(
+        string $normalizedName,
+        string|UnitEnum $input,
+        bool $strict = false
+    ): void {
+        $configuration = $this->getStatusEnumConfiguration();
+
+        if ($configuration === null) {
+            return;
+        }
+
+        if ($strict && ! $configuration['strict']) {
+            return;
+        }
+
+        if ($input instanceof UnitEnum && ! $input instanceof $configuration['enum']) {
+            throw InvalidStatus::create($normalizedName);
+        }
+
+        if (! in_array($normalizedName, $configuration['allowedNames'], true)) {
+            throw InvalidStatus::create($normalizedName);
+        }
+    }
+
+    /**
+     * @return array{
+     *     enum: class-string<UnitEnum>,
+     *     strict: bool,
+     *     allowedNames: array<int, string>,
+     *     caseMap: array<string, UnitEnum>
+     * }|null
+     */
+    protected function getStatusEnumConfiguration(): ?array
+    {
+        if (array_key_exists(static::class, self::$statusEnumConfiguration)) {
+            return self::$statusEnumConfiguration[static::class];
+        }
+
+        $attributes = new ReflectionClass(static::class)->getAttributes(UseStatus::class);
+
+        if (count($attributes) === 0) {
+            self::$statusEnumConfiguration[static::class] = null;
+
+            return null;
+        }
+
+        if (count($attributes) > 1) {
+            throw new InvalidArgumentException(
+                "The model `".static::class.'` can only define one #[UseStatus] attribute.'
+            );
+        }
+
+        /** @var UseStatus $useStatus */
+        $useStatus = $attributes[0]->newInstance();
+        $enum = $useStatus->enum;
+
+        if (! enum_exists($enum)) {
+            throw new InvalidArgumentException(
+                "The class `{$enum}` configured on model `".static::class.'` is not an enum.'
+            );
+        }
+
+        $allowedNames = [];
+        $caseMap = [];
+
+        foreach ($enum::cases() as $case) {
+            $normalizedName = $this->normalizeInput($case);
+            $allowedNames[] = $normalizedName;
+            $caseMap[$normalizedName] = $case;
+        }
+
+        $configuration = [
+            'enum' => $enum,
+            'strict' => $useStatus->strict,
+            'allowedNames' => $allowedNames,
+            'caseMap' => $caseMap,
+        ];
+
+        self::$statusEnumConfiguration[static::class] = $configuration;
+
+        return $configuration;
     }
 }

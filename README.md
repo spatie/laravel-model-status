@@ -13,6 +13,9 @@ This package provides a `HasStatuses` trait that, once installed on a model, all
 // set a status
 $model->setStatus('pending', 'needs verification');
 
+// set a status using an enum
+$model->setStatus(UserStatus::pending);
+
 // set another status
 $model->setStatus('accepted');
 
@@ -109,6 +112,49 @@ A reason for the status change can be passed as a second argument.
 $model->setStatus('status-name', 'optional reason');
 ```
 
+`setStatus` and `forceSetStatus` also accept enums:
+
+```php
+enum UserStatus: string
+{
+    case pending = 'pending';
+    case accepted = 'accepted';
+}
+
+$model->setStatus(UserStatus::pending);
+```
+
+Backed enums are stored using their value. Unit enums are stored using their case name.
+
+### Restrict statuses with an attribute
+
+You can declare which status enum a model uses with the `UseStatus` attribute:
+
+```php
+use Spatie\ModelStatus\Attributes\UseStatus;
+
+#[UseStatus(UserStatus::class)]
+class YourEloquentModel extends Model
+{
+    use HasStatuses;
+}
+```
+
+When this attribute is present:
+
+- `setStatus(...)` only accepts statuses that belong to the configured enum.
+- `forceSetStatus(...)` keeps its permissive behavior by default.
+
+If you want `forceSetStatus(...)` to enforce the same enum constraint, enable strict mode:
+
+```php
+#[UseStatus(UserStatus::class, strict: true)]
+class YourEloquentModel extends Model
+{
+    use HasStatuses;
+}
+```
+
 ### Retrieving statuses
 
 You can get the current status of model:
@@ -119,7 +165,12 @@ $model->status; // returns a string with the name of the latest status
 $model->status(); // returns the latest instance of `Spatie\ModelStatus\Status`
 
 $model->latestStatus(); // equivalent to `$model->status()`
+
+$model->statusEnum(); // returns the latest enum case when UseStatus is configured, otherwise null
 ```
+
+`statusEnum()` also returns `null` when there is no status yet, or when the latest stored status
+does not map to the configured enum case.
 
 You can also get latest status of a given name:
 
@@ -206,6 +257,8 @@ You may bypass validation with the `forceSetStatus` method:
 ```php
 $model->forceSetStatus('invalid-status-name');
 ```
+
+When `#[UseStatus(..., strict: true)]` is configured, `forceSetStatus(...)` also enforces enum membership.
 
 ### Check if status has been assigned
 

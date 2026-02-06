@@ -3,8 +3,14 @@
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
+use Spatie\ModelStatus\Tests\Models\AlternativeUserStatus;
+use Spatie\ModelStatus\Tests\Models\AttributedBackedStatusModel;
+use Spatie\ModelStatus\Tests\Models\AttributedStrictBackedStatusModel;
+use Spatie\ModelStatus\Tests\Models\AttributedUnitStatusModel;
 use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
 use Spatie\ModelStatus\Tests\Models\TestModel;
+use Spatie\ModelStatus\Tests\Models\UnitUserStatus;
+use Spatie\ModelStatus\Tests\Models\UserStatus;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
 beforeEach(function () {
@@ -47,6 +53,90 @@ it('can force set an invalid status', function () {
 
     expect($name)->toEqual('InvalidStatus');
 });
+
+it('can set a status using a backed enum', function () {
+    $this->testModel->setStatus(UserStatus::pending, 'waiting on action');
+
+    expect($this->testModel->status()->name)->toEqual('pending')
+        ->and($this->testModel->status()->reason)->toEqual('waiting on action');
+});
+
+it('can set a status using a unit enum', function () {
+    $model = AttributedUnitStatusModel::create(['name' => 'name']);
+    $model->setStatus(UnitUserStatus::pending);
+
+    expect($model->status()->name)->toEqual('pending');
+});
+
+it('accepts matching string values when a status enum is configured', function () {
+    $model = AttributedBackedStatusModel::create(['name' => 'name']);
+    $model->setStatus('pending');
+
+    expect($model->status()->name)->toEqual('pending');
+});
+
+it('rejects string values outside the configured status enum', function () {
+    $model = AttributedBackedStatusModel::create(['name' => 'name']);
+    $model->setStatus('non-existing-status');
+})->throws(InvalidStatus::class);
+
+it('rejects enum cases from a different enum class', function () {
+    $model = AttributedBackedStatusModel::create(['name' => 'name']);
+    $model->setStatus(AlternativeUserStatus::pending);
+})->throws(InvalidStatus::class);
+
+it('allows forceSetStatus to bypass configured enum validation when non strict', function () {
+    $model = AttributedBackedStatusModel::create(['name' => 'name']);
+    $model->forceSetStatus('outside-enum');
+
+    expect($model->status()->name)->toEqual('outside-enum');
+});
+
+it('enforces configured enum validation in forceSetStatus when strict', function () {
+    $model = AttributedStrictBackedStatusModel::create(['name' => 'name']);
+    $model->forceSetStatus('outside-enum');
+})->throws(InvalidStatus::class);
+
+it('accepts matching enum values in forceSetStatus when strict', function () {
+    $model = AttributedStrictBackedStatusModel::create(['name' => 'name']);
+    $model->forceSetStatus(UserStatus::pending);
+
+    expect($model->status()->name)->toEqual('pending');
+});
+
+it('returns the configured enum from statusEnum', function () {
+    $model = AttributedBackedStatusModel::create(['name' => 'name']);
+    $model->setStatus(UserStatus::pending);
+
+    expect($model->statusEnum())->toBe(UserStatus::pending);
+});
+
+it('returns null from statusEnum when there is no status', function () {
+    $model = AttributedBackedStatusModel::create(['name' => 'name']);
+
+    expect($model->statusEnum())->toBeNull();
+});
+
+it('returns null from statusEnum when no status enum is configured', function () {
+    $this->testModel->setStatus('pending');
+
+    expect($this->testModel->statusEnum())->toBeNull();
+});
+
+it('returns null from statusEnum when latest status is outside the configured enum', function () {
+    $model = AttributedBackedStatusModel::create(['name' => 'name']);
+    $model->forceSetStatus('outside-enum');
+
+    expect($model->statusEnum())->toBeNull();
+});
+
+it('passes a normalized string to isValidStatus when enum input is given', function () {
+    $validationUser = ValidationTestModel::create([
+        'name' => 'name',
+    ]);
+
+    $validationUser->setStatus(UserStatus::invalid);
+})->throws(InvalidStatus::class);
 
 it('can find the last status by name', function () {
     $this->testModel
