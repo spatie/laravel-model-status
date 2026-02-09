@@ -13,6 +13,9 @@ This package provides a `HasStatuses` trait that, once installed on a model, all
 // set a status
 $model->setStatus('pending', 'needs verification');
 
+// set a status using an enum
+$model->setStatus(UserStatus::pending);
+
 // set another status
 $model->setStatus('accepted');
 
@@ -109,6 +112,38 @@ A reason for the status change can be passed as a second argument.
 $model->setStatus('status-name', 'optional reason');
 ```
 
+`setStatus` and `forceSetStatus` also accept enums:
+
+```php
+enum UserStatus: string
+{
+    case pending = 'pending';
+    case accepted = 'accepted';
+}
+
+$model->setStatus(UserStatus::pending);
+```
+
+Backed enums are stored using their value. Unit enums are stored using their case name.
+
+### Restrict statuses to an enum
+
+You can restrict which statuses a model accepts by overriding the `statusEnumClass` method:
+
+```php
+class YourEloquentModel extends Model
+{
+    use HasStatuses;
+
+    public function statusEnumClass(): ?string
+    {
+        return UserStatus::class;
+    }
+}
+```
+
+When `statusEnumClass()` returns an enum class, `setStatus(...)` only accepts statuses that belong to that enum. `forceSetStatus(...)` always bypasses this validation.
+
 ### Retrieving statuses
 
 You can get the current status of model:
@@ -119,7 +154,12 @@ $model->status; // returns a string with the name of the latest status
 $model->status(); // returns the latest instance of `Spatie\ModelStatus\Status`
 
 $model->latestStatus(); // equivalent to `$model->status()`
+
+$model->statusEnum(); // returns the latest enum case when statusEnumClass() is configured, otherwise null
 ```
+
+`statusEnum()` also returns `null` when there is no status yet, or when the latest stored status
+does not map to the configured enum.
 
 You can also get latest status of a given name:
 

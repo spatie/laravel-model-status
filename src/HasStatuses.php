@@ -3,6 +3,7 @@
 namespace Spatie\ModelStatus;
 
 use \Illuminate\Support\Collection;
+use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -10,9 +11,15 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use UnitEnum;
 
 trait HasStatuses
 {
+    public function statusEnumClass(): ?string
+    {
+        return null;
+    }
+
     public function statuses(): MorphMany
     {
         return $this->morphMany($this->getStatusModelClassName(), 'model', 'model_type', $this->getModelKeyColumnName())
@@ -24,13 +31,17 @@ trait HasStatuses
         return $this->latestStatus();
     }
 
-    public function setStatus(string $name, ?string $reason = null): self
+    public function setStatus(string|UnitEnum $name, ?string $reason = null): self
     {
-        if (! $this->isValidStatus($name, $reason)) {
-            throw InvalidStatus::create($name);
+        $normalizedName = $this->normalizeInput($name);
+
+        $this->validateAgainstEnum($normalizedName, $name);
+
+        if (! $this->isValidStatus($normalizedName, $reason)) {
+            throw InvalidStatus::create($normalizedName);
         }
 
-        return $this->forceSetStatus($name, $reason);
+        return $this->forceSetStatus($normalizedName, $reason);
     }
 
     public function isValidStatus(string $name, ?string $reason = null): bool
@@ -151,18 +162,32 @@ trait HasStatuses
             ->orWhereDoesntHave('statuses');
     }
 
-    public function forceSetStatus(string $name, ?string $reason = null): self
+    public function forceSetStatus(string|UnitEnum $name, ?string $reason = null): self
     {
+        $normalizedName = $this->normalizeInput($name);
+
         $oldStatus = $this->latestStatus();
 
         $newStatus = $this->statuses()->create([
-            'name' => $name,
+            'name' => $normalizedName,
             'reason' => $reason,
         ]);
 
         event(new StatusUpdated($oldStatus, $newStatus, $this));
 
         return $this;
+    }
+
+    public function statusEnum(): ?UnitEnum
+    {
+        $status = $this->latestStatus();
+        $enumClass = $this->statusEnumClass();
+
+        if ($status === null || $enumClass === null) {
+            return null;
+        }
+
+        return $this->findEnumCase($enumClass, $status->name);
     }
 
     protected function getStatusTableName(): string
@@ -220,5 +245,46 @@ trait HasStatuses
     public function hasStatus(string $name): bool
     {
         return $this->statuses()->where('name', $name)->exists();
+    }
+
+    protected function normalizeInput(string|UnitEnum $input): string
+    {
+        if ($input instanceof BackedEnum) {
+            return (string) $input->value;
+        }
+
+        if ($input instanceof UnitEnum) {
+            return $input->name;
+        }
+
+        return $input;
+    }
+
+    protected function validateAgainstEnum(string $normalizedName, string|UnitEnum $input): void
+    {
+        $enumClass = $this->statusEnumClass();
+
+        if ($enumClass === null) {
+            return;
+        }
+
+        if ($input instanceof UnitEnum && ! $input instanceof $enumClass) {
+            throw InvalidStatus::create($normalizedName);
+        }
+
+        if ($this->findEnumCase($enumClass, $normalizedName) === null) {
+            throw InvalidStatus::create($normalizedName);
+        }
+    }
+
+    protected function findEnumCase(string $enumClass, string $name): ?UnitEnum
+    {
+        foreach ($enumClass::cases() as $case) {
+            if ($this->normalizeInput($case) === $name) {
+                return $case;
+            }
+        }
+
+        return null;
     }
 }
