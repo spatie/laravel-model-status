@@ -2,9 +2,8 @@
 
 namespace Spatie\ModelStatus;
 
-use BackedEnum;
-use UnitEnum;
 use \Illuminate\Support\Collection;
+use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -12,6 +11,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Arr;
 use Spatie\ModelStatus\Events\StatusUpdated;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
+use UnitEnum;
 
 trait HasStatuses
 {
