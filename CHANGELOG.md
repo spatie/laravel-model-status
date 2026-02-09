@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.19.0 - 2026-02-09
+
+### What's Changed
+
+* Update issue template by @AlexVanderbist in https://github.com/spatie/laravel-model-status/pull/136
+* Add enum support for statuses by @freekmurze in https://github.com/spatie/laravel-model-status/pull/138
+
+**Full Changelog**: https://github.com/spatie/laravel-model-status/compare/1.18.1...1.19.0
+
 ## 1.18.1 - 2025-02-21
 
 ### What's Changed
