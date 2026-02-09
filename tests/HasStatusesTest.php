@@ -3,8 +3,13 @@
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Spatie\ModelStatus\Exceptions\InvalidStatus;
 use Spatie\ModelStatus\Tests\Models\AlternativeStatusModel;
+use Spatie\ModelStatus\Tests\Models\AlternativeUserStatus;
+use Spatie\ModelStatus\Tests\Models\BackedEnumStatusModel;
 use Spatie\ModelStatus\Tests\Models\CustomModelKeyStatusModel;
 use Spatie\ModelStatus\Tests\Models\TestModel;
+use Spatie\ModelStatus\Tests\Models\UnitEnumStatusModel;
+use Spatie\ModelStatus\Tests\Models\UnitUserStatus;
+use Spatie\ModelStatus\Tests\Models\UserStatus;
 use Spatie\ModelStatus\Tests\Models\ValidationTestModel;
 
 beforeEach(function () {
@@ -47,6 +52,78 @@ it('can force set an invalid status', function () {
 
     expect($name)->toEqual('InvalidStatus');
 });
+
+it('can set a status using a backed enum', function () {
+    $this->testModel->setStatus(UserStatus::pending, 'waiting on action');
+
+    expect($this->testModel->status()->name)->toEqual('pending')
+        ->and($this->testModel->status()->reason)->toEqual('waiting on action');
+});
+
+it('can set a status using a unit enum', function () {
+    $model = UnitEnumStatusModel::create(['name' => 'name']);
+    $model->setStatus(UnitUserStatus::pending);
+
+    expect($model->status()->name)->toEqual('pending');
+});
+
+it('accepts matching string values when a status enum is configured', function () {
+    $model = BackedEnumStatusModel::create(['name' => 'name']);
+    $model->setStatus('pending');
+
+    expect($model->status()->name)->toEqual('pending');
+});
+
+it('rejects string values outside the configured status enum', function () {
+    $model = BackedEnumStatusModel::create(['name' => 'name']);
+    $model->setStatus('non-existing-status');
+})->throws(InvalidStatus::class);
+
+it('rejects enum cases from a different enum class', function () {
+    $model = BackedEnumStatusModel::create(['name' => 'name']);
+    $model->setStatus(AlternativeUserStatus::pending);
+})->throws(InvalidStatus::class);
+
+it('allows forceSetStatus to bypass configured enum validation', function () {
+    $model = BackedEnumStatusModel::create(['name' => 'name']);
+    $model->forceSetStatus('outside-enum');
+
+    expect($model->status()->name)->toEqual('outside-enum');
+});
+
+it('returns the configured enum from statusEnum', function () {
+    $model = BackedEnumStatusModel::create(['name' => 'name']);
+    $model->setStatus(UserStatus::pending);
+
+    expect($model->statusEnum())->toBe(UserStatus::pending);
+});
+
+it('returns null from statusEnum when there is no status', function () {
+    $model = BackedEnumStatusModel::create(['name' => 'name']);
+
+    expect($model->statusEnum())->toBeNull();
+});
+
+it('returns null from statusEnum when no status enum is configured', function () {
+    $this->testModel->setStatus('pending');
+
+    expect($this->testModel->statusEnum())->toBeNull();
+});
+
+it('returns null from statusEnum when latest status is outside the configured enum', function () {
+    $model = BackedEnumStatusModel::create(['name' => 'name']);
+    $model->forceSetStatus('outside-enum');
+
+    expect($model->statusEnum())->toBeNull();
+});
+
+it('passes a normalized string to isValidStatus when enum input is given', function () {
+    $validationUser = ValidationTestModel::create([
+        'name' => 'name',
+    ]);
+
+    $validationUser->setStatus(UserStatus::invalid);
+})->throws(InvalidStatus::class);
 
 it('can find the last status by name', function () {
     $this->testModel
