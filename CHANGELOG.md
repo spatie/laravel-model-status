@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-model-status` will be documented in this file
 
+## 1.20.0 - 2026-02-21
+
+Add Laravel 13 support
+
 ## 1.19.0 - 2026-02-09
 
 ### What's Changed
